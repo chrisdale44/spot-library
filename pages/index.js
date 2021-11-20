@@ -2,12 +2,12 @@
 import useSWR, { useSWRConfig } from "swr";
 // import styles from "../styles/Home.module.css";
 
-const fetcher = () =>
-  fetch("/api/spots/get").then((response) => response.json());
+// const fetcher = () =>
+// fetch("/api/spots/get").then((response) => response.json());
 
-function Home() {
-  const { mutate } = useSWRConfig();
-  const { data: spots } = useSWR("/api/spots/get", fetcher);
+function Home({ spots }) {
+  // const { mutate } = useSWRConfig();
+  // const { data: spots } = useSWR("/api/spots/get", fetcher);
 
   // const tags = useRecoilValue(tags);
   // const spots = useRecoilValue(spots);
@@ -36,7 +36,7 @@ function Home() {
             },
             body: JSON.stringify({ name: event.target.unique.value }),
           });
-          mutate("/api/spots/get");
+          // mutate("/api/spots/get");
         }}
       >
         <input name="unique" />
@@ -54,28 +54,29 @@ function Home() {
   );
 }
 
-// export async function getStaticProps() {
-//   const tags = await fetch("/api/tags/get", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({}),
-//   });
-//   const spots = await fetch("/api/spots/get", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({}),
-//   });
+export async function getStaticProps() {
+  // const tags = await fetch("/api/tags/get", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({}),
+  // });
+  const response = await fetch(process.env.API_DOMAIN + "/api/spots/get", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+  const spots = await response.json();
 
-//   return {
-//     props: {
-//       tags,
-//       spots,
-//     },
-//   };
-// }
+  return {
+    props: {
+      // tags,
+      spots,
+    },
+  };
+}
 
 export default Home;
