@@ -29,17 +29,27 @@ function Home({ spots }) {
       <form
         onSubmit={async (event) => {
           event.preventDefault();
-          await fetch("/api/spots/set", {
+          const { name, description } = event.target;
+
+          await fetch("/api/spots/create", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: event.target.unique.value }),
+            body: JSON.stringify({
+              spots: [
+                {
+                  name: name.value,
+                  description: description.value,
+                },
+              ],
+            }),
           });
           // mutate("/api/spots/get");
         }}
       >
-        <input name="unique" />
+        <input name="name" />
+        <input name="description" />
         <button type="submit">Submit</button>
       </form>
 
@@ -62,7 +72,7 @@ export async function getStaticProps() {
   //   },
   //   body: JSON.stringify({}),
   // });
-  const response = await fetch(process.env.API_DOMAIN + "/api/spots/get", {
+  const response = await fetch(process.env.API_DOMAIN + "/api/spots/read", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
