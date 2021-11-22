@@ -1,5 +1,6 @@
 // import { useRecoilState, useRecoilValue } from "recoil";
-import useSWR, { useSWRConfig } from "swr";
+// import useSWR, { useSWRConfig } from "swr";
+
 // import styles from "../styles/Home.module.css";
 
 // const fetcher = () =>
@@ -72,21 +73,29 @@ export async function getStaticProps() {
   //   },
   //   body: JSON.stringify({}),
   // });
-  const response = await fetch(process.env.API_DOMAIN + "/api/spots/read", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  });
-  const spots = await response.json();
+  try {
+    const response = await fetch(process.env.API_DOMAIN + "/api/spots/read", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+    const spots = await response.json();
 
-  return {
-    props: {
-      // tags,
-      spots,
-    },
-  };
+    if (!response.ok || response.status !== 200) {
+      return {};
+    }
+    return {
+      props: {
+        // tags,
+        spots,
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
 }
 
 export default Home;

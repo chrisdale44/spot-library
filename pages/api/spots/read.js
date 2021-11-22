@@ -1,11 +1,16 @@
-import Redis from "ioredis";
+import connectToRedis from "../../utils/connectToRedis";
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = connectToRedis();
 
 export default async function handler(req, res) {
-  const spotsHash = await redis.hgetall("spots");
-  const spotsArray = Object.keys(spotsHash).map((key) =>
-    JSON.parse(spotsHash[key])
-  );
-  res.status(200).json(spotsArray);
+  try {
+    const spotsHash = await redis.hgetall("spots");
+    const spotsArray = Object.keys(spotsHash).map((key) =>
+      JSON.parse(spotsHash[key])
+    );
+
+    res.status(200).json(spotsArray);
+  } catch (err) {
+    console.error(err);
+  }
 }
