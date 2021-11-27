@@ -1,6 +1,6 @@
-import Redis from "ioredis";
+import connectToRedis from "../../../utils/connectToRedis";
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = connectToRedis();
 
 export default async function handler(req, res) {
   const { name, score } = req.body;

@@ -1,4 +1,4 @@
-import connectToRedis from "../../utils/connectToRedis";
+import connectToRedis from "../../../utils/connectToRedis";
 
 const redis = connectToRedis();
 
