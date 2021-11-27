@@ -2,24 +2,24 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { spotsState } from "../state";
 
-function Home({ spotsData }) {
+function SpotsList({ spots }) {
+  return (
+    <ul>
+      {spots.map(({ id, name }) => (
+        <li key={id}>{name}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Home({ spots: staticSpots }) {
   const [spots, setSpots] = useRecoilState(spotsState);
 
   useEffect(() => {
-    setSpots(spotsData);
-  }, [spotsData]);
+    setSpots(staticSpots);
+  }, []);
 
-  return (
-    <div>
-      {spots && (
-        <ul>
-          {spots.map(({ id, name }) => (
-            <li key={id}>{name}</li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  return <SpotsList spots={spots.length ? spots : staticSpots} />;
 }
 
 export async function getStaticProps() {
@@ -31,14 +31,14 @@ export async function getStaticProps() {
       },
       body: JSON.stringify({}),
     });
-    const spotsData = await response.json();
+    const spots = await response.json();
 
     if (!response.ok || response.status !== 200) {
       return {};
     }
     return {
       props: {
-        spotsData,
+        spots,
       },
     };
   } catch (e) {
