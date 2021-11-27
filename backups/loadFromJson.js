@@ -1,3 +1,8 @@
+// Move this file into ./pages dir
+// npm run dev
+// localhost:3000/loadFromJson
+// Click Load
+
 const payload = require("../backups/spots.json");
 //const payload = require("../backups/tags.json");
 
