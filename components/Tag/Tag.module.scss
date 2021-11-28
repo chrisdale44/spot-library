@@ -1,0 +1,39 @@
+.tag {
+  position: relative;
+  background-color: #3e8bca;
+  display: inline-block;
+  color: white;
+  padding: 10px 12px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+
+  &.withX {
+    padding-right: 24px;
+    cursor: auto;
+  }
+
+  &.selected {
+    background-color: #1c5585;
+  }
+}
+
+button.close {
+  border: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: white;
+  background: transparent;
+  padding: 2px;
+  svg {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+button.close:hover {
+  cursor: pointer;
+}

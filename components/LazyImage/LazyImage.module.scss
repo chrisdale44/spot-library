@@ -1,0 +1,21 @@
+.wrapper {
+    position: relative;
+    height: 100%;
+    // best not to add styles here, instead pass styles through via wrapperClassName
+  }
+  
+  .icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 3px;
+    cursor: pointer;
+    background: #e0e0e0;
+    height: 30px;
+    width: 34px;
+  
+    &:hover {
+      background: #c0c0c0;
+    }
+  }
+  

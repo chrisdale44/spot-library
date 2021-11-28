@@ -1,0 +1,41 @@
+.navBar {
+  display: block;
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  width: 230px;
+  backdrop-filter: blur(2px);
+  background-color: rgba(222, 235, 246, 0.7);
+  transition: transform 0.2s ease-in;
+  transform: translateX(250px);
+  padding: 10px;
+
+  &.open {
+    transform: translateX(0px);
+  }
+}
+
+.clear {
+  padding: 10px 12px;
+  margin: 10px 0;
+  background-color: #3e8bca;
+  color: white;
+  vertical-align: middle;
+}
+
+.withImages,
+.withoutImages {
+  vertical-align: middle;
+  padding: 9px 9px;
+  margin: 0;
+  background-color: #3e8bca;
+  color: white;
+  margin-right: 6px;
+
+  & svg {
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,34 @@
+.spotInfo {
+  margin-top: 10px;
+}
+
+.icon {
+  background: transparent;
+  margin-right: 2px;
+  svg {
+    vertical-align: middle;
+    fill: #505050;
+    &.edit {
+      padding-top: 1px;
+      height: 16px;
+      width: 16px;
+    }
+
+    &.list {
+      height: 20px;
+      width: 20px;
+    }
+
+    &.streetView {
+      fill: #1aa260;
+      height: 14px;
+      width: 14px;
+    }
+
+    &.delete {
+      color: red;
+      height: 16px;
+      width: 16px;
+    }
+  }
+}

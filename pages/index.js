@@ -1,25 +1,33 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { spotsState } from "../state";
+import PageTemplate from "../components/PageTemplate";
+// import Map from "../components/Map";
+import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
+import styles from "../styles/Home.module.scss";
 
-function SpotsList({ spots }) {
+function Home({ spots }) {
   return (
-    <ul>
-      {spots.map(({ id, name }) => (
-        <li key={id}>{name}</li>
-      ))}
-    </ul>
+    <PageTemplate>
+      {/* <Map id="map" spots={spots} /> */}
+
+      <div id="grid" className={styles.gridContainer}>
+        {spots && <p>Displaying: {spots.length} spots</p>}
+        <InfiniteScrollGrid items={spots} chunkSize={50} />
+      </div>
+      <div id="map">Tets</div>
+    </PageTemplate>
   );
 }
 
-function Home({ spots: staticSpots }) {
+function StateHandler({ spots: staticSpots }) {
   const [spots, setSpots] = useRecoilState(spotsState);
 
   useEffect(() => {
     setSpots(staticSpots);
-  }, []);
+  }, [setSpots, staticSpots]);
 
-  return <SpotsList spots={spots.length ? spots : staticSpots} />;
+  return <Home spots={spots.length ? spots : staticSpots} />;
 }
 
 export async function getStaticProps() {
@@ -47,4 +55,4 @@ export async function getStaticProps() {
   }
 }
 
-export default Home;
+export default StateHandler;
