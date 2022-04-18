@@ -1,17 +1,25 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { spotsState } from "../state";
+import { spotsState, toastState } from "../state";
 import PageTemplate from "../components/PageTemplate";
 // import Map from "../components/Map";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
 import styles from "../styles/Home.module.scss";
 
 function Home({ spots }) {
+  const [, setToast] = useRecoilState(toastState);
   return (
     <PageTemplate>
       {/* <Map id="map" spots={spots} /> */}
 
       <div id="grid" className={styles.gridContainer}>
+        <button
+          onClick={() => {
+            setToast({ type: "success", message: "Success" });
+          }}
+        >
+          Toast
+        </button>
         {spots && <p>Displaying: {spots.length} spots</p>}
         <InfiniteScrollGrid items={spots} chunkSize={50} />
       </div>

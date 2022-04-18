@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
-// import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
+import { useRecoilState } from "recoil";
 import classNames from "classnames";
+import { toastState } from "../../state";
 import styles from "./Toast.module.scss";
 
 let cx = classNames.bind(styles);
 
-const Toast = ({ toast }) => {
+const Toast = () => {
+  const [toast, setToast] = useRecoilState(toastState);
+
   useEffect(() => {
     if (toast) {
       setTimeout(() => {
-        // dispatch({
-        //   type: "HIDE_TOAST",
-        // });
+        setToast(false);
       }, 3000);
     }
   }, [toast]);
@@ -22,11 +22,11 @@ const Toast = ({ toast }) => {
   ) : null;
 };
 
-Toast.prototypes = {
-  toast: PropTypes.shape({
-    type: PropTypes.oneOf(["success", "warning", "error", "info"]),
-    message: PropTypes.string,
-  }),
-};
+// Toast.prototypes = {
+//   toast: PropTypes.shape({
+//     type: PropTypes.oneOf(["success", "warning", "error", "info"]),
+//     message: PropTypes.string,
+//   }),
+// };
 
 export default Toast;

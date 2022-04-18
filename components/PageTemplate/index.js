@@ -3,7 +3,6 @@ import classNames from "classnames";
 // import NavBar from "../NavBar";
 import Modal from "../Modal";
 import Toast from "../Toast";
-
 import styles from "./PageTemplate.module.scss";
 
 let cx = classNames.bind(styles);

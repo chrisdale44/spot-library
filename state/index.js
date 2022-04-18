@@ -1,8 +1,4 @@
-import { atom, selector } from "recoil";
+import { spotsState } from "./spots";
+import { toastState } from "./toast";
 
-const spotsState = atom({
-  key: "spotsState",
-  default: [],
-});
-
-export { spotsState };
+export { spotsState, toastState };
