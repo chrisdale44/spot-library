@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image"
+import Image from "next/image";
 import classNames from "classnames";
 let cx = classNames.bind(styles);
 
@@ -15,18 +15,16 @@ const LazyImage = ({
   id,
   ...rest
 }) => {
-
   return (
-    <div
-      className={cx(styles.wrapper, wrapperClassname)}
-    >
+    <div className={cx(styles.wrapper, wrapperClassname)}>
       <Image
-          src={src}
-          alt="alt"
-          width={200}
-          height={200}
-          {...rest}
-        />
+        src={src}
+        alt="alt"
+        width={200}
+        height={200}
+        loading="lazy"
+        {...rest}
+      />
       {topRightIcon && topRightIconOnClick && (
         <button
           className={styles.icon}

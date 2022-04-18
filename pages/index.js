@@ -42,8 +42,12 @@ export async function getStaticProps() {
     const spots = await response.json();
 
     if (!response.ok || response.status !== 200) {
-      return {};
+      console.error("API request failed");
+      return {
+        props: {},
+      };
     }
+    console.log("API request successful");
     return {
       props: {
         spots,
@@ -51,7 +55,9 @@ export async function getStaticProps() {
     };
   } catch (e) {
     console.error(e);
-    return {};
+    return {
+      props: {},
+    };
   }
 }
 

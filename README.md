@@ -18,7 +18,7 @@ redis-cli
 ### to build static files, run both concurrently:
 
 npm run dev
-npm run build
+npm run build // localhost needs to be running concurrently for API requests to work
 // then use a http-server to host static files:
 cd ./out
 npx http-server

@@ -1,12 +1,16 @@
-import { RecoilRoot } from "recoil";
-import "../styles/globals.css";
+import { RecoilRoot } from 'recoil';
+import Head from 'next/head';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <RecoilRoot>
-      <Component {...pageProps} />
-    </RecoilRoot>
-  );
+	return (
+		<RecoilRoot>
+			<Head>
+				<title>Spot Mapper</title>
+			</Head>
+			<Component {...pageProps} />
+		</RecoilRoot>
+	);
 }
 
 export default MyApp;

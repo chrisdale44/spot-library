@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "next/link";
+import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
@@ -23,7 +23,11 @@ const Modal = () => {
   return id ? (
     <div className={styles.backdrop} onClick={handleClose}>
       <dialog className={styles.modal}>
-        <a href={getStreetViewLink(spot.coordinates)} target="_blank" rel="noreferrer">
+        <a
+          href={getStreetViewLink(spot.coordinates)}
+          target="_blank"
+          rel="noreferrer"
+        >
           <SiGooglemaps className={styles.googlemaps} />
         </a>
         <Link href={`/spot/${id}`} className={styles.edit} passHref>
