@@ -1,4 +1,5 @@
-import { spotsState } from "./spots";
+import { spotsState, getSpot } from "./spots";
 import { toastState } from "./toast";
+import { modalState } from "./modal";
 
-export { spotsState, toastState };
+export { spotsState, getSpot, toastState, modalState };

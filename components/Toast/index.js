@@ -12,7 +12,7 @@ const Toast = () => {
   useEffect(() => {
     if (toast) {
       setTimeout(() => {
-        setToast(false);
+        setToast(null);
       }, 3000);
     }
   }, [toast]);

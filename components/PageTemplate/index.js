@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 // import NavBar from "../NavBar";
-import Modal from "../Modal";
+import SpotModal from "../Modal";
 import Toast from "../Toast";
 import styles from "./PageTemplate.module.scss";
 
@@ -30,7 +30,7 @@ const PageTemplate = ({ children }) => {
         })}
         <Toast />
       </main>
-      <Modal />
+      <SpotModal />
     </>
   );
 };

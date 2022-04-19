@@ -1,14 +1,22 @@
 import React from "react";
+import { useRecoilState } from "recoil";
 import PropTypes from "prop-types";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
 import Image from "next/image";
 import { getStreetViewLink } from "../../../utils/googlemaps";
+import { modalState } from "../../../state";
 import styles from "./Tile.module.scss";
 
 const Tile = ({ item }) => {
   const { id, name, images, coordinates } = item;
-  const handleClick = () => {};
+  const [, setModal] = useRecoilState(modalState);
+  const handleClick = (id) => {
+    setModal({
+      type: "spot",
+      id,
+    });
+  };
 
   let imgUrl;
   if (images?.length) {
@@ -26,7 +34,7 @@ const Tile = ({ item }) => {
             alt="alt"
             loading="lazy"
             layout="fill"
-            onClick={handleClick}
+            onClick={() => handleClick(id)}
           />
         </div>
       ) : null}
