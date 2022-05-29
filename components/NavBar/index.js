@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import Link from "next/link"
+import Link from "next/link";
+import { useRecoilState } from "recoil";
 import { IoFunnelSharp, IoClose } from "react-icons/io5";
 import { GrMapLocation } from "react-icons/gr";
 import { BsGrid3X3Gap } from "react-icons/bs";
 import SideBarNav from "../SideBarNav";
+import { navState } from "../../state";
 import styles from "./NavBar.module.scss";
 
-const NavBar = ({ sidebar }) => {
-  //   const dispatch = useDispatch();
-  //   const view = useSelector((state) => state.view);
+const NavBar = ({ sidebar, filteredSpots }) => {
+  const [view, setnavState] = useRecoilState(navState);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSideNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   const toggleView = () => {
-    // dispatch({
-    //   type: "TOGGLE_VIEW",
-    //   payload: view === "map" ? "grid" : "map",
-    // });
+    const nextView = view === "map" ? "grid" : "map";
+    setnavState(nextView);
   };
 
   return (
@@ -40,7 +39,9 @@ const NavBar = ({ sidebar }) => {
           </button>
         )}
       </div>
-      {sidebar && <SideBarNav sidebarOpen={sidebarOpen} />}
+      {sidebar && (
+        <SideBarNav sidebarOpen={sidebarOpen} filteredSpots={filteredSpots} />
+      )}
     </nav>
   );
 };

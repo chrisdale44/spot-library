@@ -8,7 +8,7 @@ import { getStreetViewLink } from "../../../utils/googlemaps";
 import { modalState } from "../../../state";
 import styles from "./Tile.module.scss";
 
-const Tile = ({ item }) => {
+const Tile = ({ index, item }) => {
   const { id, name, images, coordinates } = item;
   const [, setModal] = useRecoilState(modalState);
   const handleClick = (id) => {
@@ -31,8 +31,9 @@ const Tile = ({ item }) => {
         <div className={styles.imageWrapper}>
           <Image
             src={imgUrl}
-            alt="alt"
-            loading="lazy"
+            alt={name}
+            priority={index < 12}
+            loading={index < 12 ? undefined : "lazy"}
             layout="fill"
             onClick={() => handleClick(id)}
           />

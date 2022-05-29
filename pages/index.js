@@ -1,15 +1,24 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { spotsState, toastState } from "../state";
+import {
+  spotsState,
+  toastState,
+  tagsState,
+  selectedFiltersState,
+} from "../state";
+import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
 // import Map from "../components/Map";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
 import styles from "../styles/Home.module.scss";
 
-function Home({ spots }) {
+function Home() {
   const [, setToast] = useRecoilState(toastState);
+  const [spots] = useRecoilState(spotsState);
+  const [selectedFilters] = useRecoilState(selectedFiltersState);
+  const filteredSpots = filterSpots(spots, selectedFilters);
   return (
-    <PageTemplate>
+    <PageTemplate filteredSpots={filteredSpots}>
       {/* <Map id="map" spots={spots} /> */}
 
       <div id="grid" className={styles.gridContainer}>
@@ -20,22 +29,28 @@ function Home({ spots }) {
         >
           Toast
         </button>
-        {spots && <p>Displaying: {spots.length} spots</p>}
-        <InfiniteScrollGrid items={spots} chunkSize={50} />
+        {spots && (
+          <p>
+            Displaying: {filteredSpots.length} of {spots.length} spots
+          </p>
+        )}
+        <InfiniteScrollGrid items={filteredSpots} chunkSize={50} />
       </div>
       <div id="map">Tets</div>
     </PageTemplate>
   );
 }
 
-function StateHandler({ spots: staticSpots }) {
-  const [spots, setSpots] = useRecoilState(spotsState);
+function StateHandler({ spots }) {
+  const [, setSpots] = useRecoilState(spotsState);
+  const [, setTagsState] = useRecoilState(tagsState);
 
   useEffect(() => {
-    setSpots(staticSpots);
-  }, [setSpots, staticSpots]);
+    setSpots(spots);
+    setTagsState();
+  }, [setSpots, spots]);
 
-  return <Home spots={spots.length ? spots : staticSpots} />;
+  return <Home />;
 }
 
 export async function getStaticProps() {

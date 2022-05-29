@@ -1,77 +1,48 @@
 import React from "react";
-// import { useSelector, useDispatch } from "react-redux";
-// import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { MdImage, MdBrokenImage } from "react-icons/md";
 import classNames from "classnames";
 import Tag from "../Tag/";
 import ComboBox from "../ComboBox";
+import FilterToggle from "../FilterToggle";
+import { tagsState, filteredSpotsState } from "../../state";
+import useFilterActions from "../../state/filters/actions";
 import styles from "./SideBarNav.module.scss";
 let cx = classNames.bind(styles);
 
-const SideBarNav = ({ sidebarOpen }) => {
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const tags = useSelector(({ tags }) => tags);
-  const spots = useSelector(({ spots }) => spots);
-  const filterValue = useSelector(({ filterValue }) => filterValue);
-  const spotNames = spots.map(({ id, name }) => ({
+const SideBarNav = ({ sidebarOpen, filteredSpots }) => {
+  const [tags] = useRecoilState(tagsState);
+  const spotNames = filteredSpots?.map(({ id, name }) => ({
     id,
     name: name ? name : "",
   }));
+  const { selectFilter, deselectFilter, clearFilters } = useFilterActions();
 
-  const handleSelection = ({ id, name }) => {
-    if (id) history.push(`/spot/${id}/edit`);
-    if (name) {
-      dispatch({
-        type: "FILTER_SPOTS_BY_TITLE",
-        payload: name,
-      });
-    }
+  const handleSelection = (payload) => {
+    selectFilter({ id: "searchFilter", payload });
   };
 
-  const handleClear = () => {
-    dispatch({
-      type: "CLEAR_FILTER_SPOTS",
-    });
-  };
-
-  const filterWithImages = () => {
-    dispatch({
-      type: "FILTER_SPOTS_WITH_IMG",
-    });
-  };
-
-  const filterWithoutImages = () => {
-    dispatch({
-      type: "FILTER_SPOTS_WITHOUT_IMG",
-    });
+  const handleSearchClear = () => {
+    deselectFilter({ id: "searchFilter" });
   };
 
   return (
     <nav className={cx(styles.navBar, { [styles.open]: sidebarOpen })}>
       <div>
-        <button
-          type="button"
-          className={styles.withImages}
-          onClick={filterWithImages}
-        >
+        <FilterToggle id="imagesToggle">
           <MdImage />
-        </button>
-        <button
-          type="button"
-          className={styles.withoutImages}
-          onClick={filterWithoutImages}
-        >
+        </FilterToggle>
+        <FilterToggle id="noImagesToggle">
           <MdBrokenImage />
-        </button>
-        <button type="button" className={styles.clear} onClick={handleClear}>
+        </FilterToggle>
+        <button type="button" className={styles.clear} onClick={clearFilters}>
           Clear All
         </button>
       </div>
       <ComboBox
         allOptions={spotNames}
         onSelection={handleSelection}
-        onClear={handleClear}
+        onClear={handleSearchClear}
       />
       {tags && tags.map((tag, i) => <Tag tag={tag} key={i} />)}
     </nav>

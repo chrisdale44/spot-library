@@ -22,8 +22,6 @@ const defaultFields = {
 export default async function handler(req, res) {
   const { spots } = req.body;
 
-  console.log(spots);
-
   res.status(200);
   try {
     // get spots id's

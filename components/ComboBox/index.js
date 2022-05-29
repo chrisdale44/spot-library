@@ -34,10 +34,6 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
     }
   };
   const handleClick = (event) => {
-    console.log(event, {
-      name: event.target.dataset.value,
-      id: event.target.dataset.id,
-    });
     event.persist();
     onSelection({
       name: event.target.dataset.value,
@@ -45,11 +41,6 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
     });
     setValue("");
     setIsFocused(false);
-  };
-
-  const handleOnBlur = (event) => {
-    event.persist();
-    setTimeout(() => setIsFocused(false), 100);
   };
 
   const handleClear = () => {
@@ -80,7 +71,6 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
         onChange={handleInputChange}
         onKeyDown={handleOnKeyDown}
         onFocus={() => setIsFocused(true)}
-        onBlur={handleOnBlur}
       />
       {value && (
         <button className={styles.clear} onClick={handleClear}>
