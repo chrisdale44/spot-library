@@ -1,8 +1,5 @@
 export const filterSpotsById = (spots, payload) =>
-  spots.filter(({ id }) => {
-    console.log(id, payload);
-    return id === parseInt(payload);
-  });
+  spots.filter(({ id }) => id === parseInt(payload));
 
 export const filterSpotsByTitle = (spots, payload) =>
   spots.filter(({ name }) =>
