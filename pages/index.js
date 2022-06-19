@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
+import dynamic from "next/dynamic";
 import {
   spotsState,
   toastState,
@@ -12,6 +13,9 @@ import PageTemplate from "../components/PageTemplate";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
 import styles from "../styles/Home.module.scss";
 
+// do not load Leaflet map on server as it uses window object
+const Map = dynamic(() => import("../components/Map/index"), { ssr: false });
+
 function Home() {
   const [, setToast] = useRecoilState(toastState);
   const [spots] = useRecoilState(spotsState);
@@ -19,7 +23,7 @@ function Home() {
   const filteredSpots = filterSpots(spots, selectedFilters);
   return (
     <PageTemplate filteredSpots={filteredSpots}>
-      {/* <Map id="map" spots={spots} /> */}
+      <Map id="map" spots={filteredSpots} />
 
       <div id="grid" className={styles.gridContainer}>
         <button
@@ -36,7 +40,6 @@ function Home() {
         )}
         <InfiniteScrollGrid items={filteredSpots} chunkSize={50} />
       </div>
-      <div id="map">Tets</div>
     </PageTemplate>
   );
 }

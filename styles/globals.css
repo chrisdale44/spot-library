@@ -1,4 +1,5 @@
 @import "modern-css-reset/dist/reset.css";
+@import "../components/Map/SearchField/styles.css";
 
 * {
   box-sizing: border-box;

@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 const navState = atom({
   key: "navState",
-  default: "grid",
+  default: "map",
 });
 
 export { navState };
