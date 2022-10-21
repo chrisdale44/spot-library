@@ -11,15 +11,21 @@ const Modal = () => {
 
   useEffect(() => {
     if (modal) {
-      setModalContent(<Spot id={modal.id} />);
+      const { id, type } = modal;
+
+      switch (type) {
+        case "spot":
+          setModalContent(<Spot id={id} />);
+      }
     }
   }, [modal]);
 
   const handleClose = () => {
     setModal(null);
+    setModalContent(null);
   };
 
-  return modal ? (
+  return modal && modalContent ? (
     <div className={styles.backdrop} onClick={handleClose}>
       <dialog className={styles.modal}>
         <button className={styles.close} type="button" onClick={handleClose}>

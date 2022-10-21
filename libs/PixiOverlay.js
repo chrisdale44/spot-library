@@ -48,6 +48,7 @@ const loadSprite = async (marker) => {
 };
 
 const createOverlay = (pixiContainer, markers, map) => {
+  console.log("create overlay");
   pixiContainer.interactive = true;
   pixiContainer.buttonMode = true;
 
@@ -74,7 +75,8 @@ const createOverlay = (pixiContainer, markers, map) => {
           var zoom = map.getZoom();
 
           if (firstDraw) {
-            map.on("click", function (e) {
+            console.log("first draw");
+            map.on("click", (e) => {
               var interaction = renderer.plugins.interaction;
               var pointerEvent = e.originalEvent;
               var pixiPoint = new PIXI.Point();
@@ -101,6 +103,7 @@ const createOverlay = (pixiContainer, markers, map) => {
                 onClick,
                 position,
                 popup,
+                popupClick,
                 tooltip,
                 tooltipOptions,
                 //popupOpen, todo: start with popup open
@@ -149,16 +152,22 @@ const createOverlay = (pixiContainer, markers, map) => {
               }
 
               if (popup) {
+                const popupHtml = L.DomUtil.create("div", "content");
+                popupHtml.innerHTML = popup;
+
                 markerSprite.popup = L.popup({
                   id,
-                  offset: [0, -35],
-                  position,
-                  content: popup,
-                  onClick,
+                  offset: [0, -28],
                   autoClose: false,
                 })
                   .setLatLng(position)
-                  .setContent(popup);
+                  .setContent(popupHtml);
+
+                if (popupClick) {
+                  L.DomEvent.addListener(popupHtml, "click", () => {
+                    popupClick(id);
+                  });
+                }
               }
 
               if (tooltip) {
@@ -181,6 +190,7 @@ const createOverlay = (pixiContainer, markers, map) => {
           }
 
           if (firstDraw || prevZoom !== zoom) {
+            console.log("when does this happen?");
             for (let i = 0; i < container.children.length; i++) {
               const child = container.children[i];
               child.currentScale = child.scale.x;
@@ -211,6 +221,7 @@ const createOverlay = (pixiContainer, markers, map) => {
           };
 
           if (!firstDraw && prevZoom !== zoom) {
+            console.log("zoom");
             start = null;
             frame = requestAnimationFrame(animate);
           }
@@ -235,7 +246,9 @@ const PixiOverlay = ({ markers }) => {
   const map = useMap();
 
   useEffect(() => {
+    console.log("here");
     const loadSprites = async (markers) => {
+      console.log("load sprites");
       // cancel loading if already loading as it may cause: Error: Cannot add resources while the loader is running.
       if (PIXILoader.loading) {
         PIXILoader.reset();

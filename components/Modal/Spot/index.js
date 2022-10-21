@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { getSpot } from "../../../state";
+import useSpotSelectors from "../../../state/spots/selectors";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
 import { FiExternalLink } from "react-icons/fi";
@@ -8,8 +8,10 @@ import { getStreetViewLink } from "../../../utils/googlemaps";
 import styles from "../Modal.module.scss";
 
 const Spot = ({ id }) => {
-  const spot = useRecoilValue(getSpot(id));
-  return (
+  const { getSpot } = useSpotSelectors();
+  const spot = getSpot(id);
+
+  return spot ? (
     <>
       <a
         href={getStreetViewLink(spot.coordinates)}
@@ -29,7 +31,7 @@ const Spot = ({ id }) => {
       <br />
       {spot.name}
     </>
-  );
+  ) : null;
 };
 
 export default Spot;

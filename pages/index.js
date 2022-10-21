@@ -9,7 +9,7 @@ import {
 } from "../state";
 import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
-// import Map from "../components/Map";
+import Modal from "../components/Modal";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
 import styles from "../styles/Home.module.scss";
 
@@ -21,6 +21,7 @@ function Home() {
   const [spots] = useRecoilState(spotsState);
   const [selectedFilters] = useRecoilState(selectedFiltersState);
   const filteredSpots = filterSpots(spots, selectedFilters);
+
   return (
     <PageTemplate filteredSpots={filteredSpots}>
       <Map id="map" spots={filteredSpots} />
@@ -40,6 +41,7 @@ function Home() {
         )}
         <InfiniteScrollGrid items={filteredSpots} chunkSize={50} />
       </div>
+      <Modal />
     </PageTemplate>
   );
 }

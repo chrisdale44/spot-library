@@ -1,11 +1,14 @@
 import React from "react";
+import { useRecoilState } from "recoil";
 import { renderToString } from "react-dom/server";
 import { MapContainer, TileLayer } from "react-leaflet";
 import SearchField from "./SearchField";
 import PixiOverlay from "../../libs/PixiOverlay.js";
+import { modalState } from "../../state";
 import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {
+  const [, setModal] = useRecoilState(modalState);
   const markers = spots.map((spot) => {
     return {
       id: spot.id,
@@ -13,11 +16,18 @@ const Map = ({ spots }) => {
         parseFloat(spot.coordinates[0]),
         parseFloat(spot.coordinates[1]),
       ],
-      popup: renderToString(<div>Hello</div>),
+      popup: renderToString(spot.name),
+      popupClick: (id) => {
+        console.log(id);
+        setModal({
+          type: "spot",
+          id,
+        });
+      },
       iconColor: "#187bcd",
     };
   });
-  console.log(markers);
+
   return (
     <MapContainer
       center={[51.505, -0.09]}
