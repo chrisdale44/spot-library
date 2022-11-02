@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import { renderToString } from "react-dom/server";
 import { MapContainer, TileLayer } from "react-leaflet";
 import SearchField from "./SearchField";
-import PixiOverlay from "../../libs/PixiOverlay.js";
+import MarkersOverlay from "./MarkersOverlay";
 import { modalState } from "../../state";
 import "leaflet/dist/leaflet.css";
 
@@ -16,7 +16,7 @@ const Map = ({ spots }) => {
         parseFloat(spot.coordinates[0]),
         parseFloat(spot.coordinates[1]),
       ],
-      popup: renderToString(spot.name),
+      popupContent: renderToString(spot.name),
       popupClick: (id) => {
         console.log(id);
         setModal({
@@ -41,7 +41,7 @@ const Map = ({ spots }) => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <PixiOverlay markers={markers} />
+      <MarkersOverlay markers={markers} />
     </MapContainer>
   );
 };
