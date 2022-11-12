@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import dynamic from "next/dynamic";
 import {
@@ -20,7 +20,15 @@ function Home() {
   const [, setToast] = useRecoilState(toastState);
   const [spots] = useRecoilState(spotsState);
   const [selectedFilters] = useRecoilState(selectedFiltersState);
-  const filteredSpots = filterSpots(spots, selectedFilters);
+  // const filteredSpots = filterSpots(spots, selectedFilters);
+  const [filteredSpots, setFilteredSpots] = useState(
+    filterSpots(spots, selectedFilters)
+  );
+
+  useEffect(() => {
+    console.log("filter spots");
+    setFilteredSpots(filterSpots(spots, selectedFilters));
+  }, [spots, selectedFilters]);
 
   return (
     <PageTemplate filteredSpots={filteredSpots}>

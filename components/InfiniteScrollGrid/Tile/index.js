@@ -13,7 +13,7 @@ const Tile = ({ index, item }) => {
   const [, setModal] = useRecoilState(modalState);
   const handleClick = (id) => {
     setModal({
-      type: "spot",
+      type: "openSpot",
       id,
     });
   };

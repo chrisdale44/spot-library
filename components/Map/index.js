@@ -1,32 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { renderToString } from "react-dom/server";
 import { MapContainer, TileLayer } from "react-leaflet";
+import ImageGallery from "react-image-gallery";
 import SearchField from "./SearchField";
 import MarkersOverlay from "./MarkersOverlay";
 import { modalState } from "../../state";
 import "leaflet/dist/leaflet.css";
+import styles from "./Map.module.scss";
 
 const Map = ({ spots }) => {
   const [, setModal] = useRecoilState(modalState);
-  const markers = spots.map((spot) => {
-    return {
-      id: spot.id,
-      position: [
-        parseFloat(spot.coordinates[0]),
-        parseFloat(spot.coordinates[1]),
-      ],
-      popupContent: renderToString(spot.name),
+
+  const generateMarkers = (spots) =>
+    spots.map(({ id, name, coordinates, images, imgUrls, media }) => ({
+      id: id,
+      position: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
+      popupContent: renderToString(
+        <div className={styles.popupContainer}>
+          {name}
+          {images.length ? (
+            <ImageGallery
+              items={images.map((image) => ({
+                original: image.url,
+                loading: "lazy",
+              }))}
+              lazyLoad={true}
+              showPlayButton={false}
+              showFullscreenButton={false}
+            />
+          ) : null}
+        </div>
+      ),
       popupClick: (id) => {
         console.log(id);
         setModal({
-          type: "spot",
+          type: "openSpot",
           id,
         });
       },
       iconColor: "#187bcd",
-    };
-  });
+    }));
+
+  const [markers, setMarkers] = useState(generateMarkers(spots));
+
+  useEffect(() => {
+    console.log("set markers");
+    setMarkers(generateMarkers(spots));
+  }, [spots]);
 
   return (
     <MapContainer

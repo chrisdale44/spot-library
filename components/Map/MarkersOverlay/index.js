@@ -31,6 +31,7 @@ const MarkersOverlay = ({ markers }) => {
   const [pixiContainer, setPixiContainer] = useState();
 
   useEffect(() => {
+    console.log("markers changed");
     const loadSprites = async (markers) => {
       console.log("load sprites");
       if (loader.loading) {
@@ -55,18 +56,11 @@ const MarkersOverlay = ({ markers }) => {
     }
   }, [markers, firstRender]);
 
-  // useEffect(() => {
-  //   console.log("markers changed?");
-  //   if (pixiContainer) {
-  //     console.log("removeChildren", markers.length);
-  //     console.log(pixiContainer);
-  //     pixiContainer.removeChildren();
-  //   }
-
-  //   return () => {
-  //     if (pixiContainer) pixiContainer.removeChildren();
-  //   };
-  // }, [markers, pixiContainer]);
+  // todo: clear map and redraw?
+  if (!firstRender) {
+    //pixiContainer.render();
+    pixiContainer.removeChildren();
+  }
 };
 
 export default MarkersOverlay;
