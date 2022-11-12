@@ -1,18 +1,34 @@
 import L from "leaflet";
 import * as PIXI from "pixi.js";
 
-const createOverlay = ({ map, container, loader, markers }) => {
-  const drawContainer = (_, resources) => {
-    const doubleBuffering =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const createLeafletOverlay = ({
+  map,
+  container,
+  loader,
+  allMarkers,
+  setLeafletOverlay,
+}) => {
+  const loadLeafletOverlay = (_, resources) => {
+    const loadOptions = {
+      doubleBuffering:
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+      autoPreventDefault: false,
+    };
     let firstDraw = true;
     let prevZoom;
     let frame = null;
 
-    const overlay = L.pixiOverlay(
+    const leafletOverlay = L.pixiOverlay(
       // draw overlay callback
-      (utils) => {
-        console.log("redraw");
+      (utils, eventOrData) => {
+        console.log("redraw", eventOrData);
+        let markers = allMarkers;
+        if (!eventOrData.type) {
+          markers = eventOrData;
+          firstDraw = true;
+          console.log("redraw triggered: removeChildren");
+          container.removeChildren(0, 3000);
+        }
 
         const createMarker = ({
           id,
@@ -185,16 +201,14 @@ const createOverlay = ({ map, container, loader, markers }) => {
         renderer.render(container);
       },
       container,
-      {
-        doubleBuffering: doubleBuffering,
-        autoPreventDefault: false,
-      }
+      loadOptions
     );
 
-    overlay.addTo(map);
+    leafletOverlay.addTo(map); // add Pixi container as a Leaflet overlay
+    setLeafletOverlay(leafletOverlay);
   };
 
-  loader.load(drawContainer);
+  loader.load(loadLeafletOverlay);
 };
 
-export default createOverlay;
+export default createLeafletOverlay;
