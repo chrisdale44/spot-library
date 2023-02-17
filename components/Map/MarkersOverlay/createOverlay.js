@@ -25,9 +25,25 @@ const createLeafletOverlay = ({
         let markers = allMarkers;
         if (!eventOrData.type) {
           markers = eventOrData;
-          firstDraw = true;
-          console.log("redraw triggered: removeChildren");
-          container.removeChildren(0, 3000);
+
+          for (let i = 0; i < container.children.length; i++) {
+            const child = container.children[i];
+            // todo: child.id is undefined
+            if (
+              markers.some((marker) => marker.id === child.popup.options.id)
+            ) {
+              console.log("hide marker", child.popup.options.id);
+              // child.visible = false;
+              // child.parent.removeChild(child);
+            } else {
+              console.log("show marker", child.popup.options.id);
+              // child.visible = true;
+            }
+          }
+
+          // firstDraw = true;
+          // console.log("redraw triggered: removeChildren");
+          // container.removeChildren(0, allMarkers.length - 1);
         }
 
         const createMarker = ({
@@ -48,6 +64,7 @@ const createLeafletOverlay = ({
 
           // Create PixiJS Marker of given icon
           const markerTexture = resources[`marker_${iconColor}`].texture;
+          markerTexture.id = id; // todo: set id on Sprite somehow?
           markerTexture.anchor = { x: 0.5, y: 1 };
           const markerSprite = PIXI.Sprite.from(markerTexture);
 
@@ -198,6 +215,7 @@ const createLeafletOverlay = ({
 
         prevZoom = zoom;
         firstDraw = false;
+        container.resolution = 1;
         renderer.render(container);
       },
       container,

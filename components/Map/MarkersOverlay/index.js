@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import * as PIXI from "pixi.js"; // n.b. uses v5
+import * as PIXI from "pixi.js";
 import "leaflet-pixi-overlay";
 import { useMap } from "react-leaflet";
 import { getDefaultIcon } from "./utils";
 import createLeafletOverlay from "./createOverlay";
 
-PIXI.utils.skipHello();
+// PIXI.utils.skipHello();
 const loader = PIXI.Loader.shared;
 
 const loadSprite = async ({ iconColor }) => {
@@ -62,20 +62,19 @@ const MarkersOverlay = ({ markers }) => {
       setPixiContainer(container);
       setFirstRender(false);
     }
+    // todo: clear map and redraw?
+    // check if markers have actually changed
+    if (!firstRender && leafletOverlay) {
+      console.log("redraw overlay");
+      leafletOverlay.redraw(markers);
+      // //pixiContainer.render();
+
+      // const a = pixiContainer.removeChildren(0, 10);
+      // console.log(pixiContainer.children.length, pixiContainer.utils);
+      // console.log(a);
+      // // pixiContainer.render();
+    }
   }, [markers, firstRender]);
-
-  // todo: clear map and redraw?
-  // check if markers have actually changed
-  if (!firstRender && leafletOverlay) {
-    console.log("redraw overlay");
-    leafletOverlay.redraw(markers);
-    // //pixiContainer.render();
-
-    // const a = pixiContainer.removeChildren(0, 10);
-    // console.log(pixiContainer.children.length, pixiContainer.utils);
-    // console.log(a);
-    // // pixiContainer.render();
-  }
 };
 
 export default MarkersOverlay;
