@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 // import { renderToString } from "react-dom/server";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Container, Sprite } from "@pixi/react";
-import { PixiRoot } from "./PixiRoot";
-import { useScale, useProject, useTick } from "./hooks";
+import { PixiRoot } from "../../utils/middleware/ReactLeafletReactPixi";
+import {
+  useScale,
+  useProject,
+  useTick,
+} from "../../utils/middleware/ReactLeafletReactPixi/hooks";
 // import ImageGallery from "react-image-gallery";
 // import SearchField from "./SearchField";
 // import { modalState } from "../../state";

@@ -1,3 +1,7 @@
+/*
+  Based on http://github.com/maliut/react-leaflet-react-pixi
+*/
+
 import * as PIXI from "pixi.js";
 import "leaflet-pixi-overlay"; // Must be called before the 'leaflet' import
 import L from "leaflet";
