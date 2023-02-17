@@ -26,7 +26,6 @@ function Home() {
   );
 
   useEffect(() => {
-    console.log("filter spots");
     setFilteredSpots(filterSpots(spots, selectedFilters));
   }, [spots, selectedFilters]);
 

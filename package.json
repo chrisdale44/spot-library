@@ -19,6 +19,7 @@
     "lodash.chunk": "^4.2.0",
     "modern-css-reset": "^1.4.0",
     "next": "^12.3.4",
+    "patch-package": "^6.5.1",
     "pixi.js": "^7.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,6 +1,7 @@
+import * as PIXI from "pixi.js";
 import "leaflet-pixi-overlay"; // Must be called before the 'leaflet' import
 import L from "leaflet";
-import * as PIXI from "pixi.js";
+
 import { useCallback, useEffect, useState } from "react";
 import { useMap } from "react-leaflet";
 import { createRoot } from "@pixi/react";
@@ -14,12 +15,16 @@ export function PixiRoot({ children }) {
   const [scale, setScale] = useState(1);
 
   const [pixiOverlay] = useState(
-    L.pixiOverlay((utils) => {
-      const container = utils.getContainer();
-      const renderer = utils.getRenderer();
-      setScale(utils.getScale());
-      renderer.render(container);
-    }, container)
+    L.pixiOverlay(
+      (utils) => {
+        const container = utils.getContainer();
+        const renderer = utils.getRenderer();
+        setScale(utils.getScale());
+        renderer.render(container);
+      },
+      container,
+      { backgroundAlpha: 0 }
+    )
   );
 
   useEffect(() => {
@@ -29,27 +34,25 @@ export function PixiRoot({ children }) {
   const [needsRenderUpdate, setNeedsRenderUpdate] = useState(false);
 
   const requestUpdate = useCallback(() => {
-    console.log("request update");
     setNeedsRenderUpdate(true);
   }, []);
 
   const renderStage = useCallback(() => {
     if (needsRenderUpdate) {
       setNeedsRenderUpdate(false);
-      console.log("redraw");
       pixiOverlay.redraw(container);
     }
-  }, [needsRenderUpdate]);
+  }, [needsRenderUpdate, pixiOverlay]);
 
   useEffect(() => {
     const ticker = PIXI.Ticker.shared;
     ticker.autoStart = true;
     ticker.add(renderStage);
-    window.addEventListener("__REACT_PIXI_REQUEST_RENDER__", requestUpdate);
+    container.addEventListener("__REACT_PIXI_REQUEST_RENDER__", requestUpdate);
 
     return () => {
       ticker.remove(renderStage);
-      window.removeEventListener(
+      container.removeEventListener(
         "__REACT_PIXI_REQUEST_RENDER__",
         requestUpdate
       );
@@ -64,7 +67,6 @@ export function PixiRoot({ children }) {
       </PixiOverlayProvider>
     );
 
-    console.log("render children", children);
-    root.render(provider);
-  }, [children]);
+    root.render(provider, container);
+  }, [children, pixiOverlay, scale]);
 }

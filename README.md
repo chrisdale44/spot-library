@@ -5,6 +5,9 @@
 npm run dev
 http://localhost:3000
 
+Clear Next cache:
+rm -rf .next
+
 redis-cli ping
 brew services stop redis
 brew services start redis
