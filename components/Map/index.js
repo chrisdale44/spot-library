@@ -1,70 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { renderToString } from "react-dom/server";
+// import { useRecoilState } from "recoil";
+// import { renderToString } from "react-dom/server";
 import { MapContainer, TileLayer } from "react-leaflet";
-import ImageGallery from "react-image-gallery";
-import SearchField from "./SearchField";
-import MarkersOverlay from "./MarkersOverlay";
-import { modalState } from "../../state";
+import { Container, Sprite } from "@pixi/react";
+import { PixiRoot } from "./PixiRoot";
+import { useScale, useProject, useTick } from "./hooks";
+// import ImageGallery from "react-image-gallery";
+// import SearchField from "./SearchField";
+// import { modalState } from "../../state";
 import "leaflet/dist/leaflet.css";
-import styles from "./Map.module.scss";
+// import styles from "./Map.module.scss";
 
-const Map = ({ spots }) => {
-  const [, setModal] = useRecoilState(modalState);
+const Map = () => (
+  <MapContainer
+    center={[51.505, -0.09]}
+    zoom={13}
+    scrollWheelZoom={true}
+    style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
+    preferCanvas={true}
+  >
+    <TileLayer
+      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    <PixiRoot>
+      <MyContent />
+    </PixiRoot>
+  </MapContainer>
+);
 
-  const generateMarkers = (spots) =>
-    spots.map(({ id, name, coordinates, images, imgUrls, media }) => ({
-      id: id,
-      position: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
-      popupContent: renderToString(
-        <div className={styles.popupContainer}>
-          {name}
-          {images.length ? (
-            <ImageGallery
-              items={images.map((image) => ({
-                original: image.url,
-                loading: "lazy",
-              }))}
-              lazyLoad={true}
-              showPlayButton={false}
-              showFullscreenButton={false}
-            />
-          ) : null}
-        </div>
-      ),
-      popupClick: (id) => {
-        console.log(id);
-        setModal({
-          type: "openSpot",
-          id,
-        });
-      },
-      iconColor: "#187bcd",
-    }));
+function MyContent() {
+  const [containerX, containerY] = useProject([51.5, -0.09]);
+  const [markerOffset, setMarkerOffset] = useState(0);
+  const [markerX, markerY] = useProject(
+    [51.5, -0.09 + markerOffset],
+    [containerX, containerY]
+  );
+  const scale = useScale();
 
-  const [markers, setMarkers] = useState(generateMarkers(spots));
-
-  useEffect(() => {
-    console.log("set markers");
-    setMarkers(generateMarkers(spots));
-  }, [spots]);
+  const [direction, setDirection] = useState(1);
+  useTick((delta) => {
+    setMarkerOffset((val) => val + (delta * direction) / 3000);
+    if (markerOffset > 0.05) {
+      setDirection(-1);
+    } else if (markerOffset < -0.05) {
+      setDirection(1);
+    }
+  });
 
   return (
-    <MapContainer
-      center={[51.505, -0.09]}
-      zoom={13}
-      scrollWheelZoom={true}
-      style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
-      preferCanvas={true}
-    >
-      <SearchField />
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <Container x={containerX} y={containerY} options={{ backgroundAlpha: 0 }}>
+      <Sprite
+        x={markerX}
+        y={markerY}
+        anchor={0.5}
+        scale={1 / scale}
+        image="https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png"
       />
-      <MarkersOverlay markers={markers} />
-    </MapContainer>
+    </Container>
   );
-};
+}
 
 export default Map;
