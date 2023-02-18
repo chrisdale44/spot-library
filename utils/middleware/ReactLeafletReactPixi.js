@@ -5,16 +5,16 @@
 import * as PIXI from "pixi.js";
 import "leaflet-pixi-overlay"; // Must be called before the 'leaflet' import
 import L from "leaflet";
-
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, createContext } from "react";
 import { useMap } from "react-leaflet";
 import { createRoot } from "@pixi/react";
-import { PixiOverlayProvider } from "./hooks";
 
 const container = new PIXI.Container({ backgroundAlpha: 0 });
 const root = createRoot(container);
 
-export function PixiRoot({ children }) {
+export const PixiContext = createContext({});
+
+export function PixiContainer({ children }) {
   const map = useMap();
   const [scale, setScale] = useState(1);
 
@@ -64,11 +64,15 @@ export function PixiRoot({ children }) {
   }, [renderStage, requestUpdate]);
 
   useEffect(() => {
-    const project = pixiOverlay.utils.latLngToLayerPoint;
     const provider = (
-      <PixiOverlayProvider value={{ project, scale }}>
+      <PixiContext.Provider
+        value={{
+          ...pixiOverlay.utils,
+          scale,
+        }}
+      >
         {children}
-      </PixiOverlayProvider>
+      </PixiContext.Provider>
     );
 
     root.render(provider, container);
