@@ -69,6 +69,7 @@ export function PixiContainer({ children }) {
         value={{
           ...pixiOverlay.utils,
           scale,
+          map,
         }}
       >
         {children}

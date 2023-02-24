@@ -1,80 +1,98 @@
-import { useEffect, useState } from "react";
-import * as PIXI from "pixi.js";
-import "leaflet-pixi-overlay";
-import { useMap } from "react-leaflet";
-import { getDefaultIcon } from "./utils";
-import createLeafletOverlay from "./createOverlay";
+import React, { useState, useContext, useEffect } from "react";
+// import { useRecoilState } from "recoil";
+import { Container, Sprite } from "@pixi/react";
+import { Popup } from "react-leaflet";
+import { renderToString } from "react-dom/server";
+import ImageGallery from "react-image-gallery";
+import L from "leaflet";
+// import { modalState } from "../../state";
+import { getDefaultIcon } from "../utils";
+import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
+import styles from "./MarkersOverlay.module.scss";
 
-// PIXI.utils.skipHello();
-const loader = PIXI.Loader.shared;
+const generateMarkers = (spots, map) => {
+  console.log("generate Markers");
+  // const [, setModal] = useRecoilState(modalState);
 
-const loadSprite = async ({ iconColor }) => {
-  return new Promise((resolve, reject) => {
-    if (!iconColor) resolve();
-    if (loader.resources[`marker_${iconColor}`]) resolve();
+  return spots.map(({ id, name, coordinates, images }) => {
+    const popupHtml = L.DomUtil.create("div", "content");
+    popupHtml.innerHTML = renderToString(
+      <div className={styles.popupContainer}>
+        {name}
+        {images.length ? (
+          <ImageGallery
+            items={images.map((image) => ({
+              original: image.url,
+              loading: "lazy",
+            }))}
+            lazyLoad={true}
+            showPlayButton={false}
+            showFullscreenButton={false}
+          />
+        ) : null}
+      </div>
+    );
 
-    loader.add(`marker_${iconColor}`, getDefaultIcon(iconColor));
+    return {
+      id: id,
+      iconColor: "#187bcd",
+      coordinates: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
+      interactive: true,
+      click: () => {
+        console.log(map);
+        const popup = L.popup({
+          id,
+          offset: [-17, -28],
+        })
+          .setLatLng(coordinates)
+          .setContent(popupHtml);
 
-    loader.onComplete.add(() => {
-      resolve();
-    });
+        map.openPopup(popup);
 
-    loader.onError.add(() => {
-      reject();
-    });
+        // const renderer = map.getRenderer();
+        // const container = map.getContainer();
+        // renderer.render(container);
+      },
+      // popupClick: (id) => {
+      //   console.log(id);
+      //   L.setModal({
+      //     type: "openSpot",
+      //     id,
+      //   });
+      // },
+    };
   });
 };
 
-const MarkersOverlay = ({ markers }) => {
-  const map = useMap();
-  const [firstRender, setFirstRender] = useState(true);
-  const [pixiContainer, setPixiContainer] = useState();
-  const [leafletOverlay, setLeafletOverlay] = useState();
+const MarkersOverlay = ({ spots }) => {
+  const [markers, setMarkers] = useState([]);
+  const { latLngToLayerPoint, scale, map } = useContext(PixiContext);
 
   useEffect(() => {
-    console.log("markers changed");
-    const loadSprites = async (markers) => {
-      console.log("load sprites");
-      if (loader.loading) {
-        loader.reset();
-      }
+    console.log("set markers");
+    setMarkers(generateMarkers(spots, map));
+  }, [spots]);
 
-      await Promise.all(markers.map(async (marker) => loadSprite(marker)));
-    };
-
-    // Run this just once and then the Overlay Load callback handles re-renders
-    if (firstRender) {
-      loadSprites(markers).catch(console.error);
-
-      const container = new PIXI.Container(markers.length, {
-        vertices: true,
-      });
-      container.interactive = true;
-      container.buttonMode = true;
-
-      createLeafletOverlay({
-        loader,
-        container,
-        allMarkers: markers,
-        map,
-        setLeafletOverlay,
-      });
-      setPixiContainer(container);
-      setFirstRender(false);
-    }
-    // todo: clear map and redraw?
-    // check if markers have actually changed
-    if (!firstRender && leafletOverlay) {
-      console.log("redraw overlay");
-      leafletOverlay.redraw(markers);
-      // //pixiContainer.render();
-
-      // const a = pixiContainer.removeChildren(0, 10);
-      // console.log(pixiContainer.children.length, pixiContainer.utils);
-      // console.log(a);
-      // // pixiContainer.render();
-    }
-  }, [markers, firstRender]);
+  return (
+    <Container options={{ backgroundAlpha: 0 }}>
+      {markers.length
+        ? markers.map((marker) => {
+            const { x, y } = latLngToLayerPoint(marker.coordinates);
+            return (
+              <Sprite
+                key={marker.id}
+                x={x}
+                y={y}
+                anchor={(0.5, 1)}
+                scale={1 / scale}
+                image={getDefaultIcon(marker.iconColor)}
+                {...marker}
+              />
+            );
+          })
+        : null}
+    </Container>
+  );
 };
 
 export default MarkersOverlay;
