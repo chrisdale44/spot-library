@@ -1,11 +1,12 @@
 diff --git a/node_modules/leaflet/dist/leaflet-src.js b/node_modules/leaflet/dist/leaflet-src.js
-index 533f4e5..56edce3 100644
+index 533f4e5..67f4133 100644
 --- a/node_modules/leaflet/dist/leaflet-src.js
 +++ b/node_modules/leaflet/dist/leaflet-src.js
-@@ -4518,16 +4518,16 @@
+@@ -4517,16 +4517,18 @@
+   	_mouseEvents: ['click', 'dblclick', 'mouseover', 'mouseout', 'contextmenu'],
  
-   	_fireDOMEvent: function (e, type, canvasTargets) {
- 
+   	_fireDOMEvent: function (e, type, canvasTargets) {		
+-
 -  		if (e.type === 'click') {
 -  			// Fire a synthetic 'preclick' event which propagates up (mainly for closing popups).
 -  			// @event preclick: MouseEvent
@@ -15,17 +16,43 @@ index 533f4e5..56edce3 100644
 -  			var synth = extend({}, e);
 -  			synth.type = 'preclick';
 -  			this._fireDOMEvent(synth, synth.type, canvasTargets);
--  		}
-+  		// if (e.type === 'click') {
-+  		// 	// Fire a synthetic 'preclick' event which propagates up (mainly for closing popups).
-+  		// 	// @event preclick: MouseEvent
-+  		// 	// Fired before mouse click on the map (sometimes useful when you
-+  		// 	// want something to happen on click before any existing click
-+  		// 	// handlers start running).
-+  		// 	var synth = extend({}, e);
-+  		// 	synth.type = 'preclick';
-+  		// 	this._fireDOMEvent(synth, synth.type, canvasTargets);
-+  		// }
++		if (e.type === 'click') {
++			if (!this._skipSynthClick) {
++				// Fire a synthetic 'preclick' event which propagates up (mainly for closing popups).
++				// @event preclick: MouseEvent
++				// Fired before mouse click on the map (sometimes useful when you
++				// want something to happen on click before any existing click
++				// handlers start running).
++				var synth = extend({}, e);
++  				synth.type = 'preclick';
++  				this._fireDOMEvent(synth, synth.type, canvasTargets);
++			}
++			this._skipSynthClick = false;
+   		}
  
    		// Find the layer the event is propagating from and its parents.
-   		var targets = this._findEventTargets(e, type);
+@@ -10169,6 +10171,7 @@
+   			map.removeLayer(map._popup);
+   		}
+   		map._popup = this;
++		map._skipSynthClick = true;
+ 
+   		return DivOverlay.prototype.openOn.call(this, map);
+   	},
+@@ -10198,6 +10201,7 @@
+ 
+   	onRemove: function (map) {
+   		DivOverlay.prototype.onRemove.call(this, map);
++		this._popup = null;
+ 
+   		// @namespace Map
+   		// @section Popup events
+@@ -10496,7 +10500,7 @@
+   	// @method isPopupOpen(): boolean
+   	// Returns `true` if the popup bound to this layer is currently open.
+   	isPopupOpen: function () {
+-  		return (this._popup ? this._popup.isOpen() : false);
++  		return (!!this._popup ? this._popup.isOpen() : false);
+   	},
+ 
+   	// @method setPopupContent(content: String|HTMLElement|Popup): this
