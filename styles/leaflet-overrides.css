@@ -4,3 +4,7 @@
 .leaflet-popup-content .content {
   cursor: pointer;
 }
+
+.leaflet-control-attribution {
+  display: none;
+}
