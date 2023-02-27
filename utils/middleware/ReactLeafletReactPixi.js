@@ -8,8 +8,12 @@ import L from "leaflet";
 import { useCallback, useEffect, useState, createContext } from "react";
 import { useMap } from "react-leaflet";
 import { createRoot } from "@pixi/react";
+import { useRecoilBridgeAcrossReactRoots_UNSTABLE } from "recoil";
 
+// create pixi container
 const container = new PIXI.Container({ backgroundAlpha: 0 });
+// const boundary = new PIXI.EventBoundary(container); // Todo: stop pixi layer click events propagating down to map layer
+// create  root
 const root = createRoot(container);
 
 export const PixiContext = createContext({});
@@ -17,10 +21,14 @@ export const PixiContext = createContext({});
 export function PixiContainer({ children }) {
   const map = useMap();
   const [scale, setScale] = useState(1);
+  // create bridge for Recoil state
+  const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
 
   const [pixiOverlay] = useState(
+    // create a leaflet-pixi-overlay
     L.pixiOverlay(
       (utils) => {
+        // Leaflet utils
         const container = utils.getContainer();
         const renderer = utils.getRenderer();
         setScale(utils.getScale());
@@ -32,6 +40,7 @@ export function PixiContainer({ children }) {
   );
 
   useEffect(() => {
+    // add leaflet-pixi-overlay to leaflet map
     pixiOverlay.addTo(map);
   }, [map, pixiOverlay]);
 
@@ -72,10 +81,11 @@ export function PixiContainer({ children }) {
           map,
         }}
       >
-        {children}
+        <RecoilBridge>{children}</RecoilBridge>
       </PixiContext.Provider>
     );
 
+    // render pixi context provider, pixi container
     root.render(provider, container);
   }, [children, pixiOverlay, scale]);
 }
