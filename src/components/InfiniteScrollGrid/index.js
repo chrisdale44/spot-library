@@ -3,6 +3,7 @@ import chunk from "lodash.chunk";
 import PropTypes from "prop-types";
 import Tile from "./Tile";
 import Sentinel from "../Sentinel";
+import styles from "./InfiniteScrollGrid.module.scss";
 
 const InfiniteScrollGrid = ({ items, chunkSize }) => {
   const [chunkIndex, setChunkIndex] = useState(0);
@@ -40,7 +41,7 @@ const InfiniteScrollGrid = ({ items, chunkSize }) => {
     <Tile key={i} index={i} item={item} />
   ));
   grid.push(<Sentinel key={"s"} onChange={handleInfiniteScroll} />);
-  return grid;
+  return <div className={styles.gridContainer}>{grid}</div>;
 };
 
 InfiniteScrollGrid.propTypes = {

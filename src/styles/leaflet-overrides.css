@@ -8,3 +8,9 @@
 .leaflet-control-attribution {
   display: none;
 }
+
+button.image-gallery-left-nav svg.image-gallery-svg,
+button.image-gallery-right-nav svg.image-gallery-svg {
+  height: 60px;
+  width: 30px;
+}

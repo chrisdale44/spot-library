@@ -2,9 +2,10 @@
   position: relative;
   display: inline-block;
   padding: 0;
-  width: 200px;
-  height: 200px;
-  margin: 10px;
+  flex-grow: 1;
+  min-width: 160px;
+  max-width: 260px;
+  aspect-ratio: 1 / 1;
   background-color: white;
   overflow: hidden;
   cursor: pointer;
