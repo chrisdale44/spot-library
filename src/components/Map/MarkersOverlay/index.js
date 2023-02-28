@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { Container, Sprite } from "@pixi/react";
 import { renderToString } from "react-dom/server";
-import ImageGallery from "react-image-gallery";
 import L from "leaflet";
 import { modalState } from "../../../state";
 import { getDefaultIcon } from "../utils";

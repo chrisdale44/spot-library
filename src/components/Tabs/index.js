@@ -2,40 +2,10 @@ import React, { useState } from "react";
 import * as cx from "classnames";
 import styles from "./Tabs.module.scss";
 
-const tabs = [
-  {
-    title: "Tab 1",
-    content: (
-      <>
-        <h2>Tab One Content</h2>
-        <p>Tab content...</p>
-      </>
-    ),
-  },
-  {
-    title: "Tab 2",
-    content: (
-      <>
-        <h2>Tab Two Content</h2>
-        <p>Tab content...</p>
-      </>
-    ),
-  },
-  {
-    title: "Tab 3",
-    content: (
-      <>
-        <h2>Tab Three Content</h2>
-        <p>Tab content...</p>
-      </>
-    ),
-  },
-];
-
-const Tabs = () => {
+const Tabs = ({ tabs }) => {
   const [checkedTab, setCheckedTab] = useState(0);
 
-  return (
+  return tabs?.length ? (
     <div className={styles.tabs}>
       {tabs.map(({ title }, i) => (
         <>
@@ -44,7 +14,7 @@ const Tabs = () => {
             name="tabs"
             tabindex="1"
             type="radio"
-            checked={checkedTab === i ? "checked" : ""}
+            defaultChecked={checkedTab === i}
             id={"tab-" + i}
           />
           <label
@@ -65,7 +35,7 @@ const Tabs = () => {
         </div>
       ))}
     </div>
-  );
+  ) : null;
 };
 
 export default Tabs;

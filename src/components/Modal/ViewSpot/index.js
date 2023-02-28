@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 import useSpotSelectors from "../../../state/spots/selectors";
 import { GrEdit } from "react-icons/gr";
@@ -10,8 +10,27 @@ import { getStreetViewLink } from "../../../utils/googlemaps";
 import { modalState } from "../../../state";
 import styles from "./Spot.module.scss";
 
+const generateTabContent = (tabs) =>
+  tabs.map(({ title, images }) => ({
+    title,
+    content: !images?.length ? (
+      <p>No images yet</p>
+    ) : (
+      <div className={styles.galleryWrapper}>
+        <ImageGallery
+          items={images.map((image) => ({
+            original: image.url,
+            loading: "eager",
+          }))}
+          showPlayButton={false}
+          showFullscreenButton={true}
+        />
+      </div>
+    ),
+  }));
+
 const ViewSpot = ({ id }) => {
-  const [modal, setModal] = useRecoilState(modalState);
+  const [, setModal] = useRecoilState(modalState);
   const { getSpot } = useSpotSelectors();
   const spot = getSpot(id);
   console.log(id, spot);
@@ -31,19 +50,12 @@ const ViewSpot = ({ id }) => {
       <h3 class={styles.spotName}>{name}</h3>
       {description && <p>{description}</p>}
 
-      <Tabs />
-      <div className={styles.galleryWrapper}>
-        {images.length ? (
-          <ImageGallery
-            items={images.map((image) => ({
-              original: image.url,
-              loading: "eager",
-            }))}
-            showPlayButton={false}
-            showFullscreenButton={true}
-          />
-        ) : null}
-      </div>
+      <Tabs
+        tabs={generateTabContent([
+          { title: "Spot check", images },
+          { title: "Covers baby", images: media },
+        ])}
+      />
 
       <div className={styles.iconWrapper}>
         <a
