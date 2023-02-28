@@ -16,18 +16,8 @@ const generateMarkers = (spots, map, popupClickHandler) => {
     const popupHtml = L.DomUtil.create("div", "content");
     popupHtml.innerHTML = renderToString(
       <div className={styles.popupContainer}>
-        {name}
-        {images.length ? (
-          <ImageGallery
-            items={images.map((image) => ({
-              original: image.url,
-              loading: "lazy",
-            }))}
-            lazyLoad={true}
-            showPlayButton={false}
-            showFullscreenButton={false}
-          />
-        ) : null}
+        <h3>{name}</h3>
+        {images.length ? <img src={images[0].url} /> : null}
       </div>
     );
     popupHtml.addEventListener("click", () => popupClickHandler(id));
