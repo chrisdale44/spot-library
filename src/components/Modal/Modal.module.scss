@@ -1,6 +1,9 @@
+@import "../../styles/colors.module.scss";
+@import "../../styles/spacing.module.scss";
+
 .backdrop {
   position: fixed;
-  top: 0;
+  top: 50px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -13,11 +16,14 @@
 .modal {
   display: block;
   position: relative;
-  width: 50%;
-  height: 50%;
+  max-width: 720px;
+  max-height: 90%;
   background-color: white;
   border: none;
+  margin-top: 50px;
   padding: 24px;
+  overflow: scroll;
+
   button,
   a {
     font-size: 24px;

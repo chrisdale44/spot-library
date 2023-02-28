@@ -13,6 +13,7 @@ const ViewSpot = ({ id }) => {
   const [modal, setModal] = useRecoilState(modalState);
   const { getSpot } = useSpotSelectors();
   const spot = getSpot(id);
+  console.log(id, spot);
   const { name, description, images, imgUrls, media, coordinates } = spot;
 
   console.log(spot);

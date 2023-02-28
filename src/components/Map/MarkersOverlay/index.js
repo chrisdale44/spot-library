@@ -36,7 +36,7 @@ const generateMarkers = (spots, map, popupClickHandler) => {
       e.stopPropagation();
       const popup = L.popup({
         id,
-        offset: [-17, -28],
+        offset: [0, -28],
         closeOnClick: true,
       })
         .setLatLng(coordinates)
