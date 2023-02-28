@@ -32,7 +32,6 @@ const Modal = () => {
   }, [modal]);
 
   const handleClose = () => {
-    console.log("handleClose");
     setModal(null);
     setModalContent(null);
   };

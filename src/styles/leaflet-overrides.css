@@ -14,3 +14,7 @@ button.image-gallery-right-nav svg.image-gallery-svg {
   height: 60px;
   width: 30px;
 }
+
+.image-gallery-content .image-gallery-slide img.image-gallery-image {
+  max-height: 400px;
+}

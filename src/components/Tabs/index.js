@@ -12,14 +12,14 @@ const Tabs = ({ tabs }) => {
           <input
             className={styles.radiotab}
             name="tabs"
-            tabindex="1"
+            tabIndex="1"
             type="radio"
             defaultChecked={checkedTab === i}
             id={"tab-" + i}
           />
           <label
             className={cx(styles.label, { [styles.checked]: checkedTab === i })}
-            for={"tab-" + i}
+            htmlFor={"tab-" + i}
             onClick={() => setCheckedTab(i)}
           >
             {title}
@@ -29,7 +29,8 @@ const Tabs = ({ tabs }) => {
       {tabs.map(({ content }, i) => (
         <div
           className={cx(styles.panel, { [styles.checked]: checkedTab === i })}
-          tabindex="1"
+          tabIndex="1"
+          key={i}
         >
           {content}
         </div>
