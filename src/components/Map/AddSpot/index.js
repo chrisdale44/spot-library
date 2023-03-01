@@ -27,7 +27,7 @@ const AddSpot = () => {
     closeOnClick: true,
     closeCallback: () => {
       setMapState("default");
-      console.log("closeCallback");
+      map.off("click");
     },
   }).setContent(popupHtml);
 
