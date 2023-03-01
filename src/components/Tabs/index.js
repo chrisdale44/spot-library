@@ -10,6 +10,7 @@ const Tabs = ({ tabs }) => {
       {tabs.map(({ title }, i) => (
         <>
           <input
+            key={i}
             className={styles.radiotab}
             name="tabs"
             tabIndex="1"

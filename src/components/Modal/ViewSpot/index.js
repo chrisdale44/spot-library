@@ -47,7 +47,7 @@ const ViewSpot = ({ id }) => {
 
   return spot ? (
     <>
-      <h3 class={styles.spotName}>{name}</h3>
+      <h3 className={styles.spotName}>{name}</h3>
       {description && <p>{description}</p>}
 
       <Tabs

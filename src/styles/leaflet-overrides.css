@@ -18,3 +18,7 @@ button.image-gallery-right-nav svg.image-gallery-svg {
 .image-gallery-content .image-gallery-slide img.image-gallery-image {
   max-height: 400px;
 }
+
+.crosshair-cursor-enabled .leaflet-container {
+  cursor: crosshair;
+}

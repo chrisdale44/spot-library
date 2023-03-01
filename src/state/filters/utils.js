@@ -25,6 +25,9 @@ export const filterSpots = (spots, selectedFilters) => {
   let filteredSpots = [...spots];
   selectedFilters.forEach(({ id, payload }) => {
     switch (id) {
+      case "hideAllMarkers":
+        filteredSpots = [];
+        break;
       case "imagesToggle":
         filteredSpots = filterSpotsWithImage(filteredSpots);
         break;
