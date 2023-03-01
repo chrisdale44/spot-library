@@ -27,8 +27,8 @@ const Map = ({ spots }) => {
         />
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0 }}>
-            {mapState === "addSpot" && <AddSpot />}
             <MarkersOverlay spots={spots} />
+            {mapState === "addSpot" && <AddSpot />}
           </Container>
         </PixiContainer>
       </MapContainer>
