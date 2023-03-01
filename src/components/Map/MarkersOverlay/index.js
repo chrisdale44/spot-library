@@ -1,14 +1,18 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { Container, Sprite } from "@pixi/react";
 import { renderToString } from "react-dom/server";
 import L from "leaflet";
-import { modalState } from "../../../state";
+import { Sprite } from "@pixi/react";
 import { getDefaultIcon } from "../utils";
+import { modalState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import styles from "./MarkersOverlay.module.scss";
 
-const generateMarkers = (spots, map, popupClickHandler) => {
+const generateMarkersWithPopup = (
+  spots,
+  markerClickHandler,
+  popupClickHandler
+) => {
   console.log("generate Markers");
 
   return spots.map(({ id, name, coordinates, images }) => {
@@ -21,26 +25,22 @@ const generateMarkers = (spots, map, popupClickHandler) => {
     );
     popupHtml.addEventListener("click", () => popupClickHandler(id));
 
-    const markerClickHandler = (e) => {
-      e.stopPropagation();
-      const popup = L.popup({
-        id,
-        offset: [0, -28],
-        closeOnClick: true,
-      })
-        .setLatLng(coordinates)
-        .setContent(popupHtml);
-
-      map.openPopup(popup);
-    };
+    const popup = L.popup({
+      id,
+      offset: [0, -28],
+      closeOnClick: true,
+    })
+      .setLatLng(coordinates)
+      .setContent(popupHtml);
 
     return {
       id: id,
       iconColor: "#187bcd",
       coordinates: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
       interactive: true,
-      tap: markerClickHandler,
-      click: markerClickHandler,
+      buttonMode: true,
+      tap: () => markerClickHandler(popup),
+      click: () => markerClickHandler(popup),
     };
   });
 };
@@ -50,8 +50,29 @@ const MarkersOverlay = ({ spots }) => {
   const [, setModal] = useRecoilState(modalState);
   const { latLngToLayerPoint, scale, map } = useContext(PixiContext);
 
+  let eStart = useRef();
+  let markerWasDragged = useRef();
+
+  const handleDragStart = (e) => {
+    eStart.current = { ...e.global };
+  };
+
+  const handleDragEnd = (e) => {
+    if (!eStart.current) return;
+
+    // todo: allow for some movement when tapping
+    if (eStart.current.x !== e.global.x || eStart.current.y !== e.global.y) {
+      markerWasDragged.current = true;
+    }
+  };
+
+  const markerClickHandler = (popup) => {
+    if (!markerWasDragged.current) map.openPopup(popup);
+    markerWasDragged.current = false;
+    eStart.current = null;
+  };
+
   const popupClickHandler = (id) => {
-    console.log(id);
     setModal({
       type: "openSpot",
       id,
@@ -59,29 +80,33 @@ const MarkersOverlay = ({ spots }) => {
   };
 
   useEffect(() => {
-    console.log("set markers");
-    setMarkers(generateMarkers(spots, map, popupClickHandler));
+    setMarkers(
+      generateMarkersWithPopup(spots, markerClickHandler, popupClickHandler)
+    );
   }, [spots]);
 
   return (
-    <Container options={{ backgroundAlpha: 0 }}>
+    <>
       {markers.length
-        ? markers.map((marker) => {
+        ? markers.map((marker, i) => {
             const { x, y } = latLngToLayerPoint(marker.coordinates);
             return (
               <Sprite
-                key={marker.id}
+                key={i}
                 x={x}
                 y={y}
-                anchor={[0.5, 1]}
                 scale={1 / scale}
+                anchor={[0.5, 1]}
                 image={getDefaultIcon(marker.iconColor)}
+                pointerdown={handleDragStart}
+                pointerup={handleDragEnd}
+                pointerupoutside={handleDragEnd}
                 {...marker}
               />
             );
           })
         : null}
-    </Container>
+    </>
   );
 };
 
