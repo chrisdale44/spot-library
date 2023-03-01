@@ -11,6 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 998;
 }
 
 .modal {
@@ -24,6 +25,7 @@
   border: none;
   padding: 24px;
   overflow: scroll;
+  z-index: 999;
 
   button,
   a {
