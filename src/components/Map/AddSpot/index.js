@@ -1,22 +1,47 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
+import { useRecoilState } from "recoil";
 import { Sprite } from "@pixi/react";
+import { renderToString } from "react-dom/server";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
+import { mapState as mapRecoilState } from "../../../state";
 import { getDefaultIcon } from "../utils";
+import styles from "./AddSpot.module.scss";
 
 const AddSpot = () => {
   const { getMap, scale, latLngToLayerPoint } = useContext(PixiContext);
   const [spotAlpha, setSpotAlpha] = useState(1);
-  const [spotCoords, setSpotCoords] = useState();
+  const [spotLayerPoint, setSpotLayerPoint] = useState();
+  const [mapState, setMapState] = useRecoilState(mapRecoilState);
+
+  const popupHtml = L.DomUtil.create("div", "content");
+  popupHtml.innerHTML = renderToString(
+    <div className={styles.popupContainer}>
+      <h3>Create new spot</h3>
+      <input />
+      <input />
+    </div>
+  );
+
+  const popup = L.popup({
+    offset: [0, -28],
+    closeOnClick: true,
+    closeCallback: () => {
+      setMapState("default");
+      console.log("closeCallback");
+    },
+  }).setContent(popupHtml);
 
   const map = getMap();
   map.on("click", (e) => {
-    setSpotCoords(latLngToLayerPoint(e.latlng));
+    setSpotLayerPoint(latLngToLayerPoint(e.latlng));
+    map.openPopup(popup.setLatLng([e.latlng.lat, e.latlng.lng]));
   });
 
   const handleDragStart = () => {
     map.dragging.disable();
+    map.closePopup();
     map.on("mousemove", (e) => {
-      setSpotCoords(latLngToLayerPoint(e.latlng));
+      setSpotLayerPoint(latLngToLayerPoint(e.latlng));
     });
     setSpotAlpha(0.7);
   };
@@ -27,11 +52,11 @@ const AddSpot = () => {
     setSpotAlpha(1);
   };
 
-  return spotCoords ? (
+  return spotLayerPoint ? (
     <Sprite
       image={getDefaultIcon("#00cc00")}
-      x={spotCoords.x}
-      y={spotCoords.y}
+      x={spotLayerPoint.x}
+      y={spotLayerPoint.y}
       anchor={[0.5, 1]}
       alpha={spotAlpha}
       scale={1 / scale}
