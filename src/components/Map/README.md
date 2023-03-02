@@ -1,3 +1,26 @@
+# Summary
+
+Leaflet and Pixi are both imperative libraries
+React Leaflet and React Pixi add a declarative layer over these imperative libraries
+Leaflet handles map rendering
+Pixi handles the markers overlay (is used rather than Leaflet for efficiency and scalability)
+Leaflet-pixi-overlay handles the alignment between the two imperative libraries
+Custom middleware (ReactLeafletReactPixi) adds the declarative layer to Leaflet-pixi-overlay and exposes a PixiContext to its children (heavily inspired by Maliut https://maliut.space/p/react-leaflet-react-pixi/)
+PixiContext allows the Pixi layer to access Leaflet context and Pixi utils methods, allowing for the combination of declarative and imperative styles where fit
+
+PixiContext:
+
+- map
+- scale
+- getMap
+- getContainer
+- getRenderer
+- getScale
+- latLngToLayerPoint
+- layerPointToLatLng
+
+We do not use a Pixi <Stage> in this application as components under React Pixi <Stage> are rendered under another Root and thus would require another layer of <Provider> inside the <Stage>.
+
 # Terminology
 
 Leaflet = Javascript library for interactive maps
