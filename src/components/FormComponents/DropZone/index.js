@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
 import exifr from "exifr";
-import { parseBytes } from "./helpers";
+import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
 import styles from "./DropZone.module.scss";
 
@@ -21,7 +21,11 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
       if (!uniqueFiles.some((f) => f.path === file.path)) {
         file.filename = file.path;
         exifr.parse(file).then((output) => console.log(output));
-        uniqueFiles.push({ ...file, preview: URL.createObjectURL(file) });
+        uniqueFiles.push({
+          ...file,
+          size: file.size,
+          preview: URL.createObjectURL(file),
+        });
       }
     });
 
@@ -108,12 +112,14 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
         {rejectedFiles.length ? (
           <ul className={styles.filesList}>
             {rejectedFiles.map(({ file, errors }, i) => (
-              <li key={i}>
+              <li className={styles.fileItem} key={i}>
                 <div>
                   {file.path} ({parseBytes(file.size)})
                   <ul>
                     {errors.map((err) => (
-                      <li key={err.code}>{err.message}</li>
+                      <li key={err.code}>
+                        {parseError(err.message, minFileSize, maxFileSize)}
+                      </li>
                     ))}
                   </ul>
                 </div>

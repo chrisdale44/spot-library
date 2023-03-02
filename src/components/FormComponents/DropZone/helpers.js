@@ -1,6 +1,7 @@
 import { bytesInMb, bytesInKb } from "./constants";
 
 export const parseBytes = (size) => {
+  console.log(size);
   if (size < 500) {
     return `${size} bytes`;
   }
@@ -13,3 +14,8 @@ export const parseBytes = (size) => {
   const megaBytes = size / bytesInMb;
   return `${megaBytes.toFixed(1)} MB`;
 };
+
+export const parseError = (string, minFileSize, maxFileSize) =>
+  string
+    .replace(`${minFileSize} bytes`, parseBytes(minFileSize))
+    .replace(`${maxFileSize} bytes`, parseBytes(maxFileSize));

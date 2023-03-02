@@ -8,6 +8,7 @@ const SpotForm = ({ id }) => {
 
   useEffect(() => {
     console.log(acceptedSpotFiles);
+    // todo: update form data
   }, [acceptedSpotFiles]);
 
   return (
