@@ -52,8 +52,8 @@ const ViewSpot = ({ id }) => {
 
       <Tabs
         tabs={generateTabContent([
-          { title: "Spot check", images },
-          { title: "Covers baby", images: media },
+          { title: "Spot", images },
+          { title: "Media", images: media },
         ])}
       />
 

@@ -3,11 +3,12 @@ import DropZone from "../../FormComponents/DropZone";
 import styles from "./SpotForm.module.scss";
 
 const SpotForm = ({ id }) => {
-  const [acceptedFiles, setAcceptedFiles] = useState([]);
+  const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
+  // const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
 
   useEffect(() => {
-    console.log(acceptedFiles);
-  }, [acceptedFiles]);
+    console.log(acceptedSpotFiles);
+  }, [acceptedSpotFiles]);
 
   return (
     <div className={styles.formWrapper}>
@@ -16,9 +17,8 @@ const SpotForm = ({ id }) => {
         <input placeholder="Spot name" />
         <textarea placeholder="Description" />
         <DropZone
-          name="spot"
-          acceptedFiles={acceptedFiles}
-          setAcceptedFiles={setAcceptedFiles}
+          acceptedFiles={acceptedSpotFiles}
+          setAcceptedFiles={setAcceptedSpotFiles}
         />
         <input type="submit" />
       </form>

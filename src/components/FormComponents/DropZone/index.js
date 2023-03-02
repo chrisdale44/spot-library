@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import * as ExifReader from "exifreader";
 import { parseBytes } from "./helpers";
 import { bytesInMb } from "./constants";
 import styles from "./DropZone.module.scss";
@@ -15,9 +16,11 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
     }
 
     const uniqueFiles = [...acceptedFiles];
-    droppedFiles.forEach((file) => {
+    droppedFiles.forEach(async (file) => {
       if (!uniqueFiles.some((f) => f.path === file.path)) {
         file.filename = file.path;
+        const tags = await ExifReader.load(file);
+        console.log(tags);
         uniqueFiles.push({ ...file, preview: URL.createObjectURL(file) });
       }
     });
@@ -51,9 +54,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
   });
 
   const handleRemoveFile = (filePath) => {
-    setFieldValue(name, {
-      files: acceptedFiles.filter((file) => file.path !== filePath),
-    });
+    setFieldValue(acceptedFiles.filter((file) => file.path !== filePath));
   };
 
   const handleDismissRejectedFile = (filePath) => {
@@ -73,7 +74,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
       <div className={styles.dropZone} {...getRootProps()}>
         <input name={name} {...getInputProps()} />
         <label htmlFor={name}>
-          Drag 'n' drop some files here, or click to select files
+          Drag 'n' drop files here, or click to select files
         </label>
       </div>
 
