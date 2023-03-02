@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { IoClose } from "react-icons/io5";
 import ViewSpot from "./ViewSpot";
-import SpotForm from "./SpotForm";
+import SpotForm from "../Forms/SpotForm";
 import { modalState } from "../../state";
 import styles from "./Modal.module.scss";
 

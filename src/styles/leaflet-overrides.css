@@ -1,3 +1,4 @@
+/* Leaflet */
 .leaflet-interactive,
 .leaflet-popup-content-wrapper,
 .leaflet-popup-content,
@@ -5,10 +6,19 @@
   cursor: pointer;
 }
 
+.leaflet-popup-content {
+  width: auto !important;
+}
+
 .leaflet-control-attribution {
   display: none;
 }
 
+.crosshair-cursor-enabled .leaflet-container {
+  cursor: crosshair;
+}
+
+/* react-image-gallery */
 button.image-gallery-left-nav svg.image-gallery-svg,
 button.image-gallery-right-nav svg.image-gallery-svg {
   height: 60px;
@@ -17,8 +27,4 @@ button.image-gallery-right-nav svg.image-gallery-svg {
 
 .image-gallery-content .image-gallery-slide img.image-gallery-image {
   max-height: 400px;
-}
-
-.crosshair-cursor-enabled .leaflet-container {
-  cursor: crosshair;
 }

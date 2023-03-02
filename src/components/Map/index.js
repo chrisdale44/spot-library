@@ -1,8 +1,8 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Popup } from "react-leaflet";
 import { Container } from "@pixi/react";
-import { mapState as mapRecoilState } from "../../state";
+import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
 import MarkersOverlay from "./MarkersOverlay";
 // import SearchField from "./SearchField";
@@ -11,6 +11,7 @@ import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
+  const [popup] = useRecoilState(popupState);
 
   return (
     <div className={mapState === "addSpot" ? "crosshair-cursor-enabled" : ""}>
@@ -31,6 +32,11 @@ const Map = ({ spots }) => {
             {mapState === "addSpot" && <AddSpot />}
           </Container>
         </PixiContainer>
+        {popup && (
+          <Popup {...popup.props} position={popup.position}>
+            {popup.content}
+          </Popup>
+        )}
       </MapContainer>
     </div>
   );

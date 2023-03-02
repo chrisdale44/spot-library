@@ -19,7 +19,7 @@ PixiContext:
 - latLngToLayerPoint
 - layerPointToLatLng
 
-We do not use a Pixi <Stage> in this application as components under React Pixi <Stage> are rendered under another Root and thus would require another layer of <Provider> inside the <Stage>.
+We avoid using a Pixi <Stage> in this application as components under React Pixi <Stage> are rendered under another Root and thus would require another layer of <Provider> inside the <Stage>.
 
 # Terminology
 

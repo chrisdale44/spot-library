@@ -13,10 +13,12 @@ const generateMarkersWithPopup = (
   markerClickHandler,
   popupClickHandler
 ) => {
-  console.log("generate Markers");
-
   return spots.map(({ id, name, coordinates, images }) => {
     const popupHtml = L.DomUtil.create("div", "content");
+
+    // Limitation: renderToString gives you your react component in pure HTML as it would look in a
+    // particular state. It does not give fully functionaly react components
+    // Todo: use popupState to set react-leaflet Popup
     popupHtml.innerHTML = renderToString(
       <div className={styles.popupContainer}>
         <h3>{name}</h3>

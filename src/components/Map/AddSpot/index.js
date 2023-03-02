@@ -1,40 +1,48 @@
 import React, { useState, useContext } from "react";
 import { useRecoilState } from "recoil";
 import { Sprite } from "@pixi/react";
-import { renderToString } from "react-dom/server";
+import SpotForm from "../../Forms/SpotForm";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import { mapState as mapRecoilState } from "../../../state";
+import { mapState as mapRecoilState, popupState } from "../../../state";
 import { getDefaultIcon } from "../utils";
-import styles from "./AddSpot.module.scss";
 
 const AddSpot = () => {
-  const { getMap, scale, latLngToLayerPoint } = useContext(PixiContext);
+  const { map, scale, latLngToLayerPoint } = useContext(PixiContext);
   const [spotAlpha, setSpotAlpha] = useState(1);
   const [spotLayerPoint, setSpotLayerPoint] = useState();
-  const [mapState, setMapState] = useRecoilState(mapRecoilState);
+  const [, setMapState] = useRecoilState(mapRecoilState);
+  const [, setPopup] = useRecoilState(popupState);
 
-  const popupHtml = L.DomUtil.create("div", "content");
-  popupHtml.innerHTML = renderToString(
-    <div className={styles.popupContainer}>
-      <h3>Create new spot</h3>
-      <input />
-      <input />
-    </div>
-  );
-
-  const popup = L.popup({
+  const defaultPopupOptions = {
     offset: [0, -28],
     closeOnClick: true,
     closeCallback: () => {
       setMapState("default");
       map.off("click");
     },
-  }).setContent(popupHtml);
+  };
 
-  const map = getMap();
+  const exitAddSpot = () => {
+    map.off("mousemove");
+    map.dragging.enable();
+    setSpotAlpha(1);
+  };
+
   map.on("click", (e) => {
     setSpotLayerPoint(latLngToLayerPoint(e.latlng));
-    map.openPopup(popup.setLatLng([e.latlng.lat, e.latlng.lng]));
+    setPopup({
+      props: { ...defaultPopupOptions },
+      position: [e.latlng.lat, e.latlng.lng],
+      content: <SpotForm />,
+    });
+  });
+
+  // Why this only works after clicking the map?
+  map.on("keydown", (event) => {
+    const e = event.originalEvent;
+    if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
+      exitAddSpot();
+    }
   });
 
   const handleDragStart = () => {
@@ -47,9 +55,7 @@ const AddSpot = () => {
   };
 
   const handleDragEnd = () => {
-    map.off("mousemove");
-    map.dragging.enable();
-    setSpotAlpha(1);
+    exitAddSpot();
   };
 
   return spotLayerPoint ? (

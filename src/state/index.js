@@ -5,6 +5,7 @@ import { toastState } from "./toast";
 import { modalState } from "./modal";
 import { navState } from "./nav";
 import { mapState } from "./map";
+import { popupState } from "./popup";
 
 export {
   spotsState,
@@ -16,4 +17,5 @@ export {
   modalState,
   navState,
   mapState,
+  popupState,
 };

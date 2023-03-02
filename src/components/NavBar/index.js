@@ -29,9 +29,7 @@ const NavBar = ({ sidebar, filteredSpots }) => {
     // hide all markers from map
     console.log("setMapState");
     setMapState("addSpot");
-    // selectFilter({ id: "hideAllMarkers" });
-    // add single draggable marker to map
-    //deselectFilter({ id: "hideAllMarkers" });
+
     // setModal({
     //   type: "newSpot",
     // });
