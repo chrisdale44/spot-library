@@ -3,7 +3,7 @@
 .leaflet-popup-content-wrapper,
 .leaflet-popup-content,
 .leaflet-popup-content .content {
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .leaflet-popup-content {

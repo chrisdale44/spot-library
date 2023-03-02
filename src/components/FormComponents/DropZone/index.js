@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import * as ExifReader from "exifreader";
+import { MdDeleteForever } from "react-icons/md";
+import exifr from "exifr";
 import { parseBytes } from "./helpers";
 import { bytesInMb } from "./constants";
 import styles from "./DropZone.module.scss";
@@ -19,8 +20,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
     droppedFiles.forEach(async (file) => {
       if (!uniqueFiles.some((f) => f.path === file.path)) {
         file.filename = file.path;
-        const tags = await ExifReader.load(file);
-        console.log(tags);
+        exifr.parse(file).then((output) => console.log(output));
         uniqueFiles.push({ ...file, preview: URL.createObjectURL(file) });
       }
     });
@@ -53,11 +53,13 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
     },
   });
 
-  const handleRemoveFile = (filePath) => {
-    setFieldValue(acceptedFiles.filter((file) => file.path !== filePath));
+  const handleRemoveFile = (e, filePath) => {
+    e.stopPropagation();
+    setAcceptedFiles(acceptedFiles.filter((file) => file.path !== filePath));
   };
 
-  const handleDismissRejectedFile = (filePath) => {
+  const handleDismissRejectedFile = (e, filePath) => {
+    e.stopPropagation();
     setRejectedFiles(
       rejectedFiles.filter((reject) => reject.file.path !== filePath)
     );
@@ -82,7 +84,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
         {acceptedFiles.length ? (
           <ul className={styles.filesList}>
             {acceptedFiles.map(({ path, size, preview }, i) => (
-              <li id={`${name}[${path}]`} key={i}>
+              <li className={styles.fileItem} key={i}>
                 <img
                   src={preview}
                   className={styles.previewImg}
@@ -94,8 +96,10 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
                 {path} ({parseBytes(size)})
                 <button
                   className={styles.removeFileButton}
-                  onClick={() => handleRemoveFile(path)}
-                />
+                  onClick={(e) => handleRemoveFile(e, path)}
+                >
+                  <MdDeleteForever />
+                </button>
               </li>
             ))}
           </ul>
@@ -115,9 +119,10 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
                 </div>
                 <button
                   className={styles.removeFileButton}
-                  onClick={() => handleDismissRejectedFile(file.path)}
-                  value="Dismiss"
-                />
+                  onClick={(e) => handleDismissRejectedFile(e, file.path)}
+                >
+                  <MdDeleteForever />
+                </button>
               </li>
             ))}
           </ul>
