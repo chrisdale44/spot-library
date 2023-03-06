@@ -2,16 +2,15 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import classNames from "classnames";
 import NavBar from "../NavBar";
-import SpotModal from "../Modal";
+import Modal from "../Modal";
 import Toast from "../Toast";
-import { navState } from "../../state";
+import { navState as navRecoilState } from "../../state";
 import styles from "./PageTemplate.module.scss";
 
 let cx = classNames.bind(styles);
 
 const PageTemplate = ({ children, filteredSpots }) => {
-  const [view] = useRecoilState(navState);
-
+  const [navState] = useRecoilState(navRecoilState);
   return (
     <>
       <NavBar sidebar={true} filteredSpots={filteredSpots} />
@@ -23,15 +22,16 @@ const PageTemplate = ({ children, filteredSpots }) => {
           return (
             <section
               key={i}
-              className={cx(styles.view, { [styles.show]: view === id })}
+              // Show/ hide map and grid views using CSS to prevent unnecessary renders and calls to Cloudinary
+              className={cx(styles.view, { [styles.show]: navState === id })}
             >
               {child}
             </section>
           );
         })}
         <Toast />
+        <Modal />
       </main>
-      <SpotModal />
     </>
   );
 };

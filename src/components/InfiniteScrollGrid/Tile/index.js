@@ -32,8 +32,7 @@ const Tile = ({ index, item }) => {
           <Image
             src={imgUrl}
             alt={name}
-            priority={index < 12}
-            loading={index < 12 ? undefined : "lazy"}
+            loading="lazy"
             layout="fill"
             onClick={() => handleClick(id)}
           />

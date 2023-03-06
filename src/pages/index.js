@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import dynamic from "next/dynamic";
-import {
-  spotsState,
-  toastState,
-  tagsState,
-  selectedFiltersState,
-} from "../state";
+import { spotsState, tagsState, selectedFiltersState } from "../state";
 import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
-import Modal from "../components/Modal";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
 import styles from "../styles/Home.module.scss";
 
@@ -17,10 +11,8 @@ import styles from "../styles/Home.module.scss";
 const Map = dynamic(() => import("../components/Map/index"), { ssr: false });
 
 function Home() {
-  const [, setToast] = useRecoilState(toastState);
   const [spots] = useRecoilState(spotsState);
   const [selectedFilters] = useRecoilState(selectedFiltersState);
-  // const filteredSpots = filterSpots(spots, selectedFilters);
   const [filteredSpots, setFilteredSpots] = useState(
     filterSpots(spots, selectedFilters)
   );
@@ -34,21 +26,8 @@ function Home() {
       <Map id="map" spots={filteredSpots} />
 
       <div id="grid" className={styles.gridContainer}>
-        <button
-          onClick={() => {
-            setToast({ type: "success", message: "Success" });
-          }}
-        >
-          Toast
-        </button>
-        {spots && (
-          <p>
-            Displaying: {filteredSpots.length} of {spots.length} spots
-          </p>
-        )}
         <InfiniteScrollGrid items={filteredSpots} chunkSize={50} />
       </div>
-      <Modal />
     </PageTemplate>
   );
 }

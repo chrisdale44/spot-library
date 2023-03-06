@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRecoilState } from "recoil";
 import { renderToString } from "react-dom/server";
 import L from "leaflet";
@@ -22,7 +23,9 @@ const generateMarkersWithPopup = (
     popupHtml.innerHTML = renderToString(
       <div className={styles.popupContainer}>
         <h3>{name}</h3>
-        {images.length ? <img src={images[0].url} /> : null}
+        {images.length ? (
+          <Image loading="lazy" src={images[0].url} layout="fill" />
+        ) : null}
       </div>
     );
     popupHtml.addEventListener("click", () => popupClickHandler(id));
@@ -36,7 +39,7 @@ const generateMarkersWithPopup = (
       .setContent(popupHtml);
 
     return {
-      id: id,
+      id,
       iconColor: "#187bcd",
       coordinates: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
       interactive: true,

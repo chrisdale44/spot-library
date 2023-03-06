@@ -7,11 +7,15 @@ import { BsGrid3X3Gap } from "react-icons/bs";
 import { RiMapPinAddFill } from "react-icons/ri";
 import useFilterActions from "../../state/filters/actions";
 import SideBarNav from "../SideBarNav";
-import { navState, mapState as mapRecoilState, modalState } from "../../state";
+import {
+  navState as navRecoilState,
+  mapState as mapRecoilState,
+  modalState,
+} from "../../state";
 import styles from "./NavBar.module.scss";
 
 const NavBar = ({ sidebar, filteredSpots }) => {
-  const [view, setnavState] = useRecoilState(navState);
+  const [navState, setNavState] = useRecoilState(navRecoilState);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { selectFilter, deselectFilter } = useFilterActions();
   const [, setModal] = useRecoilState(modalState);
@@ -21,8 +25,8 @@ const NavBar = ({ sidebar, filteredSpots }) => {
   };
 
   const toggleView = () => {
-    const nextView = view === "map" ? "grid" : "map";
-    setnavState(nextView);
+    const nextView = navState === "map" ? "grid" : "map";
+    setNavState(nextView);
   };
 
   const createNewSpot = () => {
@@ -45,7 +49,7 @@ const NavBar = ({ sidebar, filteredSpots }) => {
           <RiMapPinAddFill />
         </button>
         <button className={styles.icon} type="button" onClick={toggleView}>
-          {view === "map" ? (
+          {navState === "map" ? (
             <BsGrid3X3Gap view="grid" />
           ) : (
             <GrMapLocation view="map" />
