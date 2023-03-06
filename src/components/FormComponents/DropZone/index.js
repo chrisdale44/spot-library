@@ -19,10 +19,10 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
     const uniqueFiles = [...acceptedFiles];
     droppedFiles.forEach(async (file) => {
       if (!uniqueFiles.some((f) => f.path === file.path)) {
-        file.filename = file.path;
         exifr.parse(file).then((output) => console.log(output));
         uniqueFiles.push({
-          ...file,
+          file,
+          path: file.path,
           size: file.size,
           preview: URL.createObjectURL(file),
         });
