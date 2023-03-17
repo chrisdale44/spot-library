@@ -80,7 +80,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
       <div className={styles.dropZone} {...getRootProps()}>
         <input name={name} {...getInputProps()} />
         <label htmlFor={name}>
-          Drag 'n' drop files here, or click to select files
+          {"Drag 'n' drop files here, or click to select files"}
         </label>
       </div>
 

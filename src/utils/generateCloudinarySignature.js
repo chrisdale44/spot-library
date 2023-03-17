@@ -1,5 +1,5 @@
-export function generateCloudinarySignature(callback, paramsToSign) {
-  fetch(`/api/sign`, {
+const generateCloudinarySignature = (callback, paramsToSign) => {
+  fetch(`/api/cloudinary/sign`, {
     method: "POST",
     body: JSON.stringify({
       paramsToSign,
@@ -9,4 +9,6 @@ export function generateCloudinarySignature(callback, paramsToSign) {
     .then(({ signature }) => {
       callback(signature);
     });
-}
+};
+
+export default generateCloudinarySignature;

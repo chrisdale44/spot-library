@@ -29,7 +29,7 @@ npx http-server
 OR run
 npm run start
 
-### Uploading data to database from json
+## Uploading data to database from json
 
 - Ensure database credentials in .env file are correct
 - Generate a spots.json file, if it doesn't already exist, using either of the xmlToJson.js or csvToJson.js scripts
@@ -37,6 +37,10 @@ npm run start
 - npm run dev
 - Navigate to localhost:3000/loadFromJson
 - Click the 'Load' button
+
+## Clearing Redis DB
+
+redis-cli flushdb
 
 ## Benchmarking:
 

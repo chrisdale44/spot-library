@@ -1,6 +1,13 @@
 import { useRecoilState } from "recoil";
 
-const [tags] = useRecoilState(tagsState);
-const getTag = tags.find((tag) => tag.id === id);
+const useTagSelectors = () => {
+  const [tags] = useRecoilState(tagsState);
 
-export { getTag };
+  const getTag = (id) => tags.find((tag) => tag.id === id);
+
+  return {
+    getTag,
+  };
+};
+
+export default useTagSelectors;

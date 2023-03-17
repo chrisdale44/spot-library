@@ -4,12 +4,12 @@ const redis = connectToRedis();
 
 export default async function handler(req, res) {
   try {
-    const spotsHash = await redis.hgetall("spots");
-    const spotsArray = Object.keys(spotsHash).map((key) =>
-      JSON.parse(spotsHash[key])
+    const tagsHash = await redis.hgetall("tags");
+    const tagsArray = Object.keys(tagsHash).map((key) =>
+      JSON.parse(tagsHash[key])
     );
 
-    res.status(200).json(spotsArray);
+    res.status(200).json(tagsArray);
   } catch (err) {
     console.error(err);
   }

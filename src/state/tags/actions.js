@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { tagsState } from "./";
 
-const tagActions = () => {
+const useTagActions = () => {
   const [tags, setTags] = useRecoilState(tagsState);
 
   const selectTag = (payload) => {
@@ -15,4 +15,4 @@ const tagActions = () => {
   return { selectTag, deselectTag };
 };
 
-export default tagActions;
+export default useTagActions;
