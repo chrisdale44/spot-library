@@ -17,9 +17,14 @@ const SpotForm = ({ id }) => {
     const generateSignatureEndpoint = `/api/sign`;
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
 
+    const uploadParams = {
+      folder: "media",
+      eager: "c_crop,h_200,w_200",
+    };
+
     // Call serverless fn to generate a hexadecimal auth signature from request params
     // Params should exclude: file, cloud_name, resource_type, api_key
-    axios.post(generateSignatureEndpoint).then(({ data }) => {
+    axios.post(generateSignatureEndpoint, uploadParams).then(({ data }) => {
       const { signature, timestamp } = data;
 
       for (const fileData of acceptedSpotFiles) {
@@ -30,6 +35,10 @@ const SpotForm = ({ id }) => {
         formData.append("api_key", process.env.NEXT_PUBLIC_CLOUD_API_KEY);
         formData.append("timestamp", timestamp);
         formData.append("signature", signature);
+
+        for (const [param, value] of Object.entries(uploadParams)) {
+          formData.append(param, value);
+        }
 
         axios
           .post(cloudinaryUrl, formData, {
