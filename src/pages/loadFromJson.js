@@ -1,9 +1,17 @@
-// Move this file into ./pages dir
-// npm run dev
-// localhost:3000/loadFromJson
-// Click Load
+/* 
 
-const payload = require("../backups/spots.json");
+Uploading data to database from json
+
+- Ensure database credentials in .env file are correct
+- Generate a spots.json file, if it doesn't already exist, using either of the xmlToJson.js or csvToJson.js scripts
+- Move loadFromJson.js into ./pages dir
+- npm run dev
+- Navigate to localhost:3000/loadFromJson (this page must not be published for production)
+- Click the 'Load' button
+
+*/
+
+const payload = require("../../backups/spots.json");
 //const payload = require("../backups/tags.json");
 
 function LoadFromBackup() {

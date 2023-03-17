@@ -24,18 +24,23 @@ export default async function handler(req, res) {
 
   res.status(200);
   try {
-    // get spots id's
+    // get any existing spots id's
     let keys = await redis.hkeys("spots");
     keys = keys.map((key) => parseInt(key)).sort((a, b) => a - b);
     const nextKey = keys.length ? keys[keys.length - 1] + 1 : 0;
 
     const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
 
-    // create an array [key, value, key, value, etc]
+    // create an array of key value pairs for our redis hash
+    // [spotId, stringifiedObject, spotID, stringifiedObject, etc]
+    // Storing spots this way allows us to query all spots in 1 request,
+    // rather than multiple if each spot is stored as its own hash
     const args = spots.flatMap((spot, i) => {
       const id = nextKey + i;
       return [
         id,
+        // hashes can't be nested inside hashes so we stringify the object
+        // one downside is that we can't query individual fields but this is not required for our purposes
         JSON.stringify({
           ...defaultFields,
           ...spot,
