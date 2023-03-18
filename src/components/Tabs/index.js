@@ -8,9 +8,8 @@ const Tabs = ({ tabs }) => {
   return tabs?.length ? (
     <div className={styles.tabs}>
       {tabs.map(({ title }, i) => (
-        <>
+        <React.Fragment key={i}>
           <input
-            key={i}
             className={styles.radiotab}
             name="tabs"
             tabIndex="1"
@@ -25,7 +24,7 @@ const Tabs = ({ tabs }) => {
           >
             {title}
           </label>
-        </>
+        </React.Fragment>
       ))}
       {tabs.map(({ content }, i) => (
         <div

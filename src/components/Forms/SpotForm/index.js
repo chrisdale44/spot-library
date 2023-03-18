@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { popupState } from "../../../state";
+import { mapState as mapRecoilState, popupState } from "../../../state";
+import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import styles from "./SpotForm.module.scss";
@@ -23,9 +24,12 @@ const uploadImageToCloudinary = (formData, callback) => {
 };
 
 const SpotForm = ({ id }) => {
-  const [popup] = useRecoilState(popupState);
+  const [popup, setPopup] = useRecoilState(popupState);
+  const [, setMapState] = useRecoilState(mapRecoilState);
+  const { addSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
+  const spotForm = useRef(null);
   // const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
 
   const handleSubmit = (e) => {
@@ -79,28 +83,23 @@ const SpotForm = ({ id }) => {
       Promise.all(promises)
         .then(() => {
           // add spot to redis via api call
-          console.log(payload);
           return axios.post("/api/spot/create", payload);
         })
-        .finally((response) => {
-          console.log(response);
-          // clear form
-
-          // done - end loading state
+        .finally(() => {
+          spotForm.current.reset();
+          setAcceptedSpotFiles([]);
           setIsLoading(false);
-
-          // close popup
-
-          // add spot to recoil state
+          setPopup(null);
+          setMapState("default");
+          addSpot(payload);
         });
     });
-    // set loading state
   };
 
   return (
     <div className={styles.formWrapper}>
       <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
-      <form className={styles.spotForm} onSubmit={handleSubmit}>
+      <form ref={spotForm} className={styles.spotForm} onSubmit={handleSubmit}>
         <input name="name" placeholder="Spot name" />
         <textarea name="description" placeholder="Description" />
         <DropZone

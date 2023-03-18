@@ -6,8 +6,7 @@ const useSpotActions = () => {
   const [spots, setSpots] = useRecoilState(spotsState);
 
   const addSpot = (payload) => {
-    const parsedSpot = parseSpot(payload);
-    setSpots([...spots, parsedSpot]);
+    setSpots([...spots, payload]);
   };
 
   const updateSpot = (payload) => {

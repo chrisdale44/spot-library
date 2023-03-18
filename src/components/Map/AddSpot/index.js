@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { Sprite } from "@pixi/react";
 import SpotForm from "../../Forms/SpotForm";
@@ -12,6 +12,13 @@ const AddSpot = () => {
   const [spotLayerPoint, setSpotLayerPoint] = useState();
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
+
+  useEffect(() => {
+    return function cleanup() {
+      // remove event listener on component unmount
+      map.off("click");
+    };
+  }, []);
 
   const defaultPopupOptions = {
     offset: [0, -28],
