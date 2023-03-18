@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { useRecoilState } from "recoil";
 import { renderToString } from "react-dom/server";
@@ -7,6 +7,7 @@ import { Sprite } from "@pixi/react";
 import { getDefaultIcon } from "../utils";
 import { modalState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
+import calcScale from "../../../utils/calcScale";
 import styles from "./MarkersOverlay.module.scss";
 
 const generateMarkersWithPopup = (
@@ -90,6 +91,8 @@ const MarkersOverlay = ({ spots }) => {
     );
   }, [spots]);
 
+  const calculatedScale = useMemo(() => calcScale(scale), [scale]);
+
   return (
     <>
       {markers.length
@@ -100,7 +103,7 @@ const MarkersOverlay = ({ spots }) => {
                 key={i}
                 x={x}
                 y={y}
-                scale={1 / scale}
+                scale={calculatedScale}
                 anchor={[0.5, 1]}
                 image={getDefaultIcon(marker.iconColor)}
                 pointerdown={handleDragStart}

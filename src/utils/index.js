@@ -1,6 +1,7 @@
 import connectToRedis from "./connectToRedis";
 import generateCloudinarySignature from "./generateCloudinarySignature";
 import getNextRedisKey from "./getNextRedisKey";
+import calcScale from "./calcScale";
 import { getStreetViewLink, getMapsLink } from "./googlemaps";
 
 export {
@@ -9,4 +10,5 @@ export {
   getNextRedisKey,
   getStreetViewLink,
   getMapsLink,
+  calcScale,
 };
