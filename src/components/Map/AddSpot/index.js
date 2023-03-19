@@ -14,6 +14,7 @@ const AddSpot = () => {
   const [, setPopup] = useRecoilState(popupState);
 
   useEffect(() => {
+    // used for determining popup panning function
     map.state = "addSpot";
     return function cleanup() {
       // remove event listener on component unmount
@@ -44,11 +45,6 @@ const AddSpot = () => {
       position: [e.latlng.lat, e.latlng.lng],
       content: <SpotForm />,
     });
-
-    //once popup is open
-    // setTimeout(() => {
-    //   centerMapToPopup(map, e.latlng);
-    // }, 0);
   });
 
   // Why this only works after clicking the map?

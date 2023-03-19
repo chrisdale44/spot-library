@@ -1,8 +1,12 @@
+export const IMAGES = "images";
+export const MEDIA = "media";
+export const IMG_URLS = "imgUrls";
+
 export const SPOT_FIELDS = {
   name: "",
   description: "",
   coordinates: [],
-  imgUrls: [],
-  images: [],
-  media: [],
+  [IMG_URLS]: [],
+  [IMAGES]: [],
+  [MEDIA]: [],
 };

@@ -4,30 +4,45 @@ import { MdDeleteForever } from "react-icons/md";
 import exifr from "exifr";
 import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
+import { filterExifData } from "./utils";
 import styles from "./DropZone.module.scss";
 
 const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
-  const maxFileSize = 3 * bytesInMb; // 3MB
+  const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
 
-  const onDropAccepted = (droppedFiles) => {
+  const onDropAccepted = async (droppedFiles) => {
     if (!droppedFiles.length) {
       return;
     }
 
     const uniqueFiles = [...acceptedFiles];
-    droppedFiles.forEach(async (file) => {
+    for (const file of droppedFiles) {
       if (!uniqueFiles.some((f) => f.path === file.path)) {
-        exifr.parse(file).then((output) => console.log(output));
-        uniqueFiles.push({
+        const uniqueFile = {
           file,
           path: file.path,
           size: file.size,
           preview: URL.createObjectURL(file),
-        });
+        };
+
+        await exifr
+          .parse(file)
+          .then((exifData) => {
+            // todo: does location data match pin?
+            uniqueFiles.push({
+              ...uniqueFile,
+              exif: filterExifData(exifData, fileType),
+            });
+          })
+          .catch((e) => {
+            console.error("Failed to extract exif data", e);
+            // exif data failed, push file data anyway
+            uniqueFiles.push(uniqueFile);
+          });
       }
-    });
+    }
 
     setAcceptedFiles(uniqueFiles);
   };

@@ -6,9 +6,16 @@ import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import styles from "./SpotForm.module.scss";
-import { SPOT_FIELDS } from "../../../constants";
+import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
 
-const uploadImageToCloudinary = (files, callback) => {
+const uploadImagesToCloudinary = (
+  data,
+  files,
+  uploadParams,
+  setIsLoading,
+  callback
+) => {
+  const { signature, timestamp } = data;
   const promises = [];
   for (const fileData of files) {
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
@@ -33,7 +40,7 @@ const uploadImageToCloudinary = (files, callback) => {
           callback(data);
         })
         .catch(function (error) {
-          console.log(error);
+          console.error(error);
           setIsLoading(false);
         })
     );
@@ -65,34 +72,61 @@ const SpotForm = ({ id }) => {
     // Call serverless fn to generate a hexadecimal auth signature from request params
     // Params should exclude: file, cloud_name, resource_type, api_key
     axios.post(generateSignatureEndpoint, uploadParams).then(({ data }) => {
-      const { signature, timestamp } = data;
-
       const payload = {
         ...SPOT_FIELDS,
         name: e.target.name.value,
         description: e.target.description.value,
         coordinates: popup.position,
-        images: [],
       };
-      const promises = [];
+      let promises = [];
+      const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
 
       // upload images to cloudinary
-      promises.push(
-        uploadImageToCloudinary(acceptedSpotFiles, (data) => {
-          payload.images.push(data);
-        })
+      promises = promises.concat(
+        uploadImagesToCloudinary(
+          data,
+          acceptedSpotFiles,
+          uploadParams,
+          setIsLoading,
+          (cloudinaryImgData) => {
+            // combine cloudinary img data with Exif data
+            for (const file of acceptedSpotFiles) {
+              console.log(file);
+              payload.images.push({
+                exif: file.exif,
+                url: cloudinaryImgData.secure_url,
+                created_at: currentTime,
+              });
+            }
+          }
+        )
       );
 
       // upload media images to cloudinary
-      promises.push(
-        uploadImageToCloudinary(acceptedMediaFiles, (data) => {
-          payload.media.push(data);
-        })
+      promises = promises.concat(
+        uploadImagesToCloudinary(
+          data,
+          acceptedMediaFiles,
+          uploadParams,
+          setIsLoading,
+          (cloudinaryImgData) => {
+            // combine cloudinary img data with Exif data
+            for (const file of acceptedMediaFiles) {
+              console.log(file);
+              payload.media.push({
+                exif: file.exif,
+                url: cloudinaryImgData.secure_url,
+                created_at: currentTime,
+              });
+            }
+          }
+        )
       );
 
       // wait for all images to finish uploading
       Promise.all(promises)
         .then(() => {
+          console.log(payload);
           // add spot to redis via api call
           return axios.post("/api/spot/create", payload);
         })
@@ -114,12 +148,12 @@ const SpotForm = ({ id }) => {
         <input name="name" placeholder="Spot name" />
         <textarea name="description" placeholder="Description" />
         <DropZone
-          fileType={"images"}
+          fileType={IMAGES}
           acceptedFiles={acceptedSpotFiles}
           setAcceptedFiles={setAcceptedSpotFiles}
         />
         <DropZone
-          fileType={"media"}
+          fileType={MEDIA}
           acceptedFiles={acceptedMediaFiles}
           setAcceptedFiles={setAcceptedMediaFiles}
         />
