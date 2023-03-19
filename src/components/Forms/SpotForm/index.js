@@ -8,19 +8,37 @@ import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import styles from "./SpotForm.module.scss";
 import { SPOT_FIELDS } from "../../../constants";
 
-const uploadImageToCloudinary = (formData, callback) => {
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
-  return axios
-    .post(cloudinaryUrl, formData, {
-      enctype: "multipart/form-data",
-    })
-    .then(async ({ data }) => {
-      callback(data);
-    })
-    .catch(function (error) {
-      console.log(error);
-      setIsLoading(false);
-    });
+const uploadImageToCloudinary = (files, callback) => {
+  const promises = [];
+  for (const fileData of files) {
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
+    const formData = new FormData();
+
+    // file manipulations are handled through the cloudinary web portal
+    formData.append("file", fileData.file);
+    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUD_API_KEY);
+    formData.append("timestamp", timestamp);
+    formData.append("signature", signature);
+
+    for (const [param, value] of Object.entries(uploadParams)) {
+      formData.append(param, value);
+    }
+
+    promises.push(
+      axios
+        .post(cloudinaryUrl, formData, {
+          enctype: "multipart/form-data",
+        })
+        .then(async ({ data }) => {
+          callback(data);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setIsLoading(false);
+        })
+    );
+  }
+  return promises;
 };
 
 const SpotForm = ({ id }) => {
@@ -29,8 +47,8 @@ const SpotForm = ({ id }) => {
   const { addSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
+  const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
   const spotForm = useRef(null);
-  // const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,26 +76,19 @@ const SpotForm = ({ id }) => {
       };
       const promises = [];
 
-      // upload each image to cloudinary
-      for (const fileData of acceptedSpotFiles) {
-        const formData = new FormData();
+      // upload images to cloudinary
+      promises.push(
+        uploadImageToCloudinary(acceptedSpotFiles, (data) => {
+          payload.images.push(data);
+        })
+      );
 
-        // file manipulations are handled through the cloudinary web portal
-        formData.append("file", fileData.file);
-        formData.append("api_key", process.env.NEXT_PUBLIC_CLOUD_API_KEY);
-        formData.append("timestamp", timestamp);
-        formData.append("signature", signature);
-
-        for (const [param, value] of Object.entries(uploadParams)) {
-          formData.append(param, value);
-        }
-
-        promises.push(
-          uploadImageToCloudinary(formData, (data) => {
-            payload.images.push(data);
-          })
-        );
-      }
+      // upload media images to cloudinary
+      promises.push(
+        uploadImageToCloudinary(acceptedMediaFiles, (data) => {
+          payload.media.push(data);
+        })
+      );
 
       // wait for all images to finish uploading
       Promise.all(promises)
@@ -103,8 +114,14 @@ const SpotForm = ({ id }) => {
         <input name="name" placeholder="Spot name" />
         <textarea name="description" placeholder="Description" />
         <DropZone
+          fileType={"images"}
           acceptedFiles={acceptedSpotFiles}
           setAcceptedFiles={setAcceptedSpotFiles}
+        />
+        <DropZone
+          fileType={"media"}
+          acceptedFiles={acceptedMediaFiles}
+          setAcceptedFiles={setAcceptedMediaFiles}
         />
         <button disabled={isLoading} type="submit">
           {isLoading ? <LoadingSpinner size={22} /> : "Submit"}

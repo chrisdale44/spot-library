@@ -6,7 +6,7 @@ import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
 import styles from "./DropZone.module.scss";
 
-const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
+const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 3 * bytesInMb; // 3MB
   const minFileSize = 1000;
@@ -80,7 +80,7 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles }) => {
       <div className={styles.dropZone} {...getRootProps()}>
         <input name={name} {...getInputProps()} />
         <label htmlFor={name}>
-          {"Drag 'n' drop files here, or click to select files"}
+          {`Drag 'n' drop ${fileType} here, or click to select`}
         </label>
       </div>
 
