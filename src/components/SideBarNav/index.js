@@ -5,7 +5,7 @@ import classNames from "classnames";
 import Tag from "../Tag/";
 import ComboBox from "../ComboBox";
 import FilterToggle from "../FilterToggle";
-import { tagsState, filteredSpotsState } from "../../state";
+import { tagsState } from "../../state";
 import useFilterActions from "../../state/filters/actions";
 import styles from "./SideBarNav.module.scss";
 let cx = classNames.bind(styles);

@@ -1,7 +1,23 @@
 diff --git a/node_modules/leaflet/dist/leaflet-src.js b/node_modules/leaflet/dist/leaflet-src.js
-index 533f4e5..7e96715 100644
+index 533f4e5..897eaa6 100644
 --- a/node_modules/leaflet/dist/leaflet-src.js
 +++ b/node_modules/leaflet/dist/leaflet-src.js
+@@ -3289,7 +3289,6 @@
+   	// Sets the view of the map (geographical center and zoom) with the given
+   	// animation options.
+   	setView: function (center, zoom, options) {
+-
+   		zoom = zoom === undefined ? this._zoom : this._limitZoom(zoom);
+   		center = this._limitCenter(toLatLng(center), zoom, this.options.maxBounds);
+   		options = options || {};
+@@ -3418,6 +3417,7 @@
+   	// @method panTo(latlng: LatLng, options?: Pan options): this
+   	// Pans the map to a given center.
+   	panTo: function (center, options) { // (LatLng)
++
+   		return this.setView(center, this._zoom, {pan: options});
+   	},
+ 
 @@ -4517,16 +4517,18 @@
    	_mouseEvents: ['click', 'dblclick', 'mouseover', 'mouseout', 'contextmenu'],
  
@@ -31,7 +47,20 @@ index 533f4e5..7e96715 100644
    		}
  
    		// Find the layer the event is propagating from and its parents.
-@@ -10139,6 +10141,8 @@
+@@ -9892,7 +9894,11 @@
+ 
+   		this._container.style.visibility = '';
+ 		
+-  		this._adjustPan();
++		if (this._map.state === 'addSpot') {
++			this._centerMapToPopup();
++		} else {
++			this._adjustPan();
++		}
+   	},
+ 
+   	getEvents: function () {
+@@ -10139,6 +10145,8 @@
    		// Controls the presence of a close button in the popup.
    		closeButton: true,
  
@@ -40,7 +69,14 @@ index 533f4e5..7e96715 100644
    		// @option autoClose: Boolean = true
    		// Set it to `false` if you want to override the default behavior of
    		// the popup closing when another popup is opened.
-@@ -10169,6 +10173,7 @@
+@@ -10163,12 +10171,14 @@
+   	// Alternative to `map.openPopup(popup)`.
+   	// Adds the popup to the map and closes the previous one.
+   	openOn: function (map) {
++		// debugger;
+   		map = arguments.length ? map : this._source._map; // experimental, not the part of public api
+ 
+   		if (!map.hasLayer(this) && map._popup && map._popup.options.autoClose) {
    			map.removeLayer(map._popup);
    		}
    		map._popup = this;
@@ -48,7 +84,7 @@ index 533f4e5..7e96715 100644
  
    		return DivOverlay.prototype.openOn.call(this, map);
    	},
-@@ -10198,6 +10203,7 @@
+@@ -10198,6 +10208,7 @@
  
    	onRemove: function (map) {
    		DivOverlay.prototype.onRemove.call(this, map);
@@ -56,7 +92,7 @@ index 533f4e5..7e96715 100644
  
    		// @namespace Map
    		// @section Popup events
-@@ -10257,6 +10263,7 @@
+@@ -10257,6 +10268,7 @@
    			on(closeButton, 'click', function (ev) {
    				preventDefault(ev);
    				this.close();
@@ -64,7 +100,37 @@ index 533f4e5..7e96715 100644
    			}, this);
    		}
    	},
-@@ -10496,7 +10503,7 @@
+@@ -10297,6 +10309,13 @@
+   		setPosition(this._container, pos.add(anchor));
+   	},
+ 
++	_centerMapToPopup: function () {
++		if (!this._map || !this._map._popup) return;
++		const px = this._map.project(this._map._popup._latlng); // find the pixel location on the map where the popup anchor is
++		px.y -= this._map._popup._container.clientHeight / 2; // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
++		this._map.panTo(this._map.unproject(px), { animate: true });
++	},
++
+   	_adjustPan: function () {
+   		if (!this.options.autoPan) { return; }
+   		if (this._map._panAnim) { this._map._panAnim.stop(); }
+@@ -10308,6 +10327,7 @@
+   			return;
+   		}
+ 
++
+   		var map = this._map,
+   		    marginBottom = parseInt(getStyle(this._container, 'marginBottom'), 10) || 0,
+   		    containerHeight = this._container.offsetHeight + marginBottom,
+@@ -10337,6 +10357,7 @@
+   			dy = containerPos.y - paddingTL.y;
+   		}
+ 
++
+   		// @namespace Map
+   		// @section Popup events
+   		// @event autopanstart: Event
+@@ -10496,7 +10517,7 @@
    	// @method isPopupOpen(): boolean
    	// Returns `true` if the popup bound to this layer is currently open.
    	isPopupOpen: function () {

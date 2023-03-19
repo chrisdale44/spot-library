@@ -1,5 +1,5 @@
 import { spotsState } from "./spots";
-import { filteredSpotsState, selectedFiltersState } from "./filters";
+import { selectedFiltersState } from "./filters";
 import { tagsState, selectedTagsState } from "./tags";
 import { toastState } from "./toast";
 import { modalState } from "./modal";
@@ -9,7 +9,6 @@ import { popupState } from "./popup";
 
 export {
   spotsState,
-  filteredSpotsState,
   selectedFiltersState,
   tagsState,
   selectedTagsState,
