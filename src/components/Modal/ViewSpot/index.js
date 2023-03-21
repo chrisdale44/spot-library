@@ -33,10 +33,7 @@ const ViewSpot = ({ id }) => {
   const [, setModal] = useRecoilState(modalState);
   const { getSpot } = useSpotSelectors();
   const spot = getSpot(id);
-  console.log(id, spot);
   const { name, description, images, imgUrls, media, coordinates } = spot;
-
-  console.log(spot);
 
   const handleEdit = (e) => {
     setModal({

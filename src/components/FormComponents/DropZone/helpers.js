@@ -1,7 +1,6 @@
 import { bytesInMb, bytesInKb } from "./constants";
 
 export const parseBytes = (size) => {
-  console.log(size);
   if (size < 500) {
     return `${size} bytes`;
   }

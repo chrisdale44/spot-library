@@ -14,8 +14,6 @@ const Modal = () => {
     if (modal) {
       const { id, type } = modal;
 
-      console.log("modal changed");
-
       switch (type) {
         case "openSpot":
           setModalContent(<ViewSpot id={id} />);
@@ -24,7 +22,6 @@ const Modal = () => {
           setModalContent(<SpotForm />);
           break;
         case "editSpot":
-          console.log("edit spot");
           setModalContent(<SpotForm id={id} />);
           break;
       }

@@ -93,7 +93,6 @@ const SpotForm = ({ id }) => {
           (cloudinaryImgData) => {
             // combine cloudinary img data with Exif data
             for (const file of acceptedSpotFiles) {
-              console.log(file);
               payload.images.push({
                 exif: file.exif,
                 url: cloudinaryImgData.secure_url,
@@ -114,7 +113,6 @@ const SpotForm = ({ id }) => {
           (cloudinaryImgData) => {
             // combine cloudinary img data with Exif data
             for (const file of acceptedMediaFiles) {
-              console.log(file);
               payload.media.push({
                 exif: file.exif,
                 url: cloudinaryImgData.secure_url,
@@ -128,7 +126,6 @@ const SpotForm = ({ id }) => {
       // wait for all images to finish uploading
       Promise.all(promises)
         .then(() => {
-          console.log(payload);
           // add spot to redis via api call
           return axios.post("/api/spot/create", payload);
         })

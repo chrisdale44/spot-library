@@ -26,7 +26,6 @@ const NavBar = ({ sidebar, filteredSpots }) => {
   };
 
   const createNewSpot = () => {
-    console.log("setMapState");
     setMapState("addSpot");
   };
 
