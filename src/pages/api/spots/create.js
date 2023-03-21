@@ -27,6 +27,7 @@ export default async function handler(req, res) {
     // Storing all spots in one hash allows us to query all spots in 1 request,
     // rather than multiple if each spot is stored as its own hash
     // Scalability? A hash can store over 4bn key value pairs
+    // The single server request can get very large though
     const args = spots.flatMap((spot, i) => {
       const id = nextKey + i;
       return [

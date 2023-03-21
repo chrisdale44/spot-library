@@ -18,13 +18,14 @@ const AddSpot = () => {
     map.state = "addSpot";
     return function cleanup() {
       // remove event listener on component unmount
+      setPopup(null);
       map.off("click");
       map.state = null;
     };
   }, []);
 
   const defaultPopupOptions = {
-    offset: [0, -28],
+    offset: [0, -26],
     closeOnClick: true,
     closeCallback: () => {
       setMapState("default");

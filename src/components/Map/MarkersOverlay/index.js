@@ -1,81 +1,56 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
-import Image from "next/image";
 import { useRecoilState } from "recoil";
-import { renderToString } from "react-dom/server";
-import L from "leaflet";
 import { Sprite } from "@pixi/react";
 import { getDefaultIcon } from "../utils";
-import { modalState } from "../../../state";
+import { modalState, popupState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import calcScale from "../../../utils/calcScale";
-import styles from "./MarkersOverlay.module.scss";
+import { calcScaleFactor } from "../../../utils/calcScale";
+import generateMarkersWithPopup from "./generateMarkersWithPopup";
 
-const generateMarkersWithPopup = (
-  spots,
-  markerClickHandler,
-  popupClickHandler
-) => {
-  return spots.map(({ id, name, coordinates, images }) => {
-    const popupHtml = L.DomUtil.create("div", "content");
-
-    // Limitation: renderToString gives you your react component in pure HTML as it would look in a
-    // particular state. It does not give fully functionaly react components
-    // Todo: use popupState to set react-leaflet Popup
-    popupHtml.innerHTML = renderToString(
-      <div className={styles.popupContainer}>
-        <h3>{name}</h3>
-        {images.length ? (
-          <Image loading="lazy" src={images[0].url} layout="fill" />
-        ) : null}
-      </div>
-    );
-    popupHtml.addEventListener("click", () => popupClickHandler(id));
-
-    const popup = L.popup({
-      id,
-      offset: [0, -28],
-      closeOnClick: true,
-    })
-      .setLatLng(coordinates)
-      .setContent(popupHtml);
-
-    return {
-      id,
-      iconColor: "#187bcd",
-      coordinates: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
-      interactive: true,
-      buttonMode: true,
-      tap: () => markerClickHandler(popup),
-      click: () => markerClickHandler(popup),
-    };
-  });
-};
+const markerHeight = 36;
+const fixedOffset = 10;
 
 const MarkersOverlay = ({ spots }) => {
+  const [, setPopup] = useRecoilState(popupState);
   const [markers, setMarkers] = useState([]);
   const [, setModal] = useRecoilState(modalState);
-  const { latLngToLayerPoint, scale, map } = useContext(PixiContext);
+  const { latLngToLayerPoint, scale } = useContext(PixiContext);
+  const stateRef = useRef();
 
-  let eStart = useRef();
-  let markerWasDragged = useRef();
+  stateRef.scaleFactor = useMemo(() => calcScaleFactor(scale), [scale]);
 
   const handleDragStart = (e) => {
-    eStart.current = { ...e.global };
+    stateRef.dragStart = { ...e.global };
   };
 
   const handleDragEnd = (e) => {
-    if (!eStart.current) return;
+    if (!stateRef.dragStart) return;
 
     // todo: allow for some movement when tapping
-    if (eStart.current.x !== e.global.x || eStart.current.y !== e.global.y) {
-      markerWasDragged.current = true;
+    if (
+      stateRef.dragStart.x !== e.global.x ||
+      stateRef.dragStart.y !== e.global.y
+    ) {
+      stateRef.markerWasDragged = true;
     }
   };
 
-  const markerClickHandler = (popup) => {
-    if (!markerWasDragged.current) map.openPopup(popup);
-    markerWasDragged.current = false;
-    eStart.current = null;
+  const markerClickHandler = (coordinates, popupContent) => {
+    if (!stateRef.markerWasDragged) {
+      setPopup({
+        props: {
+          offset: [0, -(stateRef.scaleFactor * markerHeight - fixedOffset)],
+          closeOnClick: true,
+          closeCallback: () => {
+            setPopup(null);
+          },
+        },
+        position: coordinates,
+        content: popupContent,
+      });
+    }
+    stateRef.markerWasDragged = false;
+    stateRef.dragStart = null;
   };
 
   const popupClickHandler = (id) => {
@@ -91,8 +66,6 @@ const MarkersOverlay = ({ spots }) => {
     );
   }, [spots]);
 
-  const calculatedScale = useMemo(() => calcScale(scale), [scale]);
-
   return (
     <>
       {markers.length
@@ -103,7 +76,7 @@ const MarkersOverlay = ({ spots }) => {
                 key={i}
                 x={x}
                 y={y}
-                scale={calculatedScale}
+                scale={stateRef.scaleFactor / scale}
                 anchor={[0.5, 1]}
                 image={getDefaultIcon(marker.iconColor)}
                 pointerdown={handleDragStart}

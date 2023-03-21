@@ -21,6 +21,7 @@ const Map = ({ spots }) => {
         scrollWheelZoom={true}
         style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
         preferCanvas={true}
+        minZoom={2}
       >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
