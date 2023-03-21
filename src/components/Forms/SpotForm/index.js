@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
+import { format } from "date-fns";
 import { mapState as mapRecoilState, popupState } from "../../../state";
 import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
+import Tabs from "../../Tabs";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import styles from "./SpotForm.module.scss";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
@@ -137,9 +139,36 @@ const SpotForm = ({ id }) => {
           setPopup(null);
           setMapState("default");
           addSpot(payload);
+        })
+        .catch(function (error) {
+          console.error(error);
+          setIsLoading(false);
         });
     });
   };
+
+  const tabsContent = [
+    {
+      title: "Images",
+      content: (
+        <DropZone
+          fileType={IMAGES}
+          acceptedFiles={acceptedSpotFiles}
+          setAcceptedFiles={setAcceptedSpotFiles}
+        />
+      ),
+    },
+    {
+      title: "Media",
+      content: (
+        <DropZone
+          fileType={MEDIA}
+          acceptedFiles={acceptedMediaFiles}
+          setAcceptedFiles={setAcceptedMediaFiles}
+        />
+      ),
+    },
+  ];
 
   return (
     <div className={styles.formWrapper}>
@@ -147,16 +176,7 @@ const SpotForm = ({ id }) => {
       <form ref={spotForm} className={styles.spotForm} onSubmit={handleSubmit}>
         <input name="name" placeholder="Spot name" />
         <textarea name="description" placeholder="Description" />
-        <DropZone
-          fileType={IMAGES}
-          acceptedFiles={acceptedSpotFiles}
-          setAcceptedFiles={setAcceptedSpotFiles}
-        />
-        <DropZone
-          fileType={MEDIA}
-          acceptedFiles={acceptedMediaFiles}
-          setAcceptedFiles={setAcceptedMediaFiles}
-        />
+        <Tabs tabs={tabsContent} />
         <button disabled={isLoading} type="submit">
           {isLoading ? <LoadingSpinner size={22} /> : "Submit"}
         </button>
