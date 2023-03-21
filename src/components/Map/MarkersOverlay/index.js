@@ -7,9 +7,6 @@ import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { calcScaleFactor } from "../../../utils/calcScale";
 import generateMarkersWithPopup from "./generateMarkersWithPopup";
 
-const markerHeight = 36;
-const fixedOffset = 10;
-
 const MarkersOverlay = ({ spots }) => {
   const [, setPopup] = useRecoilState(popupState);
   const [markers, setMarkers] = useState([]);
@@ -26,20 +23,28 @@ const MarkersOverlay = ({ spots }) => {
   const handleDragEnd = (e) => {
     if (!stateRef.dragStart) return;
 
-    // todo: allow for some movement when tapping
+    const clickSensitivity = 10;
     if (
-      stateRef.dragStart.x !== e.global.x ||
-      stateRef.dragStart.y !== e.global.y
+      stateRef.dragStart.x > e.global.x + clickSensitivity ||
+      stateRef.dragStart.x < e.global.x - clickSensitivity ||
+      stateRef.dragStart.y > e.global.y + clickSensitivity ||
+      stateRef.dragStart.y < e.global.y - clickSensitivity
     ) {
       stateRef.markerWasDragged = true;
     }
   };
 
   const markerClickHandler = (coordinates, popupContent) => {
+    const markerHeight = 36;
+    const fixedOffset = 10;
+    const markerYOffset = -(stateRef.scaleFactor * markerHeight - fixedOffset);
+
+    // todo: is it possible to update offset on zoom?
+
     if (!stateRef.markerWasDragged) {
       setPopup({
         props: {
-          offset: [0, -(stateRef.scaleFactor * markerHeight - fixedOffset)],
+          offset: [0, markerYOffset],
           closeOnClick: true,
           closeCallback: () => {
             setPopup(null);
