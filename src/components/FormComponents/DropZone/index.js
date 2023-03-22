@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
 import exifr from "exifr";
+import haversine from "haversine";
+import { filterExifData } from "./utils";
 import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
-import { filterExifData } from "./utils";
 import styles from "./DropZone.module.scss";
 
-const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
+const DropZone = ({
+  name,
+  acceptedFiles,
+  setAcceptedFiles,
+  fileType,
+  spotLatLng,
+  relocatePin,
+}) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
@@ -30,7 +38,22 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
         await exifr
           .parse(file)
           .then((exifData) => {
-            // todo: does location data match pin?
+            console.log(exifData);
+            if (exifData.latitude && exifData.longitude) {
+              const distanceFromPin = haversine(
+                { latitude: spotLatLng.lat, longitude: spotLatLng.lng },
+                { latitude: exifData.latitude, longitude: exifData.longitude },
+                { unit: "meter" }
+              );
+              if (distanceFromPin > 50) {
+                //todo: open dialog
+                relocatePin({
+                  lat: exifData.latitude,
+                  lng: exifData.longitude,
+                });
+              }
+            }
+
             uniqueFiles.push({
               ...uniqueFile,
               exif: filterExifData(exifData, fileType),
@@ -43,7 +66,6 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
           });
       }
     }
-
     setAcceptedFiles(uniqueFiles);
   };
 

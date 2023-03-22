@@ -50,7 +50,7 @@ const uploadImagesToCloudinary = (
   return promises;
 };
 
-const SpotForm = ({ id }) => {
+const SpotForm = ({ id, latlng, relocatePin }) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const { addSpot } = useSpotActions();
@@ -152,6 +152,8 @@ const SpotForm = ({ id }) => {
           fileType={IMAGES}
           acceptedFiles={acceptedSpotFiles}
           setAcceptedFiles={setAcceptedSpotFiles}
+          spotLatLng={latlng}
+          relocatePin={relocatePin}
         />
       ),
     },
@@ -162,6 +164,8 @@ const SpotForm = ({ id }) => {
           fileType={MEDIA}
           acceptedFiles={acceptedMediaFiles}
           setAcceptedFiles={setAcceptedMediaFiles}
+          spotLatLng={latlng}
+          relocatePin={relocatePin}
         />
       ),
     },

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { Sprite } from "@pixi/react";
 import SpotForm from "../../Forms/SpotForm";
@@ -12,6 +12,7 @@ const AddSpot = () => {
   const [spotLayerPoint, setSpotLayerPoint] = useState();
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
+  const stateRef = useRef();
 
   useEffect(() => {
     // used for determining popup panning function
@@ -39,16 +40,25 @@ const AddSpot = () => {
     setSpotAlpha(1);
   };
 
+  const relocatePin = (latLng) => {
+    setSpotLayerPoint(latLngToLayerPoint(latLng));
+    setPopup({
+      ...stateRef.popup,
+      position: [latLng.lat, latLng.lng],
+    });
+  };
+
   map.on("click", (e) => {
     setSpotLayerPoint(latLngToLayerPoint(e.latlng));
-    setPopup({
+    stateRef.popup = {
       props: { ...defaultPopupOptions },
       position: [e.latlng.lat, e.latlng.lng],
-      content: <SpotForm />,
-    });
+      content: <SpotForm latlng={e.latlng} relocatePin={relocatePin} />,
+    };
+    setPopup(stateRef.popup);
   });
 
-  // Why this only works after clicking the map?
+  // todo: Why does this only work after clicking the map?
   map.on("keydown", (event) => {
     const e = event.originalEvent;
     if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
