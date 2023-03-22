@@ -35,15 +35,12 @@ const ViewSpot = ({ id }) => {
   const spot = getSpot(id);
   const { name, description, images, imgUrls, media, coordinates } = spot;
 
-  const handleEdit = (e) => {
-    setModal({
-      type: "editSpot",
-      id,
-    });
+  const handleEdit = () => {
+    // todo: editSpot
   };
 
   return spot ? (
-    <>
+    <div className={styles.wrapper}>
       <h3 className={styles.spotName}>{name}</h3>
       {description && <p>{description}</p>}
 
@@ -69,7 +66,7 @@ const ViewSpot = ({ id }) => {
           <GrEdit />
         </a>
       </div>
-    </>
+    </div>
   ) : null;
 };
 

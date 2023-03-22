@@ -4,18 +4,16 @@ import PropTypes from "prop-types";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
 import Image from "next/image";
+import ViewSpot from "../../Modal/ViewSpot";
 import { getStreetViewLink } from "../../../utils/googlemaps";
 import { modalState } from "../../../state";
 import styles from "./Tile.module.scss";
 
-const Tile = ({ index, item }) => {
+const Tile = ({ item }) => {
   const { id, name, images, coordinates } = item;
   const [, setModal] = useRecoilState(modalState);
   const handleClick = (id) => {
-    setModal({
-      type: "openSpot",
-      id,
-    });
+    setModal(<ViewSpot id={id} />);
   };
 
   let imgUrl;

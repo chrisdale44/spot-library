@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { useRecoilState } from "recoil";
 import { Sprite } from "@pixi/react";
+import ViewSpot from "../../Modal/ViewSpot";
 import { getDefaultIcon } from "../utils";
 import { modalState, popupState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
@@ -59,10 +60,7 @@ const MarkersOverlay = ({ spots }) => {
   };
 
   const popupClickHandler = (id) => {
-    setModal({
-      type: "openSpot",
-      id,
-    });
+    setModal(<ViewSpot id={id} />);
   };
 
   useEffect(() => {
