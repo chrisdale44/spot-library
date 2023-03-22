@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
 import exifr from "exifr";
 import haversine from "haversine";
+import Dialog from "../../Modal/Dialog";
 import { filterExifData } from "./utils";
 import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
+import { modalState } from "../../../state";
 import styles from "./DropZone.module.scss";
 
 const DropZone = ({
@@ -16,9 +19,17 @@ const DropZone = ({
   spotLatLng,
   relocatePin,
 }) => {
+  const [, setModal] = useRecoilState(modalState);
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
+
+  const relocatePinDialog = (latLng) => (
+    <Dialog yesCallback={() => relocatePin(latLng)}>
+      <p>Image was taken at different location to pin.</p>
+      <p>Do you want to relocate the pin?</p>
+    </Dialog>
+  );
 
   const onDropAccepted = async (droppedFiles) => {
     if (!droppedFiles.length) {
@@ -46,11 +57,12 @@ const DropZone = ({
                 { unit: "meter" }
               );
               if (distanceFromPin > 50) {
-                //todo: open dialog
-                relocatePin({
-                  lat: exifData.latitude,
-                  lng: exifData.longitude,
-                });
+                setModal(
+                  relocatePinDialog({
+                    lat: exifData.latitude,
+                    lng: exifData.longitude,
+                  })
+                );
               }
             }
 

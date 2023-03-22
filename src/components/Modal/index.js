@@ -5,19 +5,19 @@ import { modalState } from "../../state";
 import styles from "./Modal.module.scss";
 
 const Modal = () => {
-  const [modal, setModal] = useRecoilState(modalState);
+  const [modalContent, setModal] = useRecoilState(modalState);
 
   const handleClose = () => {
     setModal(null);
   };
 
-  return modal ? (
+  return modalContent ? (
     <div className={styles.backdrop} onClick={handleClose}>
       <dialog className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button className={styles.close} type="button" onClick={handleClose}>
           <IoClose />
         </button>
-        {modal}
+        {modalContent}
       </dialog>
     </div>
   ) : null;
