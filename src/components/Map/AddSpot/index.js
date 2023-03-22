@@ -22,10 +22,17 @@ const AddSpot = () => {
     });
   };
 
+  const exitAddSpot = () => {
+    setPopup(null);
+    map.off("click");
+    map.off("mousemove");
+    setMapState("default");
+    map.state = null;
+  };
+
   const popupProps = {
     closeCallback: () => {
-      setMapState("default");
-      map.off("click");
+      exitAddSpot();
     },
   };
 
@@ -52,19 +59,9 @@ const AddSpot = () => {
     });
 
     return function cleanup() {
-      // remove event listener on component unmount
-      setPopup(null);
-      map.off("click");
-      map.off("mousemove");
-      setMapState("default");
-      map.state = null;
+      exitAddSpot();
     };
   }, []);
-
-  const exitAddSpot = () => {
-    map.dragging.enable();
-    setSpotAlpha(1);
-  };
 
   const handleDragStart = () => {
     map.dragging.disable();
@@ -76,7 +73,9 @@ const AddSpot = () => {
   };
 
   const handleDragEnd = () => {
-    exitAddSpot();
+    map.off("mousemove");
+    map.dragging.enable();
+    setSpotAlpha(1);
   };
 
   return spotLayerPoint ? (
