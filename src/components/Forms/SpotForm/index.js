@@ -2,62 +2,24 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { format } from "date-fns";
+import ImageGallery from "react-image-gallery";
 import { mapState as mapRecoilState, popupState } from "../../../state";
 import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
 import Tabs from "../../Tabs";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
+import uploadImagesToCloudinary from "./uploadImagesToCloudinary";
 import styles from "./SpotForm.module.scss";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
 
-const uploadImagesToCloudinary = (
-  data,
-  files,
-  uploadParams,
-  setIsLoading,
-  callback
-) => {
-  const { signature, timestamp } = data;
-  const promises = [];
-  for (const fileData of files) {
-    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
-    const formData = new FormData();
-
-    // file manipulations are handled through the cloudinary web portal
-    formData.append("file", fileData.file);
-    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUD_API_KEY);
-    formData.append("timestamp", timestamp);
-    formData.append("signature", signature);
-
-    for (const [param, value] of Object.entries(uploadParams)) {
-      formData.append(param, value);
-    }
-
-    promises.push(
-      axios
-        .post(cloudinaryUrl, formData, {
-          enctype: "multipart/form-data",
-        })
-        .then(async ({ data }) => {
-          callback(data);
-        })
-        .catch(function (error) {
-          console.error(error);
-          setIsLoading(false);
-        })
-    );
-  }
-  return promises;
-};
-
-const SpotForm = ({ id, latlng, relocatePin }) => {
+const SpotForm = ({ id, spot, latlng, relocatePin }) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const { addSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
-  const spotForm = useRef(null);
+  const spotForm = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,8 +88,9 @@ const SpotForm = ({ id, latlng, relocatePin }) => {
       // wait for all images to finish uploading
       Promise.all(promises)
         .then(() => {
+          const apiUrl = id ? "/api/spot/update" : "/api/spot/create";
           // add spot to redis via api call
-          return axios.post("/api/spot/create", payload);
+          return axios.post(apiUrl, payload);
         })
         .finally(() => {
           spotForm.current.reset();
@@ -144,40 +107,76 @@ const SpotForm = ({ id, latlng, relocatePin }) => {
     });
   };
 
-  const tabsContent = [
-    {
-      title: "Images",
-      content: (
-        <DropZone
-          fileType={IMAGES}
-          acceptedFiles={acceptedSpotFiles}
-          setAcceptedFiles={setAcceptedSpotFiles}
-          spotLatLng={latlng}
-          relocatePin={relocatePin}
-        />
-      ),
-    },
-    {
-      title: "Media",
-      content: (
-        <DropZone
-          fileType={MEDIA}
-          acceptedFiles={acceptedMediaFiles}
-          setAcceptedFiles={setAcceptedMediaFiles}
-          spotLatLng={latlng}
-          relocatePin={relocatePin}
-        />
-      ),
-    },
-  ];
+  // todo: add imageGallery to each tab if spot data exists
+  const generateTabContent = () => {
+    console.log(spot);
+    return [
+      {
+        title: "Images",
+        content: (
+          <>
+            {spot?.images?.length && (
+              <div>
+                <ImageGallery
+                  items={spot.images.map((image) => ({
+                    original: image.url,
+                    loading: "eager",
+                  }))}
+                  showPlayButton={false}
+                  showFullscreenButton={true}
+                />
+              </div>
+            )}
+            <DropZone
+              fileType={IMAGES}
+              acceptedFiles={acceptedSpotFiles}
+              setAcceptedFiles={setAcceptedSpotFiles}
+              spotLatLng={latlng}
+              relocatePin={relocatePin}
+            />
+          </>
+        ),
+      },
+      {
+        title: "Media",
+        content: (
+          <>
+            {spot?.media?.length && (
+              <div>
+                <ImageGallery
+                  items={spot.media.map((image) => ({
+                    original: image.url,
+                    loading: "eager",
+                  }))}
+                  showPlayButton={false}
+                  showFullscreenButton={true}
+                />
+              </div>
+            )}
+            <DropZone
+              fileType={MEDIA}
+              acceptedFiles={acceptedMediaFiles}
+              setAcceptedFiles={setAcceptedMediaFiles}
+              spotLatLng={latlng}
+              relocatePin={relocatePin}
+            />
+          </>
+        ),
+      },
+    ];
+  };
 
   return (
     <div className={styles.formWrapper}>
       <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
       <form ref={spotForm} className={styles.spotForm} onSubmit={handleSubmit}>
-        <input name="name" placeholder="Spot name" />
-        <textarea name="description" placeholder="Description" />
-        <Tabs tabs={tabsContent} />
+        <input name="name" placeholder="Spot name" defaultValue={spot?.name} />
+        <textarea
+          name="description"
+          placeholder="Description"
+          defaultValue={spot?.description}
+        />
+        <Tabs tabs={generateTabContent()} />
         <button disabled={isLoading} type="submit">
           {isLoading ? <LoadingSpinner size={22} /> : "Submit"}
         </button>

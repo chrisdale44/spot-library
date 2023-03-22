@@ -13,6 +13,12 @@ const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
   const [popup] = useRecoilState(popupState);
 
+  // todo: offset scale
+  const defaultPopupProps = {
+    offset: [0, -26],
+    closeOnClick: true,
+  };
+
   return (
     <div className={mapState === "addSpot" ? "crosshair-cursor-enabled" : ""}>
       <MapContainer
@@ -34,7 +40,11 @@ const Map = ({ spots }) => {
           </Container>
         </PixiContainer>
         {popup && (
-          <Popup {...popup.props} position={popup.position}>
+          <Popup
+            {...defaultPopupProps}
+            {...popup.props}
+            position={popup.position}
+          >
             {popup.content}
           </Popup>
         )}
