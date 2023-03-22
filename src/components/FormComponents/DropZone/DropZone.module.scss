@@ -1,0 +1,45 @@
+.dropZone {
+  border: 1px dashed #666;
+  text-align: center;
+  cursor: pointer;
+  margin: 4px 0;
+  border-radius: 3px;
+
+  label {
+    display: block;
+    color: #666;
+    font-size: 12px;
+    padding: 24px;
+    cursor: pointer;
+  }
+
+  &:hover,
+  &:focus {
+    border: 1px dashed #333;
+    background-color: #eee;
+  }
+}
+
+.filesList {
+  .fileItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.previewImg {
+  display: inline-block;
+  max-height: 40px;
+  max-width: 40px;
+  margin: 4px 8px 4px 0;
+}
+
+.removeFileButton {
+  color: #b72020;
+  background: none;
+  border: none;
+  outline: inherit;
+  font-size: 18px;
+  line-height: 18px;
+}

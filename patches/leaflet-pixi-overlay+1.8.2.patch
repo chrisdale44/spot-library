@@ -1,0 +1,13 @@
+diff --git a/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js b/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js
+index 9625255..d2fe246 100644
+--- a/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js
++++ b/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js
+@@ -85,7 +85,7 @@
+ 			this._drawCallback = drawCallback;
+ 			this._pixiContainer = pixiContainer;
+ 			this._rendererOptions = {
+-				transparent: true,
++				backgroundAlpha: 0,
+ 				resolution: this.options.resolution,
+ 				antialias: true,
+ 				forceCanvas: this.options.forceCanvas,

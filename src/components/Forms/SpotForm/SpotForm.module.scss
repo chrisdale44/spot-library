@@ -1,0 +1,17 @@
+.formWrapper {
+  min-width: 320px;
+  max-width: 480px;
+}
+
+.heading {
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+.spotForm {
+  display: flex;
+  flex-direction: column;
+  input {
+    flex: 1;
+  }
+}

@@ -1,0 +1,42 @@
+.navBar {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+  background-color: #3e8bca;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  min-width: 320px;
+
+  h1 {
+    color: white;
+    margin: 0;
+    margin-left: 20px;
+    padding: 0;
+    line-height: 50px;
+  }
+}
+.iconWrapper {
+  align-self: flex-end;
+  margin-right: 10px;
+
+  button.icon {
+    height: 50px;
+    width: 50px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 24px;
+    padding-top: 5px;
+    cursor: pointer;
+    line-height: 1.5em;
+
+    svg path {
+      stroke: white;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+diff --git a/node_modules/recoilize/index.js b/node_modules/recoilize/index.js
+index 0da355d..42ae6f2 100644
+--- a/node_modules/recoilize/index.js
++++ b/node_modules/recoilize/index.js
+@@ -198,7 +198,7 @@ export default function RecoilizeDebugger(props) {
+       return {
+         filteredSnapshot: filteredSnapshot,
+         componentAtomTree: formatFiberNodes(
+-          recoilizeRoot._reactRootContainer._internalRoot.current,
++          recoilizeRoot,
+         ),
+         atomsAndSelectors,
+       };
+@@ -206,7 +206,7 @@ export default function RecoilizeDebugger(props) {
+       return {
+         filteredSnapshot: filteredSnapshot,
+         componentAtomTree: formatFiberNodes(
+-          recoilizeRoot._reactRootContainer._internalRoot.current,
++          recoilizeRoot,
+         ),
+         indexDiff: diff,
+         atomsAndSelectors,

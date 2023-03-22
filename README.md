@@ -5,6 +5,9 @@
 npm run dev
 http://localhost:3000
 
+Clear Next cache:
+rm -rf .next
+
 redis-cli ping
 brew services stop redis
 brew services start redis
@@ -25,6 +28,19 @@ npx http-server
 
 OR run
 npm run start
+
+## Uploading data to database from json
+
+- Ensure database credentials in .env file are correct
+- Generate a spots.json file, if it doesn't already exist, using either of the xmlToJson.js or csvToJson.js scripts
+- Move loadFromJson.js into ./pages dir
+- npm run dev
+- Navigate to localhost:3000/loadFromJson
+- Click the 'Load' button
+
+## Clearing Redis DB
+
+redis-cli flushdb
 
 ## Benchmarking:
 

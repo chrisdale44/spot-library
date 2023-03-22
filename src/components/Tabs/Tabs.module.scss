@@ -1,0 +1,30 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.radiotab {
+  position: absolute;
+  opacity: 0;
+}
+
+.label {
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.label.checked {
+  background: #ccc;
+}
+
+.panel {
+  display: none;
+  width: 100%;
+}
+
+.panel.checked {
+  display: block;
+}

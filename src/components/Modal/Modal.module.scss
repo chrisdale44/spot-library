@@ -1,0 +1,38 @@
+@import "../../styles/colors.module.scss";
+@import "../../styles/spacing.module.scss";
+
+.backdrop {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 998;
+}
+
+.modal {
+  display: block;
+  position: relative;
+  background-color: white;
+  border: none;
+  padding: 24px;
+  overflow: scroll;
+  z-index: 999;
+
+  button,
+  a {
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+}
