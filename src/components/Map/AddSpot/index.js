@@ -14,32 +14,6 @@ const AddSpot = () => {
   const [, setPopup] = useRecoilState(popupState);
   const stateRef = useRef();
 
-  useEffect(() => {
-    // used for determining popup panning function
-    map.state = "addSpot";
-    return function cleanup() {
-      // remove event listener on component unmount
-      setPopup(null);
-      map.off("click");
-      map.state = null;
-    };
-  }, []);
-
-  const defaultPopupOptions = {
-    offset: [0, -26],
-    closeOnClick: true,
-    closeCallback: () => {
-      setMapState("default");
-      map.off("click");
-    },
-  };
-
-  const exitAddSpot = () => {
-    map.off("mousemove");
-    map.dragging.enable();
-    setSpotAlpha(1);
-  };
-
   const relocatePin = (latLng) => {
     setSpotLayerPoint(latLngToLayerPoint(latLng));
     setPopup({
@@ -48,27 +22,53 @@ const AddSpot = () => {
     });
   };
 
-  map.on("click", (e) => {
-    setSpotLayerPoint(latLngToLayerPoint(e.latlng));
-    stateRef.popup = {
-      props: { ...defaultPopupOptions },
-      position: [e.latlng.lat, e.latlng.lng],
-      content: <SpotForm latlng={e.latlng} relocatePin={relocatePin} />,
-    };
-    setPopup(stateRef.popup);
-  });
+  const popupProps = {
+    closeCallback: () => {
+      setMapState("default");
+      map.off("click");
+    },
+  };
 
-  // todo: Why does this only work after clicking the map?
-  map.on("keydown", (event) => {
-    const e = event.originalEvent;
-    if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
-      exitAddSpot();
-    }
-  });
+  useEffect(() => {
+    // used for determining popup panning function
+    map.state = "addSpot";
+
+    map.on("click", (e) => {
+      setSpotLayerPoint(latLngToLayerPoint(e.latlng));
+      stateRef.popup = {
+        props: popupProps,
+        position: [e.latlng.lat, e.latlng.lng],
+        content: <SpotForm latlng={e.latlng} relocatePin={relocatePin} />,
+      };
+      setPopup(stateRef.popup);
+    });
+
+    // todo: Why does this only work after clicking the map?
+    map.on("keydown", (event) => {
+      const e = event.originalEvent;
+      if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
+        exitAddSpot();
+      }
+    });
+
+    return function cleanup() {
+      // remove event listener on component unmount
+      setPopup(null);
+      map.off("click");
+      map.off("mousemove");
+      setMapState("default");
+      map.state = null;
+    };
+  }, []);
+
+  const exitAddSpot = () => {
+    map.dragging.enable();
+    setSpotAlpha(1);
+  };
 
   const handleDragStart = () => {
     map.dragging.disable();
-    map.closePopup();
+    map.closePopup(null, true);
     map.on("mousemove", (e) => {
       setSpotLayerPoint(latLngToLayerPoint(e.latlng));
     });
