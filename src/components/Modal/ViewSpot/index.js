@@ -1,5 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
+import ImageGallery from "react-image-gallery";
 import SpotForm from "../../Forms/SpotForm";
 import { modalState, popupState } from "../../../state";
 import useSpotSelectors from "../../../state/spots/selectors";
@@ -8,7 +9,7 @@ import { SiGooglemaps } from "react-icons/si";
 // import { FiExternalLink } from "react-icons/fi";
 import Tabs from "../../Tabs";
 import { getStreetViewLink } from "../../../utils/googlemaps";
-import generateTabContent from "./generateTabContent";
+import { IMAGES, MEDIA } from "../../../constants";
 import styles from "./Spot.module.scss";
 
 const ViewSpot = ({ id }) => {
@@ -16,7 +17,7 @@ const ViewSpot = ({ id }) => {
   const [, setModal] = useRecoilState(modalState);
   const { getSpot } = useSpotSelectors();
   const spot = getSpot(id);
-  const { name, description, images, imgUrls, media, coordinates } = spot;
+  const { name, description, coordinates } = spot;
 
   const relocatePin = (latLng) => {
     setSpotLayerPoint(latLngToLayerPoint(latLng));
@@ -27,7 +28,6 @@ const ViewSpot = ({ id }) => {
   };
 
   const openEditSpot = () => {
-    console.log(spot);
     setPopup({
       position: spot.coordinates,
       content: (
@@ -47,12 +47,24 @@ const ViewSpot = ({ id }) => {
       <h3 className={styles.spotName}>{name}</h3>
       {description && <p>{description}</p>}
 
-      <Tabs
-        tabs={generateTabContent([
-          { title: "Spot", images },
-          { title: "Media", images: media },
-        ])}
-      />
+      <Tabs headings={["Spot", "Media"]}>
+        {[IMAGES, MEDIA].map((type, i) =>
+          !spot[type]?.length ? (
+            <p key={i}>No images yet</p>
+          ) : (
+            <div className={styles.galleryWrapper} key={i}>
+              <ImageGallery
+                items={spot[type].map((image) => ({
+                  original: image.url,
+                  loading: "eager",
+                }))}
+                showPlayButton={false}
+                showFullscreenButton={true}
+              />
+            </div>
+          )
+        )}
+      </Tabs>
 
       <div className={styles.iconWrapper}>
         <a

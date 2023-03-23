@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import * as cx from "classnames";
 import styles from "./Tabs.module.scss";
 
-const Tabs = ({ tabs }) => {
+const Tabs = ({ headings, children }) => {
   const [checkedTab, setCheckedTab] = useState(0);
 
-  return tabs?.length ? (
+  return headings?.length ? (
     <div className={styles.tabs}>
-      {tabs.map(({ title }, i) => (
+      {headings.map((heading, i) => (
         <React.Fragment key={i}>
           <input
             className={styles.radiotab}
@@ -22,17 +22,17 @@ const Tabs = ({ tabs }) => {
             htmlFor={"tab-" + i}
             onClick={() => setCheckedTab(i)}
           >
-            {title}
+            {heading}
           </label>
         </React.Fragment>
       ))}
-      {tabs.map(({ content }, i) => (
+      {children.map((child, i) => (
         <div
           className={cx(styles.panel, { [styles.checked]: checkedTab === i })}
           tabIndex="1"
           key={i}
         >
-          {content}
+          {child}
         </div>
       ))}
     </div>

@@ -95,6 +95,7 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
         .finally(() => {
           spotForm.current.reset();
           setAcceptedSpotFiles([]);
+          setAcceptedMediaFiles([]);
           setIsLoading(false);
           setPopup(null);
           setMapState("default");
@@ -107,65 +108,6 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
     });
   };
 
-  // todo: add imageGallery to each tab if spot data exists
-  const generateTabContent = () => {
-    console.log(spot);
-    return [
-      {
-        title: "Images",
-        content: (
-          <>
-            {spot?.images?.length && (
-              <div>
-                <ImageGallery
-                  items={spot.images.map((image) => ({
-                    original: image.url,
-                    loading: "eager",
-                  }))}
-                  showPlayButton={false}
-                  showFullscreenButton={true}
-                />
-              </div>
-            )}
-            <DropZone
-              fileType={IMAGES}
-              acceptedFiles={acceptedSpotFiles}
-              setAcceptedFiles={setAcceptedSpotFiles}
-              spotLatLng={latlng}
-              relocatePin={relocatePin}
-            />
-          </>
-        ),
-      },
-      {
-        title: "Media",
-        content: (
-          <>
-            {spot?.media?.length && (
-              <div>
-                <ImageGallery
-                  items={spot.media.map((image) => ({
-                    original: image.url,
-                    loading: "eager",
-                  }))}
-                  showPlayButton={false}
-                  showFullscreenButton={true}
-                />
-              </div>
-            )}
-            <DropZone
-              fileType={MEDIA}
-              acceptedFiles={acceptedMediaFiles}
-              setAcceptedFiles={setAcceptedMediaFiles}
-              spotLatLng={latlng}
-              relocatePin={relocatePin}
-            />
-          </>
-        ),
-      },
-    ];
-  };
-
   return (
     <div className={styles.formWrapper}>
       <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
@@ -176,7 +118,38 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
           placeholder="Description"
           defaultValue={spot?.description}
         />
-        <Tabs tabs={generateTabContent()} />
+        <Tabs headings={["Spot", "Media"]}>
+          {[IMAGES, MEDIA].map((type, i) => {
+            const acceptedFiles =
+              type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
+            const setAcceptedFiles =
+              type === MEDIA ? setAcceptedMediaFiles : setAcceptedSpotFiles;
+            return (
+              <React.Fragment key={i}>
+                {spot[type]?.length && (
+                  <div className={styles.galleryWrapper}>
+                    <ImageGallery
+                      items={spot[type].map((image) => ({
+                        original: image.url,
+                        originalHeight: 200,
+                        loading: "eager",
+                      }))}
+                      showPlayButton={false}
+                      showFullscreenButton={true}
+                    />
+                  </div>
+                )}
+                <DropZone
+                  fileType={type}
+                  acceptedFiles={acceptedFiles}
+                  setAcceptedFiles={setAcceptedFiles}
+                  spotLatLng={latlng}
+                  relocatePin={relocatePin}
+                />
+              </React.Fragment>
+            );
+          })}
+        </Tabs>
         <button disabled={isLoading} type="submit">
           {isLoading ? <LoadingSpinner size={22} /> : "Submit"}
         </button>

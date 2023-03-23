@@ -134,7 +134,7 @@ const DropZone = ({
       </div>
 
       <aside>
-        {acceptedFiles.length ? (
+        {acceptedFiles?.length ? (
           <ul className={styles.filesList}>
             {acceptedFiles.map(({ path, size, preview }, i) => (
               <li className={styles.fileItem} key={i}>
