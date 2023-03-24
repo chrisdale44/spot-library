@@ -5,6 +5,7 @@
 import * as PIXI from "pixi.js";
 import "leaflet-pixi-overlay"; // Must be called before the 'leaflet' import
 import L from "leaflet";
+import "../../libs/SmoothWheelZoom";
 import { useCallback, useEffect, useState, createContext } from "react";
 import { useMap } from "react-leaflet";
 import { createRoot } from "@pixi/react";

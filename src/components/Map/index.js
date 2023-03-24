@@ -24,10 +24,12 @@ const Map = ({ spots }) => {
       <MapContainer
         center={[51.505, -0.09]}
         zoom={13}
-        scrollWheelZoom={true}
+        minZoom={2}
+        scrollWheelZoom={false} // disable default zoom function
+        smoothWheelZoom={true} // enable smooth zoom lib
+        smoothSensitivity={10}
         style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
         preferCanvas={true}
-        minZoom={2}
       >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
