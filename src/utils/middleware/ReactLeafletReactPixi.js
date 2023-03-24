@@ -36,7 +36,7 @@ export function PixiContainer({ children }) {
         renderer.render(container);
       },
       container,
-      { backgroundAlpha: 0 }
+      { backgroundAlpha: 0, shouldRedrawOnMove: () => true }
     )
   );
 
