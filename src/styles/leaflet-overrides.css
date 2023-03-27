@@ -6,8 +6,24 @@
   /* cursor: pointer; */
 }
 
-.leaflet-popup-content {
+div.leaflet-popup-content-wrapper {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+div.leaflet-popup-content {
   width: auto !important;
+  margin: 0;
+}
+
+.leaflet-popup-close-button span {
+  color: white;
+}
+
+div.leaflet-popup-content-wrapper,
+div.leaflet-popup-tip {
+  background: #303030;
 }
 
 .leaflet-control-attribution {

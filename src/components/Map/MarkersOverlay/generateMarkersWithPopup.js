@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./MarkersOverlay.module.scss";
 
 const generateMarkersWithPopup = (
@@ -13,10 +14,14 @@ const generateMarkersWithPopup = (
         className={styles.popupContainer}
         onClick={() => popupClickHandler(id)}
       >
-        <h3>{name}</h3>
         {images.length ? (
-          <Image loading="lazy" src={images[0].url} layout="fill" />
+          <Image
+            loading="lazy"
+            src={getCloudinaryThumb(images[0].url)}
+            layout="fill"
+          />
         ) : null}
+        <h3>{name}</h3>
       </div>
     );
     return {

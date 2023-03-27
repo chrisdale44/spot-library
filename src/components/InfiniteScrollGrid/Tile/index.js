@@ -7,6 +7,7 @@ import Image from "next/image";
 import ViewSpot from "../../Modal/ViewSpot";
 import { getStreetViewLink } from "../../../utils/googlemaps";
 import { modalState } from "../../../state";
+import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./Tile.module.scss";
 
 const Tile = ({ item }) => {
@@ -16,19 +17,13 @@ const Tile = ({ item }) => {
     setModal(<ViewSpot id={id} />);
   };
 
-  let imgUrl;
-  if (images?.length) {
-    const urlParts = images[0].url.split("/upload");
-    imgUrl = `/w_200,h_200,c_fill${urlParts[1]}`;
-  }
-
   return (
     <div className={styles.tile}>
       <div className={styles.topBanner}>{name}</div>
       {images?.length ? (
         <div className={styles.imageWrapper}>
           <Image
-            src={imgUrl}
+            src={getCloudinaryThumb(images[0].url)}
             alt={name}
             loading="lazy"
             layout="fill"

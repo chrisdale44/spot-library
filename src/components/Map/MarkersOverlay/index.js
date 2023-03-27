@@ -5,7 +5,7 @@ import ViewSpot from "../../Modal/ViewSpot";
 import { getDefaultIcon } from "../utils";
 import { modalState, popupState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import { calcScaleFactor } from "../../../utils/calcScale";
+import { calcScaleFactor } from "../../../utils/calcScaleFactor";
 import generateMarkersWithPopup from "./generateMarkersWithPopup";
 
 const MarkersOverlay = ({ spots }) => {
@@ -71,7 +71,7 @@ const MarkersOverlay = ({ spots }) => {
 
   return (
     <>
-      {markers.length
+      {markers.length && latLngToLayerPoint
         ? markers.map((marker, i) => {
             const { x, y } = latLngToLayerPoint(marker.coordinates);
             return (
