@@ -35,7 +35,7 @@ const MarkersOverlay = ({ spots }) => {
     }
   };
 
-  const markerClickHandler = (coordinates, popupContent) => {
+  const markerClickHandler = (coordinates, popupContent, popupProps) => {
     const markerHeight = 36;
     const fixedOffset = 10;
     const markerYOffset = -(stateRef.scaleFactor * markerHeight - fixedOffset);
@@ -50,6 +50,7 @@ const MarkersOverlay = ({ spots }) => {
           closeCallback: () => {
             setPopup(null);
           },
+          ...popupProps,
         },
         position: coordinates,
         content: popupContent,

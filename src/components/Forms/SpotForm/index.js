@@ -124,9 +124,10 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
               type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
             const setAcceptedFiles =
               type === MEDIA ? setAcceptedMediaFiles : setAcceptedSpotFiles;
+
             return (
               <React.Fragment key={i}>
-                {spot[type]?.length && (
+                {spot && spot[type]?.length ? (
                   <div className={styles.galleryWrapper}>
                     <ImageGallery
                       items={spot[type].map((image) => ({
@@ -138,7 +139,7 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
                       showFullscreenButton={true}
                     />
                   </div>
-                )}
+                ) : null}
                 <DropZone
                   fileType={type}
                   acceptedFiles={acceptedFiles}

@@ -1,5 +1,5 @@
 diff --git a/node_modules/leaflet/dist/leaflet-src.js b/node_modules/leaflet/dist/leaflet-src.js
-index 533f4e5..2ce2da9 100644
+index 533f4e5..e561945 100644
 --- a/node_modules/leaflet/dist/leaflet-src.js
 +++ b/node_modules/leaflet/dist/leaflet-src.js
 @@ -3289,7 +3289,6 @@
@@ -72,7 +72,15 @@ index 533f4e5..2ce2da9 100644
    	},
  
    	getEvents: function () {
-@@ -10139,6 +10146,8 @@
+@@ -10030,6 +10037,7 @@
+   		if (latlng) {
+   			overlay.setLatLng(latlng);
+   		}
++		setOptions(overlay, options);
+   		return overlay;
+   	}
+   });
+@@ -10139,6 +10147,8 @@
    		// Controls the presence of a close button in the popup.
    		closeButton: true,
  
@@ -81,7 +89,7 @@ index 533f4e5..2ce2da9 100644
    		// @option autoClose: Boolean = true
    		// Set it to `false` if you want to override the default behavior of
    		// the popup closing when another popup is opened.
-@@ -10163,12 +10172,14 @@
+@@ -10163,12 +10173,14 @@
    	// Alternative to `map.openPopup(popup)`.
    	// Adds the popup to the map and closes the previous one.
    	openOn: function (map) {
@@ -96,7 +104,7 @@ index 533f4e5..2ce2da9 100644
  
    		return DivOverlay.prototype.openOn.call(this, map);
    	},
-@@ -10198,6 +10209,7 @@
+@@ -10198,6 +10210,7 @@
  
    	onRemove: function (map) {
    		DivOverlay.prototype.onRemove.call(this, map);
@@ -104,7 +112,18 @@ index 533f4e5..2ce2da9 100644
  
    		// @namespace Map
    		// @section Popup events
-@@ -10297,6 +10309,13 @@
+@@ -10277,6 +10290,10 @@
+ 
+   		style.height = '';
+ 
++		// update classNames based on options - passed from props
++		const className = 'leaflet-popup leaflet-zoom-animated ' + (this.options.className || '');
++		setClass(this._container, className);
++
+   		var height = container.offsetHeight,
+   		    maxHeight = this.options.maxHeight,
+   		    scrolledClass = 'leaflet-popup-scrolled';
+@@ -10297,6 +10314,13 @@
    		setPosition(this._container, pos.add(anchor));
    	},
  
@@ -118,7 +137,7 @@ index 533f4e5..2ce2da9 100644
    	_adjustPan: function () {
    		if (!this.options.autoPan) { return; }
    		if (this._map._panAnim) { this._map._panAnim.stop(); }
-@@ -10308,6 +10327,7 @@
+@@ -10308,6 +10332,7 @@
    			return;
    		}
  
@@ -126,7 +145,7 @@ index 533f4e5..2ce2da9 100644
    		var map = this._map,
    		    marginBottom = parseInt(getStyle(this._container, 'marginBottom'), 10) || 0,
    		    containerHeight = this._container.offsetHeight + marginBottom,
-@@ -10337,6 +10357,7 @@
+@@ -10337,6 +10362,7 @@
    			dy = containerPos.y - paddingTL.y;
    		}
  
@@ -134,7 +153,7 @@ index 533f4e5..2ce2da9 100644
    		// @namespace Map
    		// @section Popup events
    		// @event autopanstart: Event
-@@ -10398,10 +10419,10 @@
+@@ -10398,10 +10424,10 @@
  
    	// @method closePopup(popup?: Popup): this
    	// Closes the popup previously opened with [openPopup](#map-openpopup) (or the given one).
@@ -148,7 +167,7 @@ index 533f4e5..2ce2da9 100644
    		}
    		return this;
    	}
-@@ -10496,7 +10517,7 @@
+@@ -10496,7 +10522,7 @@
    	// @method isPopupOpen(): boolean
    	// Returns `true` if the popup bound to this layer is currently open.
    	isPopupOpen: function () {

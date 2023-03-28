@@ -1,7 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import classNames from "classnames";
 import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./MarkersOverlay.module.scss";
+
+let cx = classNames.bind(styles);
 
 const generateMarkersWithPopup = (
   spots,
@@ -9,6 +12,12 @@ const generateMarkersWithPopup = (
   popupClickHandler
 ) => {
   return spots.map(({ id, name, coordinates, images }) => {
+    const hasImages = !!images.length;
+    const hasImagesClass = cx({
+      "has-images": hasImages,
+      [styles.hasImages]: hasImages,
+    });
+
     const popupContent = (
       <div
         className={styles.popupContainer}
@@ -30,8 +39,14 @@ const generateMarkersWithPopup = (
       coordinates: [parseFloat(coordinates[0]), parseFloat(coordinates[1])],
       interactive: true,
       buttonMode: true,
-      tap: () => markerClickHandler(coordinates, popupContent),
-      click: () => markerClickHandler(coordinates, popupContent),
+      tap: () =>
+        markerClickHandler(coordinates, popupContent, {
+          className: hasImagesClass,
+        }),
+      click: () =>
+        markerClickHandler(coordinates, popupContent, {
+          className: hasImagesClass,
+        }),
     };
   });
 };

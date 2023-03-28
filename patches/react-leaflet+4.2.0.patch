@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-leaflet/lib/Popup.js b/node_modules/react-leaflet/lib/Popup.js
+index 4bf1eec..907ca60 100644
+--- a/node_modules/react-leaflet/lib/Popup.js
++++ b/node_modules/react-leaflet/lib/Popup.js
+@@ -4,13 +4,14 @@ import { useEffect } from 'react';
+ export const Popup = createOverlayComponent(function createPopup(props, context) {
+     const popup = new LeafletPopup(props, context.overlayContainer);
+     return createElementObject(popup, context);
+-}, function usePopupLifecycle(element, context, { position  }, setOpen) {
++}, function usePopupLifecycle(element, context, props, setOpen) {
++    const {position} = props;
+     useEffect(function addPopup() {
+         const { instance  } = element;
+         function onPopupOpen(event) {
+             if (event.popup === instance) {
+-                instance.update();
+                 setOpen(true);
++                instance.update();
+             }
+         }
+         function onPopupClose(event) {
+@@ -27,7 +28,8 @@ export const Popup = createOverlayComponent(function createPopup(props, context)
+             if (position != null) {
+                 instance.setLatLng(position);
+             }
+-            instance.openOn(context.map);
++
++            context.map.openPopup(instance, position, props)
+         } else {
+             // Attach to container component
+             context.overlayContainer.bindPopup(instance);

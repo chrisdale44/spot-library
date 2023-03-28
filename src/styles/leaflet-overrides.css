@@ -17,13 +17,26 @@ div.leaflet-popup-content {
   margin: 0;
 }
 
-.leaflet-popup-close-button span {
-  color: white;
+a.leaflet-popup-close-button {
+  color: #333;
 }
 
-div.leaflet-popup-content-wrapper,
-div.leaflet-popup-tip {
+.leaflet-popup-close-button span {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.has-images .leaflet-popup-tip {
   background: #303030;
+}
+
+.has-images a.leaflet-popup-close-button {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  border-top-right-radius: 12px;
+}
+
+.has-images a.leaflet-popup-close-button span {
+  color: white;
 }
 
 .leaflet-control-attribution {
