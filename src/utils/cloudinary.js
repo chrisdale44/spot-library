@@ -1,3 +1,5 @@
+import THUMB_TRANSFORMATION from "../constants/cloudinary";
+
 export const stripCloudinaryDomain = (url) => {
   if (!url) {
     return;
@@ -12,5 +14,7 @@ export const getCloudinaryThumb = (url) => {
     return;
   }
   const urlParts = url.split("/upload");
-  return `/w_200,h_200,c_fill${urlParts[1]}`;
+  return `/${THUMB_TRANSFORMATION}${urlParts[1]}`;
+
+  c_crop, h_200, w_200;
 };

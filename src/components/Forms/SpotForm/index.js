@@ -9,8 +9,9 @@ import DropZone from "../../FormComponents/DropZone";
 import Tabs from "../../Tabs";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import uploadImagesToCloudinary from "./uploadImagesToCloudinary";
-import styles from "./SpotForm.module.scss";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
+import { THUMB_TRANSFORMATION } from "../../../constants/cloudinary";
+import styles from "./SpotForm.module.scss";
 
 const SpotForm = ({ id, spot, latlng, relocatePin }) => {
   const [popup, setPopup] = useRecoilState(popupState);
@@ -30,7 +31,8 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
 
     const uploadParams = {
       folder: "spot-mapper",
-      eager: "c_crop,h_200,w_200",
+      eager: THUMB_TRANSFORMATION,
+      eager_async: true,
     };
 
     // Call serverless fn to generate a hexadecimal auth signature from request params
