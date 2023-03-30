@@ -24,10 +24,10 @@ const generateMarkersWithPopup = (
         onClick={() => popupClickHandler(id)}
       >
         {images.length ? (
-          <Image
+          <img
             loading="lazy"
+            decoding="async"
             src={getCloudinaryThumb(images[0].url)}
-            layout="fill"
           />
         ) : null}
         <h3>{name}</h3>

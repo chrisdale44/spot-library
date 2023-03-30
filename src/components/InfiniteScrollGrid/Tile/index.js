@@ -3,7 +3,6 @@ import { useRecoilState } from "recoil";
 import PropTypes from "prop-types";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
-import Image from "next/image";
 import ViewSpot from "../../Modal/ViewSpot";
 import { getStreetViewLink } from "../../../utils/googlemaps";
 import { modalState } from "../../../state";
@@ -21,15 +20,13 @@ const Tile = ({ item }) => {
     <div className={styles.tile}>
       <div className={styles.topBanner}>{name}</div>
       {images?.length ? (
-        <div className={styles.imageWrapper}>
-          <Image
-            src={getCloudinaryThumb(images[0].url)}
-            alt={name}
-            loading="lazy"
-            layout="fill"
-            onClick={() => handleClick(id)}
-          />
-        </div>
+        <img
+          src={getCloudinaryThumb(images[0].url)}
+          alt={name}
+          loading="lazy"
+          decoding="async"
+          onClick={() => handleClick(id)}
+        />
       ) : null}
       <div className={styles.bottomBanner}>
         <a

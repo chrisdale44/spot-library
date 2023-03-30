@@ -56,7 +56,7 @@ const ViewSpot = ({ id }) => {
               <ImageGallery
                 items={spot[type].map((image) => ({
                   original: image.url,
-                  loading: "eager",
+                  loading: "lazy",
                 }))}
                 showPlayButton={false}
                 showFullscreenButton={true}
