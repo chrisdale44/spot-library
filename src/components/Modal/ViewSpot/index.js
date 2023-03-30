@@ -1,7 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import ImageGallery from "react-image-gallery";
-import classNames from "classnames";
 import SpotForm from "../../Forms/SpotForm";
 import { modalState, popupState } from "../../../state";
 import useSpotSelectors from "../../../state/spots/selectors";
@@ -12,8 +11,6 @@ import Tabs from "../../Tabs";
 import { getStreetViewLink } from "../../../utils/googlemaps";
 import { IMAGES, MEDIA } from "../../../constants";
 import styles from "./Spot.module.scss";
-
-let cx = classNames.bind(styles);
 
 const ViewSpot = ({ id }) => {
   const [, setPopup] = useRecoilState(popupState);
@@ -45,16 +42,14 @@ const ViewSpot = ({ id }) => {
     setModal(null);
   };
 
-  const spotHasImages = !!spot[type]?.length;
-
   return spot ? (
-    <div className={cx(styles.wrapper, { [styles.hasImages]: spotHasImages })}>
+    <div className={styles.wrapper}>
       <h3 className={styles.spotName}>{name}</h3>
       {description && <p>{description}</p>}
 
       <Tabs headings={["Spot", "Media"]}>
         {[IMAGES, MEDIA].map((type, i) =>
-          spotHasImages ? (
+          !spot[type]?.length ? (
             <p key={i}>No images yet</p>
           ) : (
             <div className={styles.galleryWrapper} key={i}>
