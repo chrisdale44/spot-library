@@ -10,7 +10,6 @@ import Tabs from "../../Tabs";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import uploadImagesToCloudinary from "./uploadImagesToCloudinary";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
-import { THUMB_TRANSFORMATION } from "../../../constants/cloudinary";
 import styles from "./SpotForm.module.scss";
 
 const SpotForm = ({ id, spot, latlng, relocatePin }) => {
@@ -31,8 +30,11 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
 
     const uploadParams = {
       folder: "spot-mapper",
-      eager: THUMB_TRANSFORMATION,
-      eager_async: true,
+      // Do not eagerly generate thumbnail transformations as we do not need thumbs for all images
+      // uploaded. Thumbs generated on-the-fly are stored as derived assets in the same way as eager
+      // transformations and done on an as-needed basis, reducing number of transformations overall
+      // eager: THUMB_TRANSFORMATION,
+      // eager_async: true,
     };
 
     // Call serverless fn to generate a hexadecimal auth signature from request params
