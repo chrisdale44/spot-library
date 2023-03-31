@@ -38,7 +38,7 @@ const AddSpot = () => {
 
   useEffect(() => {
     // used for determining popup panning function
-    map.state = "addSpot";
+    map.centerMapToPopup = true;
 
     map.on("click", (e) => {
       setSpotLayerPoint(latLngToLayerPoint(e.latlng));

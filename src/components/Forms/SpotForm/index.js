@@ -13,7 +13,7 @@ import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
 import uploadParams from "./uploadParams";
 import styles from "./SpotForm.module.scss";
 
-const SpotForm = ({ id, spot, latlng, relocatePin }) => {
+const SpotForm = ({ id, spot, latlng }) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const { addSpot } = useSpotActions();
@@ -34,6 +34,7 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
     axios.post(generateSignatureEndpoint, uploadParams).then(({ data }) => {
       const payload = {
         ...SPOT_FIELDS,
+        ...spot,
         name: e.target.name.value,
         description: e.target.description.value,
         coordinates: popup.position,
@@ -132,7 +133,7 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
                         loading: "lazy",
                       }))}
                       showPlayButton={false}
-                      showFullscreenButton={true}
+                      showFullscreenButton={false}
                     />
                   </div>
                 ) : null}
@@ -141,7 +142,6 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
                   acceptedFiles={acceptedFiles}
                   setAcceptedFiles={setAcceptedFiles}
                   spotLatLng={latlng}
-                  relocatePin={relocatePin}
                 />
               </React.Fragment>
             );
@@ -153,6 +153,10 @@ const SpotForm = ({ id, spot, latlng, relocatePin }) => {
       </form>
     </div>
   );
+};
+
+SpotForm.defaultProps = {
+  spot: {},
 };
 
 export default SpotForm;

@@ -1,9 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
+import { popupState } from "../../../state";
 import ImageGallery from "react-image-gallery";
-import SpotForm from "../../Forms/SpotForm";
-import { modalState, popupState } from "../../../state";
-import useSpotSelectors from "../../../state/spots/selectors";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
 // import { FiExternalLink } from "react-icons/fi";
@@ -12,34 +10,26 @@ import { getStreetViewLink } from "../../../utils/googlemaps";
 import { IMAGES, MEDIA } from "../../../constants";
 import styles from "./Spot.module.scss";
 
-const ViewSpot = ({ id }) => {
-  const [, setPopup] = useRecoilState(popupState);
-  const [, setModal] = useRecoilState(modalState);
-  const { getSpot } = useSpotSelectors();
-  const spot = getSpot(id);
+const ViewSpot = ({ spot }) => {
   const { name, description, coordinates } = spot;
+  const [, setPopup] = useRecoilState(popupState);
 
-  const relocatePin = (latLng) => {
-    setSpotLayerPoint(latLngToLayerPoint(latLng));
-    setPopup({
-      ...stateRef.popup,
-      position: [latLng.lat, latLng.lng],
-    });
-  };
-
-  const openEditSpot = () => {
-    setPopup({
-      position: spot.coordinates,
-      content: (
-        <SpotForm
-          latlng={{ lat: spot.coordinates[0], lng: spot.coordinates[1] }}
-          id={id}
-          spot={spot}
-          relocatePin={relocatePin}
-        />
-      ),
-    });
-    setModal(null);
+  const handleEditSpotClick = () => {
+    // todo: open EditSpot form
+    // do we want to enable marker dragging?
+    // setPopup({
+    //   props: {
+    //     offset: [0, calcOffset(stateRef.scaleFactor)],
+    //     closeOnClick: true,
+    //     closeCallback: () => {
+    //       setPopup(null);
+    //       disableEditing();
+    //     },
+    //     className: popupClassName,
+    //   },
+    //   position: [e.latlng.lat, e.latlng.lng],
+    //   content: <EditSpot spot={spot} />,
+    // });
   };
 
   return spot ? (
@@ -77,9 +67,9 @@ const ViewSpot = ({ id }) => {
         {/* <a href={`/spot/${id}`} className={styles.edit}>
         <FiExternalLink />
       </a> */}
-        <a onClick={openEditSpot}>
+        <button onClick={handleEditSpotClick}>
           <GrEdit />
-        </a>
+        </button>
       </div>
     </div>
   ) : null;

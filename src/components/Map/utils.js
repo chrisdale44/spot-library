@@ -8,3 +8,9 @@ export const getEncodedIcon = (svg) => {
   const base64 = btoa(decoded);
   return `data:image/svg+xml;base64,${base64}`;
 };
+
+export const calcOffset = (scaleFactor) => {
+  const markerHeight = 36;
+  const fixedOffset = 10;
+  return -(scaleFactor * markerHeight - fixedOffset);
+};

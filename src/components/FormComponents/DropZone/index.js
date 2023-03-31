@@ -1,83 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
-import exifr from "exifr";
-import haversine from "haversine";
-import Dialog from "../../Modal/Dialog";
-import { filterExifData } from "./utils";
 import { parseBytes, parseError } from "./helpers";
 import { bytesInMb } from "./constants";
-import { modalState } from "../../../state";
 import styles from "./DropZone.module.scss";
 
-const DropZone = ({
-  name,
-  acceptedFiles,
-  setAcceptedFiles,
-  fileType,
-  spotLatLng,
-  relocatePin,
-}) => {
-  const [, setModal] = useRecoilState(modalState);
+const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
-
-  const relocatePinDialog = (latLng) => (
-    <Dialog yesCallback={() => relocatePin(latLng)}>
-      <p>Image was taken at different location to pin.</p>
-      <p>Do you want to relocate the pin?</p>
-    </Dialog>
-  );
 
   const onDropAccepted = async (droppedFiles) => {
     if (!droppedFiles.length) {
       return;
     }
 
-    const uniqueFiles = [...acceptedFiles];
+    const uniqueFiles = [...rejectedFiles];
     for (const file of droppedFiles) {
-      if (!uniqueFiles.some((f) => f.path === file.path)) {
-        const uniqueFile = {
-          file,
-          path: file.path,
-          size: file.size,
-          preview: URL.createObjectURL(file),
-        };
-
-        await exifr
-          .parse(file)
-          .then((exifData) => {
-            console.log(exifData);
-            if (exifData.latitude && exifData.longitude) {
-              const distanceFromPin = haversine(
-                { latitude: spotLatLng.lat, longitude: spotLatLng.lng },
-                { latitude: exifData.latitude, longitude: exifData.longitude },
-                { unit: "meter" }
-              );
-              if (distanceFromPin > 50) {
-                setModal(
-                  relocatePinDialog({
-                    lat: exifData.latitude,
-                    lng: exifData.longitude,
-                  })
-                );
-              }
-            }
-
-            uniqueFiles.push({
-              ...uniqueFile,
-              exif: filterExifData(exifData, fileType),
-            });
-          })
-          .catch((e) => {
-            console.error("Failed to extract exif data", e);
-            // exif data failed, push file data anyway
-            uniqueFiles.push(uniqueFile);
-          });
+      if (!uniqueFiles.includes((f) => f.path === file.path)) {
+        await uniqueFiles.push(extractExifData(file, handleLocationMismatch));
       }
     }
+
     setAcceptedFiles(uniqueFiles);
   };
 
@@ -88,7 +32,7 @@ const DropZone = ({
 
     const uniqueFiles = [...rejectedFiles];
     droppedFiles.forEach((reject) => {
-      if (!uniqueFiles.some((file) => file.path === reject.file.path)) {
+      if (!uniqueFiles.includes((file) => file.path === reject.file.path)) {
         uniqueFiles.push(reject);
       }
     });

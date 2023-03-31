@@ -6,12 +6,12 @@ import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
 import MarkersOverlay from "./MarkersOverlay";
 // import SearchField from "./SearchField";
-import AddSpot from "./AddSpot";
 import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
   const [popup] = useRecoilState(popupState);
+  console.log(popup);
 
   // todo: offset scale
   const defaultPopupProps = {
@@ -38,7 +38,6 @@ const Map = ({ spots }) => {
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0 }}>
             <MarkersOverlay spots={spots} />
-            {mapState === "addSpot" && <AddSpot />}
           </Container>
         </PixiContainer>
         {popup && (
