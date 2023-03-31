@@ -1,21 +1,36 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
+import classNames from "classnames";
 import { Sprite } from "@pixi/react";
 import SpotForm from "../../Forms/SpotForm";
 import ViewSpot from "../PopupContent/ViewSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { mapState as mapRecoilState, popupState } from "../../../state";
 import { getDefaultIcon, calcOffset } from "../utils";
+import styles from "../PopupContent/PopupContent.module.scss";
+
+let cx = classNames.bind(styles);
 
 const Marker = ({ x, y, scaleFactor, iconColor, spot }) => {
-  const { coordinates } = spot;
+  const { coordinates, images } = spot;
   const { map, scale, latLngToLayerPoint } = useContext(PixiContext);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
   const [editingEnabled, setEditingEnabled] = useState(false);
+  const [popupClassName, setPopupClassName] = useState();
   const [spotOpacity, setSpotOpacity] = useState(1);
   const [spotLayerPoint, setSpotLayerPoint] = useState();
   const stateRef = useRef();
+
+  useEffect(() => {
+    const hasImages = !!images.length;
+    setPopupClassName(
+      cx({
+        "has-images": hasImages,
+        [styles.hasImages]: hasImages,
+      })
+    );
+  }, [images]);
 
   // const relocateMarker = (latLng) => {
   //   setSpotLayerPoint(latLngToLayerPoint(latLng));
@@ -108,8 +123,7 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot }) => {
     }
   };
 
-  const handleClick = (e) => {
-    console.log("click");
+  const handleClick = () => {
     if (!stateRef.markerWasDragged) {
       setPopup({
         props: {
@@ -118,7 +132,7 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot }) => {
           //   closeCallback: () => {
           //     disableEditing();
           //   },
-          //   className: popupClassName,
+          className: popupClassName,
         },
         position: coordinates,
         content: <ViewSpot spot={spot} />,

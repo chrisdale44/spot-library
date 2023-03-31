@@ -1,11 +1,7 @@
 import React, { useContext, useRef, useMemo } from "react";
-import classNames from "classnames";
 import Marker from "../Marker";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { calcScaleFactor } from "../../../utils/calcScaleFactor";
-import styles from "../PopupContent/PopupContent.module.scss";
-
-let cx = classNames.bind(styles);
 
 const MarkersOverlay = ({ spots }) => {
   const { latLngToLayerPoint, scale } = useContext(PixiContext);
@@ -18,11 +14,6 @@ const MarkersOverlay = ({ spots }) => {
       {spots.length && latLngToLayerPoint
         ? spots.map((spot, i) => {
             const { x, y } = latLngToLayerPoint(spot.coordinates);
-            // const hasImages = !!images.length;
-            // const popupClassName = cx({
-            //   "has-images": hasImages,
-            //   [styles.hasImages]: hasImages,
-            // });
 
             return (
               <Marker
