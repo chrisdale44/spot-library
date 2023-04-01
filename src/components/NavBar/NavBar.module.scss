@@ -25,15 +25,21 @@
   margin-right: 10px;
 
   button.icon {
+    cursor: pointer;
     height: 50px;
     width: 50px;
     border: none;
     background: transparent;
     color: white;
     font-size: 24px;
-    padding-top: 5px;
-    cursor: pointer;
-    line-height: 1.5em;
+    line-height: 24px;
+    vertical-align: bottom;
+
+    &.large {
+      font-size: 29px;
+      line-height: 29px;
+      margin-bottom: -2px;
+    }
 
     svg path {
       stroke: white;
