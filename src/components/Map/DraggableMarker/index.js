@@ -78,6 +78,12 @@ const DraggableMarker = (props) => {
     setSpotLayerPoint(latLngToLayerPoint(e.latlng));
     stateRef.popup = {
       ...stateRef.popup,
+      props: {
+        closeCallback: () => {
+          cleanup();
+        },
+        className: "",
+      },
       position: [e.latlng.lat, e.latlng.lng],
       content: (
         <EditSpot
