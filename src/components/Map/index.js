@@ -18,8 +18,11 @@ const Map = ({ spots }) => {
     closeOnClick: true,
   };
 
+  const enableCrosshair =
+    mapState?.id === "addSpot" || mapState?.id === "editSpot";
+
   return (
-    <div className={mapState === "addSpot" ? "crosshair-cursor-enabled" : ""}>
+    <div className={enableCrosshair ? "crosshair-cursor-enabled" : ""}>
       <MapContainer
         center={[51.505, -0.09]}
         zoom={13}

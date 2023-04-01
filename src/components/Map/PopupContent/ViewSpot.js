@@ -5,12 +5,12 @@ import ViewSpotModal from "../../Modal/ViewSpot";
 import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./PopupContent.module.scss";
 
-const ViewSpot = ({ spot }) => {
+const ViewSpot = ({ spot, scaleFactor }) => {
   const { id, name, images } = spot;
   const [, setModal] = useRecoilState(modalState);
 
   const handlePopupClick = () => {
-    setModal(<ViewSpotModal spot={spot} />);
+    setModal(<ViewSpotModal spot={spot} scaleFactor={scaleFactor} />);
   };
 
   return (

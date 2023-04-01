@@ -95,7 +95,7 @@ const SpotForm = ({ id, spot, latlng }) => {
           setAcceptedMediaFiles([]);
           setIsLoading(false);
           setPopup(null);
-          setMapState("default");
+          setMapState(null);
           addSpot(payload);
         })
         .catch(function (error) {

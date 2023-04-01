@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { popupState } from "../../../state";
+import { mapState as mapRecoilState, modalState } from "../../../state";
 import ImageGallery from "react-image-gallery";
 import { GrEdit } from "react-icons/gr";
 import { SiGooglemaps } from "react-icons/si";
@@ -12,24 +12,14 @@ import styles from "./Spot.module.scss";
 
 const ViewSpot = ({ spot }) => {
   const { name, description, coordinates } = spot;
-  const [, setPopup] = useRecoilState(popupState);
+  const [, setMapState] = useRecoilState(mapRecoilState);
+  const [, setModal] = useRecoilState(modalState);
 
-  const handleEditSpotClick = () => {
+  const handleOpenEditSpot = () => {
     // todo: open EditSpot form
-    // do we want to enable marker dragging?
-    // setPopup({
-    //   props: {
-    //     offset: [0, calcOffset(stateRef.scaleFactor)],
-    //     closeOnClick: true,
-    //     closeCallback: () => {
-    //       setPopup(null);
-    //       disableEditing();
-    //     },
-    //     className: popupClassName,
-    //   },
-    //   position: [e.latlng.lat, e.latlng.lng],
-    //   content: <EditSpot spot={spot} />,
-    // });
+    console.log(spot.id);
+    setMapState({ id: "editSpot", spotId: spot.id });
+    setModal(null);
   };
 
   return spot ? (
@@ -67,7 +57,7 @@ const ViewSpot = ({ spot }) => {
         {/* <a href={`/spot/${id}`} className={styles.edit}>
         <FiExternalLink />
       </a> */}
-        <button onClick={handleEditSpotClick}>
+        <button onClick={handleOpenEditSpot}>
           <GrEdit />
         </button>
       </div>

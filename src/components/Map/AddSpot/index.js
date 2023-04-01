@@ -26,7 +26,7 @@ const AddSpot = () => {
     setPopup(null);
     map.off("click");
     map.off("mousemove");
-    setMapState("default");
+    setMapState(null);
     map.state = null;
   };
 
