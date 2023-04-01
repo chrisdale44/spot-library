@@ -1,20 +1,8 @@
 import exifr from "exifr";
 import haversine from "haversine";
-import Dialog from "../../Modal/Dialog";
 import { filterExifData } from "./utils";
 
-const relocatePinDialog = (latLng, relocatePin) => (
-  <Dialog yesCallback={() => relocatePin(latLng)}>
-    <p>Image was taken at different location to pin.</p>
-    <p>Do you want to relocate the pin?</p>
-  </Dialog>
-);
-
-export const handleLocationMismatch = (newCoordinates) => {
-  setModal(relocatePinDialog(newCoordinates, relocatePin));
-};
-
-export const areLocationsWithinRange = (pointA, pointB, range) => {
+const areLocationsWithinRange = (pointA, pointB, range) => {
   const distanceBetweenPoints = haversine(pointA, pointB, { unit: "meter" });
 
   if (distanceBetweenPoints > range) {
@@ -23,7 +11,12 @@ export const areLocationsWithinRange = (pointA, pointB, range) => {
   return true;
 };
 
-export const extractExifData = async (spotLatLng) => {
+export const extractExifData = async (
+  file,
+  fileType,
+  spotLatLng,
+  handleExifLocationMismatch
+) => {
   const newFile = {
     file,
     path: file.path,
@@ -31,7 +24,7 @@ export const extractExifData = async (spotLatLng) => {
     preview: URL.createObjectURL(file),
   };
 
-  await exifr
+  return await exifr
     .parse(file)
     .then((exifData) => {
       console.log(exifData);
@@ -43,7 +36,10 @@ export const extractExifData = async (spotLatLng) => {
             50
           )
         ) {
-          handleLocationMismatch();
+          handleExifLocationMismatch({
+            lat: exifData.latitude,
+            lng: exifData.longitude,
+          });
         }
       }
 
@@ -57,6 +53,4 @@ export const extractExifData = async (spotLatLng) => {
       // exif data failed, push file data anyway
       return newFile;
     });
-
-  return acceptedFiles;
 };

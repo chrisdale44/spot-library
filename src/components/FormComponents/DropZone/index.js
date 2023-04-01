@@ -2,10 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
 import { parseBytes, parseError } from "./helpers";
+import { extractExifData } from "./exif";
 import { bytesInMb } from "./constants";
 import styles from "./DropZone.module.scss";
 
-const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
+const DropZone = ({
+  name,
+  acceptedFiles,
+  setAcceptedFiles,
+  fileType,
+  spotLatLng,
+  handleExifLocationMismatch,
+}) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
@@ -18,7 +26,13 @@ const DropZone = ({ name, acceptedFiles, setAcceptedFiles, fileType }) => {
     const uniqueFiles = [...rejectedFiles];
     for (const file of droppedFiles) {
       if (!uniqueFiles.includes((f) => f.path === file.path)) {
-        await uniqueFiles.push(extractExifData(file, handleLocationMismatch));
+        const newFile = await extractExifData(
+          file,
+          fileType,
+          spotLatLng,
+          handleExifLocationMismatch
+        );
+        uniqueFiles.push(newFile);
       }
     }
 

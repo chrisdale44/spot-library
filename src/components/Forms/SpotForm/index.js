@@ -13,10 +13,10 @@ import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
 import uploadParams from "./uploadParams";
 import styles from "./SpotForm.module.scss";
 
-const SpotForm = ({ id, spot, latlng }) => {
+const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
-  const { addSpot } = useSpotActions();
+  const { addSpot, updateSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
@@ -96,7 +96,11 @@ const SpotForm = ({ id, spot, latlng }) => {
           setIsLoading(false);
           setPopup(null);
           setMapState(null);
-          addSpot(payload);
+          if (!id) {
+            addSpot(payload);
+          } else {
+            updateSpot(payload);
+          }
         })
         .catch(function (error) {
           console.error(error);
@@ -142,6 +146,7 @@ const SpotForm = ({ id, spot, latlng }) => {
                   acceptedFiles={acceptedFiles}
                   setAcceptedFiles={setAcceptedFiles}
                   spotLatLng={latlng}
+                  handleExifLocationMismatch={handleExifLocationMismatch}
                 />
               </React.Fragment>
             );

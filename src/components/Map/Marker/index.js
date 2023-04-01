@@ -14,18 +14,20 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot, ...props }) => {
   const { coordinates, images } = spot;
   const { scale } = useContext(PixiContext);
   const [, setPopup] = useRecoilState(popupState);
-  const [popupClassName, setPopupClassName] = useState();
+  const [popupClassName, setPopupClassName] = useState("");
   const stateRef = useRef();
 
   useEffect(() => {
-    const hasImages = !!images.length;
-    setPopupClassName(
-      cx({
-        "has-images": hasImages,
-        [styles.hasImages]: hasImages,
-      })
-    );
-  }, [images]);
+    if (Object.keys(spot).length) {
+      const hasImages = !!images.length;
+      setPopupClassName(
+        cx({
+          "has-images": hasImages,
+          [styles.hasImages]: hasImages,
+        })
+      );
+    }
+  }, [spot, images]);
 
   const handleDragStart = (e) => {
     stateRef.dragStart = { ...e.global };

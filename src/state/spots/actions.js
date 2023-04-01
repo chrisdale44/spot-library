@@ -1,6 +1,5 @@
 import { useRecoilState } from "recoil";
 import { spotsState } from "./";
-import { parseSpot } from "./utils";
 
 const useSpotActions = () => {
   const [spots, setSpots] = useRecoilState(spotsState);
@@ -10,8 +9,7 @@ const useSpotActions = () => {
   };
 
   const updateSpot = (payload) => {
-    const parsedSpot = parseSpot(payload);
-    setSpots(spots.map((spot) => (spot.id === payload.id ? parsedSpot : spot)));
+    setSpots(spots.map((spot) => (spot.id === payload.id ? payload : spot)));
   };
 
   const deleteSpot = (payload) => {

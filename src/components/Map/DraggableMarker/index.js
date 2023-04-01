@@ -2,16 +2,23 @@ import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { useRecoilState } from "recoil";
 import SpotForm from "../../Forms/SpotForm";
 import Marker from "../Marker";
+import Dialog from "../../Modal/Dialog";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import { mapState as mapRecoilState, popupState } from "../../../state";
+import {
+  mapState as mapRecoilState,
+  popupState,
+  modalState,
+} from "../../../state";
 
 const DraggableMarker = (props) => {
-  const { id, spot, coordinates, x, y } = props;
+  const { spot, x, y } = props;
+  const { id, coordinates } = spot;
   const { map, latLngToLayerPoint } = useContext(PixiContext);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
+  const [, setModal] = useRecoilState(modalState);
   const [spotOpacity, setSpotOpacity] = useState(1);
-  const [spotLayerPoint, setSpotLayerPoint] = useState({ x, y });
+  const [spotLayerPoint, setSpotLayerPoint] = useState();
   const stateRef = useRef();
 
   const relocateMarker = (latLng) => {
@@ -24,12 +31,23 @@ const DraggableMarker = (props) => {
           id={id}
           spot={spot}
           latlng={latLng}
-          relocateMarker={relocateMarker}
+          handleExifLocationMismatch={handleExifLocationMismatch}
         />
       ),
     };
     stateRef.popup.position = [latLng.lat, latLng.lng];
     setPopup(stateRef.popup);
+  };
+
+  const relocateMarkerDialog = (latLng, relocateMarker) => (
+    <Dialog yesCallback={() => relocateMarker(latLng)}>
+      <p>Image was taken at different location to pin.</p>
+      <p>Do you want to relocate the pin?</p>
+    </Dialog>
+  );
+
+  const handleExifLocationMismatch = (newCoordinates) => {
+    setModal(relocateMarkerDialog(newCoordinates, relocateMarker));
   };
 
   const cleanup = () => {
@@ -46,6 +64,7 @@ const DraggableMarker = (props) => {
         closeCallback: () => {
           cleanup();
         },
+        className: "",
       },
       position: coordinates,
       content: (
@@ -53,7 +72,7 @@ const DraggableMarker = (props) => {
           id={id}
           spot={spot}
           latlng={coordinates}
-          relocateMarker={relocateMarker}
+          handleExifLocationMismatch={handleExifLocationMismatch}
         />
       ),
     };
@@ -88,7 +107,7 @@ const DraggableMarker = (props) => {
           id={id}
           spot={spot}
           latlng={e.latlng}
-          relocateMarker={relocateMarker}
+          handleExifLocationMismatch={handleExifLocationMismatch}
         />
       ),
     };
@@ -108,13 +127,19 @@ const DraggableMarker = (props) => {
     map.centerMapToPopup = true;
     map.on("click", handleMapClick);
     map.on("keydown", handleKeyDown);
-    initPopup();
-    setPopup(stateRef.popup);
+    if (x && y && spot) {
+      setSpotLayerPoint({
+        x,
+        y,
+      });
+      initPopup();
+      setPopup(stateRef.popup);
+    }
 
     return () => {
       cleanup();
     };
-  }, []);
+  }, [x, y, spot]);
 
   const eventHandlers = {
     pointerdown: handleDragStart,
@@ -124,7 +149,7 @@ const DraggableMarker = (props) => {
     tap: handleClick,
   };
 
-  return (
+  return spotLayerPoint ? (
     <Marker
       {...props}
       {...eventHandlers}
@@ -132,7 +157,11 @@ const DraggableMarker = (props) => {
       x={spotLayerPoint.x}
       y={spotLayerPoint.y}
     />
-  );
+  ) : null;
+};
+
+DraggableMarker.defaultProps = {
+  spot: {},
 };
 
 export default DraggableMarker;

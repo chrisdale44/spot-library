@@ -5,6 +5,7 @@ import { Container } from "@pixi/react";
 import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
 import MarkersOverlay from "./MarkersOverlay";
+
 // import SearchField from "./SearchField";
 import "leaflet/dist/leaflet.css";
 
@@ -12,7 +13,6 @@ const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
   const [popup] = useRecoilState(popupState);
 
-  // todo: offset scale
   const defaultPopupProps = {
     offset: [0, -26],
     closeOnClick: true,

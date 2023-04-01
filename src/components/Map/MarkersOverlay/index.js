@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Marker from "../Marker";
 import { mapState as mapRecoilState } from "../../../state";
@@ -10,6 +10,7 @@ const MarkersOverlay = ({ spots }) => {
   const { latLngToLayerPoint, scale } = useContext(PixiContext);
   const [mapState] = useRecoilState(mapRecoilState);
   const [markers, setMarkers] = useState([]);
+
   const scaleFactor = calcScaleFactor(scale);
 
   useEffect(() => {
@@ -21,32 +22,39 @@ const MarkersOverlay = ({ spots }) => {
     );
   }, [spots]);
 
-  return markers.length
-    ? markers.map((marker, i) => {
-        const isEditingEnabled =
-          mapState?.id === "editSpot" && mapState?.spotId === marker.id;
+  return (
+    <>
+      {markers.length
+        ? markers.map((marker, i) => {
+            const isEditingEnabled =
+              mapState?.id === "editSpot" && mapState?.spotId === marker.id;
 
-        return isEditingEnabled ? (
-          <DraggableMarker
-            key={i}
-            x={marker.layerPoint.x}
-            y={marker.layerPoint.y}
-            iconColor="#00cc00"
-            scaleFactor={scaleFactor}
-            spot={marker}
-          />
-        ) : (
-          <Marker
-            key={i}
-            x={marker.layerPoint.x}
-            y={marker.layerPoint.y}
-            iconColor="#187bcd"
-            scaleFactor={scaleFactor}
-            spot={marker}
-          />
-        );
-      })
-    : null;
+            return isEditingEnabled ? (
+              <DraggableMarker
+                key={i}
+                x={marker.layerPoint.x}
+                y={marker.layerPoint.y}
+                iconColor="#00cc00"
+                scaleFactor={scaleFactor}
+                spot={marker}
+              />
+            ) : (
+              <Marker
+                key={i}
+                x={marker.layerPoint.x}
+                y={marker.layerPoint.y}
+                iconColor="#187bcd"
+                scaleFactor={scaleFactor}
+                spot={marker}
+              />
+            );
+          })
+        : null}
+      {mapState?.id === "addSpot" ? (
+        <DraggableMarker iconColor="#00cc00" scaleFactor={scaleFactor} />
+      ) : null}
+    </>
+  );
 };
 
 export default MarkersOverlay;

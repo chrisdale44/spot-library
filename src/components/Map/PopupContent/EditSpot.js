@@ -2,6 +2,7 @@ import React from "react";
 import SpotForm from "../../Forms/SpotForm";
 
 const EditSpot = ({ spot }) => {
+  console.log(spot);
   return (
     <SpotForm
       latlng={{ lat: spot.coordinates[0], lng: spot.coordinates[1] }}

@@ -11,14 +11,12 @@ import { IMAGES, MEDIA } from "../../../constants";
 import styles from "./Spot.module.scss";
 
 const ViewSpot = ({ spot }) => {
-  const { name, description, coordinates } = spot;
+  const { id, name, description, coordinates } = spot;
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setModal] = useRecoilState(modalState);
 
   const handleOpenEditSpot = () => {
-    // todo: open EditSpot form
-    console.log(spot.id);
-    setMapState({ id: "editSpot", spotId: spot.id });
+    setMapState({ id: "editSpot", spotId: id });
     setModal(null);
   };
 
