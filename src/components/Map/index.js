@@ -11,7 +11,6 @@ import "leaflet/dist/leaflet.css";
 const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
   const [popup] = useRecoilState(popupState);
-  console.log(popup);
 
   // todo: offset scale
   const defaultPopupProps = {
@@ -27,7 +26,7 @@ const Map = ({ spots }) => {
         minZoom={2}
         scrollWheelZoom={false} // disable default zoom function
         smoothWheelZoom={true} // enable smooth zoom lib
-        smoothSensitivity={10}
+        smoothSensitivity={20}
         style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
         preferCanvas={true}
       >

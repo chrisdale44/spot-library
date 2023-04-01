@@ -1,3 +1,5 @@
+var _ = require("lodash");
+
 L.Map.mergeOptions({
   // @section Mousewheel options
   // @option smoothWheelZoom: Boolean|String = true
@@ -8,21 +10,36 @@ L.Map.mergeOptions({
   // @option smoothWheelZoom: number = 1
   // setting zoom speed
   smoothSensitivity: 1,
+
+  // @option scrollThrottle: number = 50
+  // milliseconds to throttle scroll events by
+  scrollThrottle: 50,
 });
 
 L.Map.SmoothWheelZoom = L.Handler.extend({
   addHooks: function () {
-    L.DomEvent.on(this._map._container, "wheel", this._onWheelScroll, this);
+    L.DomEvent.on(
+      this._map._container,
+      "wheel",
+      _.throttle(this._onWheelScroll, this._map.options.scrollThrottle),
+      this
+    );
   },
 
   removeHooks: function () {
-    L.DomEvent.off(this._map._container, "wheel", this._onWheelScroll, this);
+    L.DomEvent.off(
+      this._map._container,
+      "wheel",
+      _.throttle(this._onWheelScroll, this._map.options.scrollThrottle),
+      this
+    );
   },
 
   _onWheelScroll: function (e) {
     if (!this._isWheeling) {
       this._onWheelStart(e);
     }
+
     this._onWheeling(e);
   },
 

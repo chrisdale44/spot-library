@@ -21,6 +21,7 @@
     "leaflet": "^1.9.3",
     "leaflet-geosearch": "^3.6.1",
     "leaflet-pixi-overlay": "^1.8.2",
+    "lodash": "^4.17.21",
     "lodash.chunk": "^4.2.0",
     "modern-css-reset": "^1.4.0",
     "next": "^12.3.4",
