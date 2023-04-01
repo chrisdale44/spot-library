@@ -1,14 +1,28 @@
 import React from "react";
+import { useRecoilState } from "recoil";
 import SpotForm from "../../Forms/SpotForm";
+import RelocateMarkerDialog from "../../Modal/Dialog/RelocateMarker";
+import { modalState } from "../../../state";
 
-const EditSpot = ({ spot }) => {
-  console.log(spot);
+const EditSpot = ({ spot, latLng, relocateMarker }) => {
+  const { id } = spot;
+  const [, setModal] = useRecoilState(modalState);
+
+  const handleExifLocationMismatch = (newCoordinates) => {
+    setModal(
+      <RelocateMarkerDialog
+        latLng={newCoordinates}
+        relocateMarker={relocateMarker}
+      />
+    );
+  };
+
   return (
     <SpotForm
-      latlng={{ lat: spot.coordinates[0], lng: spot.coordinates[1] }}
-      id={spot.id}
+      id={id}
       spot={spot}
-      relocatePin={() => {}}
+      latlng={latLng}
+      handleExifLocationMismatch={handleExifLocationMismatch}
     />
   );
 };

@@ -33,9 +33,9 @@ export default async function handler(req, res) {
     ];
 
     // add new spot to the spots hash
-    await redis.hset("spots", ...args);
+    const result = await redis.hset("spots", ...args);
 
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, result, id: nextKey });
   } catch (err) {
     console.error(err);
   }

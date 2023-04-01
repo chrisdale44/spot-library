@@ -18,7 +18,6 @@ export default async function handler(req, res) {
   res.status(200);
   try {
     const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
-    console.log(spot.id);
 
     const args = [
       spot.id,
@@ -31,9 +30,9 @@ export default async function handler(req, res) {
     ];
 
     // add new spot to the spots hash
-    await redis.hset("spots", ...args);
+    const result = await redis.hset("spots", ...args);
 
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, result, id: spot.id });
   } catch (err) {
     console.error(err);
   }

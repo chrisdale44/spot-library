@@ -1,22 +1,17 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { useRecoilState } from "recoil";
-import SpotForm from "../../Forms/SpotForm";
 import Marker from "../Marker";
-import Dialog from "../../Modal/Dialog";
+import EditSpot from "../PopupContent/EditSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import {
-  mapState as mapRecoilState,
-  popupState,
-  modalState,
-} from "../../../state";
+import { mapState as mapRecoilState, popupState } from "../../../state";
 
 const DraggableMarker = (props) => {
   const { spot, x, y } = props;
-  const { id, coordinates } = spot;
+  const { coordinates } = spot;
   const { map, latLngToLayerPoint } = useContext(PixiContext);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
-  const [, setModal] = useRecoilState(modalState);
+
   const [spotOpacity, setSpotOpacity] = useState(1);
   const [spotLayerPoint, setSpotLayerPoint] = useState();
   const stateRef = useRef();
@@ -27,27 +22,10 @@ const DraggableMarker = (props) => {
       ...stateRef.popup,
       position: [latLng.lat, latLng.lng],
       content: (
-        <SpotForm
-          id={id}
-          spot={spot}
-          latlng={latLng}
-          handleExifLocationMismatch={handleExifLocationMismatch}
-        />
+        <EditSpot spot={spot} latLng={latLng} relocateMarker={relocateMarker} />
       ),
     };
-    stateRef.popup.position = [latLng.lat, latLng.lng];
     setPopup(stateRef.popup);
-  };
-
-  const relocateMarkerDialog = (latLng, relocateMarker) => (
-    <Dialog yesCallback={() => relocateMarker(latLng)}>
-      <p>Image was taken at different location to pin.</p>
-      <p>Do you want to relocate the pin?</p>
-    </Dialog>
-  );
-
-  const handleExifLocationMismatch = (newCoordinates) => {
-    setModal(relocateMarkerDialog(newCoordinates, relocateMarker));
   };
 
   const cleanup = () => {
@@ -68,11 +46,10 @@ const DraggableMarker = (props) => {
       },
       position: coordinates,
       content: (
-        <SpotForm
-          id={id}
+        <EditSpot
           spot={spot}
-          latlng={coordinates}
-          handleExifLocationMismatch={handleExifLocationMismatch}
+          latLng={{ lat: coordinates[0], lng: coordinates[1] }}
+          relocateMarker={relocateMarker}
         />
       ),
     };
@@ -103,11 +80,10 @@ const DraggableMarker = (props) => {
       ...stateRef.popup,
       position: [e.latlng.lat, e.latlng.lng],
       content: (
-        <SpotForm
-          id={id}
+        <EditSpot
           spot={spot}
-          latlng={e.latlng}
-          handleExifLocationMismatch={handleExifLocationMismatch}
+          latLng={e.latlng}
+          relocateMarker={relocateMarker}
         />
       ),
     };

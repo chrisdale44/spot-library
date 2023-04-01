@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ signature, timestamp });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.send(error);
   }
 }

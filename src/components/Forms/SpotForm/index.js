@@ -52,11 +52,14 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
           (cloudinaryImgData) => {
             // combine cloudinary img data with Exif data
             for (const file of acceptedSpotFiles) {
-              payload.images.push({
-                exif: file.exif,
-                url: cloudinaryImgData.secure_url,
-                created_at: currentTime,
-              });
+              payload.images = [
+                ...payload.images,
+                {
+                  exif: file.exif,
+                  url: cloudinaryImgData.secure_url,
+                  created_at: currentTime,
+                },
+              ];
             }
           }
         )
@@ -72,11 +75,14 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
           (cloudinaryImgData) => {
             // combine cloudinary img data with Exif data
             for (const file of acceptedMediaFiles) {
-              payload.media.push({
-                exif: file.exif,
-                url: cloudinaryImgData.secure_url,
-                created_at: currentTime,
-              });
+              payload.media = [
+                ...payload.media,
+                {
+                  exif: file.exif,
+                  url: cloudinaryImgData.secure_url,
+                  created_at: currentTime,
+                },
+              ];
             }
           }
         )
@@ -88,6 +94,11 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
           const apiUrl = id ? "/api/spot/update" : "/api/spot/create";
           // add spot to redis via api call
           return axios.post(apiUrl, payload);
+        })
+        .then((res) => {
+          if (!id) {
+            payload.id = res.data.id;
+          }
         })
         .finally(() => {
           spotForm.current.reset();

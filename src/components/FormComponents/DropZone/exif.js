@@ -27,7 +27,6 @@ export const extractExifData = async (
   return await exifr
     .parse(file)
     .then((exifData) => {
-      console.log(exifData);
       if (exifData.latitude && exifData.longitude) {
         if (
           !areLocationsWithinRange(
