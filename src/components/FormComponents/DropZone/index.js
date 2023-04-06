@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
 import { useDropzone } from "react-dropzone";
 import { MdDeleteForever } from "react-icons/md";
+import { toastState } from "../../../state";
 import { parseBytes, parseError } from "./helpers";
 import { extractExifData } from "./exif";
 import { bytesInMb } from "./constants";
@@ -14,9 +16,14 @@ const DropZone = ({
   spotLatLng,
   handleExifLocationMismatch,
 }) => {
+  const [, setToast] = useRecoilState(toastState);
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const maxFileSize = 5 * bytesInMb; // 3MB
   const minFileSize = 1000;
+
+  const handleNoLocationDataFound = () => {
+    setToast({ type: "warning", message: "No location data found" });
+  };
 
   const onDropAccepted = async (droppedFiles) => {
     if (!droppedFiles.length) {
@@ -26,12 +33,13 @@ const DropZone = ({
     const uniqueFiles = [...rejectedFiles];
     for (const file of droppedFiles) {
       if (!uniqueFiles.includes((f) => f.path === file.path)) {
-        const newFile = await extractExifData(
+        const newFile = await extractExifData({
           file,
           fileType,
           spotLatLng,
-          handleExifLocationMismatch
-        );
+          handleExifLocationMismatch,
+          handleNoLocationDataFound,
+        });
         uniqueFiles.push(newFile);
       }
     }

@@ -37,7 +37,7 @@ const ViewSpot = ({ spot }) => {
                   loading: "lazy",
                 }))}
                 showPlayButton={false}
-                showFullscreenButton={true}
+                showFullscreenButton={false}
               />
             </div>
           )

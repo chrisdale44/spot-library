@@ -11,12 +11,13 @@ const areLocationsWithinRange = (pointA, pointB, range) => {
   return true;
 };
 
-export const extractExifData = async (
+export const extractExifData = async ({
   file,
   fileType,
   spotLatLng,
-  handleExifLocationMismatch
-) => {
+  handleExifLocationMismatch,
+  handleNoLocationDataFound,
+}) => {
   const newFile = {
     file,
     path: file.path,
@@ -40,6 +41,8 @@ export const extractExifData = async (
             lng: exifData.longitude,
           });
         }
+      } else {
+        handleNoLocationDataFound();
       }
 
       return {

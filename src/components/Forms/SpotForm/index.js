@@ -3,7 +3,11 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { format } from "date-fns";
 import ImageGallery from "react-image-gallery";
-import { mapState as mapRecoilState, popupState } from "../../../state";
+import {
+  mapState as mapRecoilState,
+  popupState,
+  toastState,
+} from "../../../state";
 import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
 import Tabs from "../../Tabs";
@@ -16,6 +20,7 @@ import styles from "./SpotForm.module.scss";
 const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
+  const [, setToast] = useRecoilState(toastState);
   const { addSpot, updateSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
@@ -107,6 +112,7 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
           setIsLoading(false);
           setPopup(null);
           setMapState(null);
+          setToast({ type: "success", message: "Spot saved successfully" });
           if (!id) {
             addSpot(payload);
           } else {
@@ -116,6 +122,7 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
         .catch(function (error) {
           console.error(error);
           setIsLoading(false);
+          setToast({ type: "error", message: "Spot save failed" });
         });
     });
   };
