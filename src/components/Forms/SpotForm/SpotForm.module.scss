@@ -18,5 +18,20 @@
 }
 
 .galleryWrapper {
+  position: relative;
   max-height: 200px;
+}
+
+.removeFileButton {
+  color: #b72020;
+  background: none;
+  border: none;
+  outline: inherit;
+  font-size: 18px;
+  line-height: 18px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  cursor: pointer;
+  z-index: 1;
 }

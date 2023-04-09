@@ -4,9 +4,10 @@ import Marker from "../Marker";
 import EditSpot from "../PopupContent/EditSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { mapState as mapRecoilState, popupState } from "../../../state";
+import { calcOffset } from "../utils";
 
 const DraggableMarker = (props) => {
-  const { spot, x, y } = props;
+  const { spot, x, y, scaleFactor } = props;
   const { coordinates } = spot;
   const { map, latLngToLayerPoint } = useContext(PixiContext);
   const [, setMapState] = useRecoilState(mapRecoilState);
@@ -22,14 +23,18 @@ const DraggableMarker = (props) => {
       ...stateRef.popup,
       position: [latLng.lat, latLng.lng],
       content: (
-        <EditSpot spot={spot} latLng={latLng} relocateMarker={relocateMarker} />
+        <EditSpot
+          spot={spot}
+          latLng={latLng}
+          scaleFactor={scaleFactor}
+          relocateMarker={relocateMarker}
+        />
       ),
     };
     setPopup(stateRef.popup);
   };
 
   const cleanup = () => {
-    setPopup(null);
     map.off("click");
     map.off("mousemove");
     setMapState(null);
@@ -39,6 +44,7 @@ const DraggableMarker = (props) => {
   const initPopup = () => {
     stateRef.popup = {
       props: {
+        offset: [0, calcOffset(scaleFactor)],
         closeCallback: () => {
           cleanup();
         },
@@ -48,6 +54,7 @@ const DraggableMarker = (props) => {
       content: (
         <EditSpot
           spot={spot}
+          scaleFactor={scaleFactor}
           latLng={{ lat: coordinates[0], lng: coordinates[1] }}
           relocateMarker={relocateMarker}
         />
@@ -79,6 +86,7 @@ const DraggableMarker = (props) => {
     stateRef.popup = {
       ...stateRef.popup,
       props: {
+        offset: [0, calcOffset(scaleFactor)],
         closeCallback: () => {
           cleanup();
         },
@@ -89,6 +97,7 @@ const DraggableMarker = (props) => {
         <EditSpot
           spot={spot}
           latLng={e.latlng}
+          scaleFactor={scaleFactor}
           relocateMarker={relocateMarker}
         />
       ),
@@ -101,6 +110,7 @@ const DraggableMarker = (props) => {
     const e = event.originalEvent;
     if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
       cleanup();
+      setPopup(null);
     }
   };
 

@@ -1,33 +1,16 @@
-import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
+import React, { useContext, useRef } from "react";
 import { useRecoilState } from "recoil";
-import classNames from "classnames";
 import { Sprite } from "@pixi/react";
 import ViewSpot from "../PopupContent/ViewSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { popupState } from "../../../state";
-import { getDefaultIcon, calcOffset } from "../utils";
-import styles from "../PopupContent/PopupContent.module.scss";
-
-let cx = classNames.bind(styles);
+import { getDefaultIcon, calcOffset, getPopupClassNames } from "../utils";
 
 const Marker = ({ x, y, scaleFactor, iconColor, spot, ...props }) => {
-  const { coordinates, images } = spot;
+  const { coordinates } = spot;
   const { scale } = useContext(PixiContext);
   const [, setPopup] = useRecoilState(popupState);
-  const [popupClassName, setPopupClassName] = useState("");
   const stateRef = useRef();
-
-  useEffect(() => {
-    if (Object.keys(spot).length) {
-      const hasImages = !!images.length;
-      setPopupClassName(
-        cx({
-          "has-images": hasImages,
-          [styles.hasImages]: hasImages,
-        })
-      );
-    }
-  }, [spot, images]);
 
   const handleDragStart = (e) => {
     stateRef.dragStart = { ...e.global };
@@ -52,11 +35,7 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot, ...props }) => {
       setPopup({
         props: {
           offset: [0, calcOffset(scaleFactor)],
-          closeOnClick: true,
-          closeCallback: () => {
-            setPopup(null);
-          },
-          className: popupClassName,
+          className: getPopupClassNames(spot),
         },
         position: coordinates,
         content: <ViewSpot spot={spot} scaleFactor={scaleFactor} />,
@@ -66,7 +45,7 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot, ...props }) => {
     stateRef.dragStart = null;
   };
 
-  const defaultProps = {
+  const defaultSpriteProps = {
     interactive: true,
     buttonMode: true,
     anchor: [0.5, 1],
@@ -82,7 +61,7 @@ const Marker = ({ x, y, scaleFactor, iconColor, spot, ...props }) => {
 
   return x && y ? (
     <Sprite
-      {...defaultProps}
+      {...defaultSpriteProps}
       {...eventHandlers}
       image={getDefaultIcon(iconColor)}
       x={x}

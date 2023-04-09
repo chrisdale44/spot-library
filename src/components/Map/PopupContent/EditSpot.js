@@ -4,7 +4,7 @@ import SpotForm from "../../Forms/SpotForm";
 import RelocateMarkerDialog from "../../Modal/Dialog/RelocateMarker";
 import { modalState } from "../../../state";
 
-const EditSpot = ({ spot, latLng, relocateMarker }) => {
+const EditSpot = ({ spot, latLng, relocateMarker, scaleFactor }) => {
   const { id } = spot;
   const [, setModal] = useRecoilState(modalState);
 
@@ -22,6 +22,7 @@ const EditSpot = ({ spot, latLng, relocateMarker }) => {
       id={id}
       spot={spot}
       latlng={latLng}
+      scaleFactor={scaleFactor}
       handleExifLocationMismatch={handleExifLocationMismatch}
     />
   );

@@ -11,11 +11,14 @@ import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
-  const [popup] = useRecoilState(popupState);
+  const [popup, setPopup] = useRecoilState(popupState);
 
   const defaultPopupProps = {
     offset: [0, -26],
     closeOnClick: true,
+    closeCallback: () => {
+      setPopup(null);
+    },
   };
 
   const enableCrosshair =

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { format } from "date-fns";
 import ImageGallery from "react-image-gallery";
+import { MdDeleteForever } from "react-icons/md";
 import {
   mapState as mapRecoilState,
   popupState,
@@ -10,14 +11,23 @@ import {
 } from "../../../state";
 import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
+import ViewSpot from "../../Map/PopupContent/ViewSpot";
 import Tabs from "../../Tabs";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import uploadImagesToCloudinary from "./uploadImagesToCloudinary";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
 import uploadParams from "./uploadParams";
+import { getCloudinaryId } from "./utils";
+import { getPopupClassNames, calcOffset } from "../../Map/utils";
 import styles from "./SpotForm.module.scss";
 
-const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
+const SpotForm = ({
+  id,
+  spot,
+  latlng,
+  handleExifLocationMismatch,
+  scaleFactor,
+}) => {
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setToast] = useRecoilState(toastState);
@@ -25,106 +35,175 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
+  const [deletedSpotFiles, setDeletedSpotFiles] = useState([]);
+  const [deletedMediaFiles, setDeletedMediaFiles] = useState([]);
   const spotForm = useRef();
+  const imageGallery = useRef();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    let promises = [];
+    const payload = {
+      ...SPOT_FIELDS,
+      ...spot,
+      name: e.target.name.value,
+      description: e.target.description.value,
+      coordinates: popup.position,
+    };
 
-    // Upload images to Cloudinary
-    const generateSignatureEndpoint = `/api/cloudinary/sign`;
+    if (deletedSpotFiles.length || deletedMediaFiles.length) {
+      if (deletedSpotFiles.length) {
+        // Delete images from cloudinary
+        promises = promises.concat(
+          axios.post("/api/spot/delete", deletedSpotFiles)
+        );
 
-    // Call serverless fn to generate a hexadecimal auth signature from request params
-    // Params should exclude: file, cloud_name, resource_type, api_key
-    axios.post(generateSignatureEndpoint, uploadParams).then(({ data }) => {
-      const payload = {
-        ...SPOT_FIELDS,
-        ...spot,
-        name: e.target.name.value,
-        description: e.target.description.value,
-        coordinates: popup.position,
-      };
-      let promises = [];
-      const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
-
-      // upload images to cloudinary
-      promises = promises.concat(
-        uploadImagesToCloudinary(
-          data,
-          acceptedSpotFiles,
-          uploadParams,
-          setIsLoading,
-          (cloudinaryImgData) => {
-            // combine cloudinary img data with Exif data
-            for (const file of acceptedSpotFiles) {
-              payload.images = [
-                ...payload.images,
-                {
-                  exif: file.exif,
-                  url: cloudinaryImgData.secure_url,
-                  created_at: currentTime,
-                },
-              ];
-            }
-          }
-        )
-      );
-
-      // upload media images to cloudinary
-      promises = promises.concat(
-        uploadImagesToCloudinary(
-          data,
-          acceptedMediaFiles,
-          uploadParams,
-          setIsLoading,
-          (cloudinaryImgData) => {
-            // combine cloudinary img data with Exif data
-            for (const file of acceptedMediaFiles) {
-              payload.media = [
-                ...payload.media,
-                {
-                  exif: file.exif,
-                  url: cloudinaryImgData.secure_url,
-                  created_at: currentTime,
-                },
-              ];
-            }
-          }
-        )
-      );
-
-      // wait for all images to finish uploading
-      Promise.all(promises)
-        .then(() => {
-          const apiUrl = id ? "/api/spot/update" : "/api/spot/create";
-          // add spot to redis via api call
-          return axios.post(apiUrl, payload);
-        })
-        .then((res) => {
-          if (!id) {
-            payload.id = res.data.id;
-          }
-        })
-        .finally(() => {
-          spotForm.current.reset();
-          setAcceptedSpotFiles([]);
-          setAcceptedMediaFiles([]);
-          setIsLoading(false);
-          setPopup(null);
-          setMapState(null);
-          setToast({ type: "success", message: "Spot saved successfully" });
-          if (!id) {
-            addSpot(payload);
-          } else {
-            updateSpot(payload);
-          }
-        })
-        .catch(function (error) {
-          console.error(error);
-          setIsLoading(false);
-          setToast({ type: "error", message: "Spot save failed" });
+        deletedSpotFiles.forEach((cloudinaryId) => {
+          payload[IMAGES] = spot[IMAGES].filter(
+            (img) => img.cloudinaryId !== cloudinaryId
+          );
         });
-    });
+      }
+
+      if (deletedMediaFiles.length) {
+        // Delete media from cloudinary
+        promises = promises.concat(
+          axios.post("/api/spot/delete", deletedMediaFiles)
+        );
+
+        deletedMediaFiles.forEach((cloudinaryId) => {
+          payload[MEDIA] = spot[MEDIA].filter(
+            (img) => img.cloudinaryId !== cloudinaryId
+          );
+        });
+      }
+    }
+
+    if (acceptedSpotFiles.length || acceptedMediaFiles.length) {
+      const generateSignatureEndpoint = `/api/cloudinary/sign`;
+
+      // Call serverless fn to generate a hexadecimal auth signature from request params
+      // Params should exclude: file, cloud_name, resource_type, api_key
+      await axios
+        .post(generateSignatureEndpoint, uploadParams)
+        .then(({ data: signatureData }) => {
+          const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
+
+          // Upload images to cloudinary
+          promises = promises.concat(
+            uploadImagesToCloudinary(
+              signatureData,
+              acceptedSpotFiles,
+              uploadParams,
+              setIsLoading,
+              (cloudinaryImgData) => {
+                // combine cloudinary img data with Exif data
+                for (const file of acceptedSpotFiles) {
+                  payload.images = [
+                    ...payload.images,
+                    {
+                      exif: file.exif,
+                      cloudinaryId: getCloudinaryId(
+                        cloudinaryImgData.secure_url
+                      ),
+                      url: cloudinaryImgData.secure_url,
+                      created_at: currentTime,
+                    },
+                  ];
+                }
+              }
+            )
+          );
+
+          // Upload media images to cloudinary
+          promises = promises.concat(
+            uploadImagesToCloudinary(
+              signatureData,
+              acceptedMediaFiles,
+              uploadParams,
+              setIsLoading,
+              (cloudinaryImgData) => {
+                // combine cloudinary img data with Exif data
+                for (const file of acceptedMediaFiles) {
+                  payload.media = [
+                    ...payload.media,
+                    {
+                      exif: file.exif,
+                      cloudinaryId: getCloudinaryId(
+                        cloudinaryImgData.secure_url
+                      ),
+                      url: cloudinaryImgData.secure_url,
+                      created_at: currentTime,
+                    },
+                  ];
+                }
+              }
+            )
+          );
+        });
+    }
+
+    // Wait for all files to finish uploading/deleting
+    Promise.all(promises)
+      .then(() => {
+        const apiUrl = id ? "/api/spot/update" : "/api/spot/create";
+        // add spot to redis via api call
+        return axios.post(apiUrl, payload);
+      })
+      .then((res) => {
+        if (!id) {
+          payload.id = res.data.id;
+        }
+      })
+      .finally(() => {
+        spotForm.current.reset();
+        setAcceptedSpotFiles([]);
+        setAcceptedMediaFiles([]);
+        setIsLoading(false);
+        setMapState(null);
+        setToast({ type: "success", message: "Spot saved successfully" });
+        setPopup({
+          props: {
+            offset: [0, calcOffset(scaleFactor)],
+            className: getPopupClassNames(payload),
+          },
+          position: payload.coordinates,
+          content: <ViewSpot spot={payload} scaleFactor={scaleFactor} />,
+        });
+        if (!id) {
+          addSpot(payload);
+        } else {
+          updateSpot(payload);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+        setToast({ type: "error", message: "Spot save failed" });
+      });
+  };
+
+  const handleDeleteFile = (spot, type) => {
+    const { cloudinaryId } = spot[type][imageGallery.current.getCurrentIndex()];
+    if (!cloudinaryId) {
+      setToast({
+        type: "warning",
+        message: "Cloudinary ID unknown, delete image manually",
+      });
+      return;
+    }
+
+    if (type === IMAGES) {
+      setDeletedSpotFiles((deletedSpotFiles) => {
+        return [...deletedSpotFiles, cloudinaryId];
+      });
+    } else if (type === MEDIA) {
+      setDeletedMediaFiles((deletedMediaFiles) => [
+        ...deletedMediaFiles,
+        cloudinaryId,
+      ]);
+    }
   };
 
   return (
@@ -143,19 +222,44 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
               type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
             const setAcceptedFiles =
               type === MEDIA ? setAcceptedMediaFiles : setAcceptedSpotFiles;
+            const deletedFiles =
+              type === MEDIA ? deletedMediaFiles : deletedSpotFiles;
 
             return (
               <React.Fragment key={i}>
                 {spot && spot[type]?.length ? (
                   <div className={styles.galleryWrapper}>
                     <ImageGallery
-                      items={spot[type].map((image) => ({
-                        original: image.url,
-                        originalHeight: 200,
-                        loading: "lazy",
-                      }))}
+                      ref={imageGallery}
+                      items={spot[type].reduce((acc, image) => {
+                        // filter files which have been deleted
+                        if (deletedFiles.includes(image.cloudinaryId)) {
+                          return acc;
+                        }
+
+                        return [
+                          ...acc,
+                          {
+                            original: image.url,
+                            originalHeight: 200,
+                            loading: "lazy",
+                            cloudinaryId: image.cloudinaryId,
+                          },
+                        ];
+                      }, [])}
                       showPlayButton={false}
                       showFullscreenButton={false}
+                      renderCustomControls={() => (
+                        <button
+                          type="button"
+                          className={styles.removeFileButton}
+                          onClick={() => {
+                            handleDeleteFile(spot, type);
+                          }}
+                        >
+                          <MdDeleteForever />
+                        </button>
+                      )}
                     />
                   </div>
                 ) : null}
@@ -171,7 +275,7 @@ const SpotForm = ({ id, spot, latlng, handleExifLocationMismatch }) => {
           })}
         </Tabs>
         <button disabled={isLoading} type="submit">
-          {isLoading ? <LoadingSpinner size={22} /> : "Submit"}
+          {isLoading ? <LoadingSpinner size={22} /> : "Save"}
         </button>
       </form>
     </div>
