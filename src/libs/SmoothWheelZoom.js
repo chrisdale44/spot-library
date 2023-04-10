@@ -11,9 +11,9 @@ L.Map.mergeOptions({
   // setting zoom speed
   smoothSensitivity: 1,
 
-  // @option scrollThrottle: number = 50
+  // @option scrollThrottle: number = 100
   // milliseconds to throttle scroll events by
-  scrollThrottle: 50,
+  scrollThrottle: 100,
 });
 
 L.Map.SmoothWheelZoom = L.Handler.extend({
@@ -85,7 +85,7 @@ L.Map.SmoothWheelZoom = L.Handler.extend({
     clearTimeout(this._timeoutId);
     this._timeoutId = setTimeout(this._onWheelEnd.bind(this), 200);
 
-    L.DomEvent.preventDefault(e);
+    // L.DomEvent.preventDefault(e);
     L.DomEvent.stopPropagation(e);
   },
 

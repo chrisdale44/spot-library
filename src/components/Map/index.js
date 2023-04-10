@@ -32,7 +32,7 @@ const Map = ({ spots }) => {
         minZoom={2}
         scrollWheelZoom={false} // disable default zoom function
         smoothWheelZoom={true} // enable smooth zoom lib
-        smoothSensitivity={20}
+        smoothSensitivity={10}
         style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
         preferCanvas={true}
       >
