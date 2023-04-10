@@ -31,7 +31,7 @@ const SpotForm = ({
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setToast] = useRecoilState(toastState);
-  const { addSpot, updateSpot } = useSpotActions();
+  const { addSpot, updateSpot, deleteSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
@@ -56,7 +56,7 @@ const SpotForm = ({
       if (deletedSpotFiles.length) {
         // Delete images from cloudinary
         promises = promises.concat(
-          axios.post("/api/spot/delete", deletedSpotFiles)
+          axios.post("/api/cloudinary/delete", deletedSpotFiles)
         );
 
         deletedSpotFiles.forEach((cloudinaryId) => {
@@ -69,7 +69,7 @@ const SpotForm = ({
       if (deletedMediaFiles.length) {
         // Delete media from cloudinary
         promises = promises.concat(
-          axios.post("/api/spot/delete", deletedMediaFiles)
+          axios.post("/api/cloudinary/delete", deletedMediaFiles)
         );
 
         deletedMediaFiles.forEach((cloudinaryId) => {
@@ -206,6 +206,32 @@ const SpotForm = ({
     }
   };
 
+  const handleDeleteSpot = () => {
+    console.log(id);
+    // open dialog
+
+    // delete images and media from cloudinary
+    const imagesToDelete = spot.images.map(({ url }) => getCloudinaryId(url));
+    const mediaToDelete = spot.media.map(({ url }) => getCloudinaryId(url));
+    if (imagesToDelete.length || mediaToDelete.length) {
+      axios.post("/api/cloudinary/delete", [
+        ...imagesToDelete,
+        ...mediaToDelete,
+      ]);
+    }
+
+    // delete spot from redis
+    axios
+      .post("/api/spot/delete", { id })
+      .then(() => {
+        setPopup(null);
+        deleteSpot(id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className={styles.formWrapper}>
       <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
@@ -274,9 +300,25 @@ const SpotForm = ({
             );
           })}
         </Tabs>
-        <button disabled={isLoading} type="submit">
-          {isLoading ? <LoadingSpinner size={22} /> : "Save"}
-        </button>
+        <div className={styles.buttonWrapper}>
+          {id && (
+            <button
+              disabled={isLoading}
+              type="button"
+              className={styles.deleteSpot}
+              onClick={handleDeleteSpot}
+            >
+              <MdDeleteForever size={22} />
+            </button>
+          )}
+          <button
+            disabled={isLoading}
+            type="submit"
+            className={styles.saveSpot}
+          >
+            {isLoading ? <LoadingSpinner size={22} /> : "Save"}
+          </button>
+        </div>
       </form>
     </div>
   );

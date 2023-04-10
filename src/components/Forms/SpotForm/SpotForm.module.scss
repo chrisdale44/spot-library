@@ -35,3 +35,24 @@
   cursor: pointer;
   z-index: 1;
 }
+
+.buttonWrapper {
+  display: flex;
+  align-items: center;
+
+  button.deleteSpot {
+    flex-grow: 0;
+    padding: 8px 10px;
+    background-color: #3e8bca;
+    color: white;
+    font-weight: 500;
+  }
+
+  button.saveSpot {
+    flex-grow: 1;
+  }
+}
+
+button.deleteSpot[type="button"] {
+  margin-right: 4px;
+}

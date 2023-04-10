@@ -1,8 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  secure: true,
-});
+import { connectToRedis } from "../../../utils";
 
 export const config = {
   api: {
@@ -12,13 +8,14 @@ export const config = {
   },
 };
 
+const redis = connectToRedis();
+
 export default async function handler(req, res) {
-  const filesToDelete = req.body;
+  const { id } = req.body;
 
   try {
-    cloudinary.api.delete_resources(filesToDelete).then((result) => {
-      res.status(200).json({ success: true, result });
-    });
+    const result = await redis.hdel("spots", id);
+    res.status(200).json({ success: true, id });
   } catch (err) {
     console.error(err);
   }
