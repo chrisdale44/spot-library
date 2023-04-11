@@ -11,9 +11,10 @@ L.Map.mergeOptions({
   // setting zoom speed
   smoothSensitivity: 1,
 
-  // @option scrollThrottle: number = 100
+  // @option scrollThrottle: number = 16
   // milliseconds to throttle scroll events by
-  scrollThrottle: 100,
+  // 1000 / 60 = 16
+  scrollThrottle: 16,
 });
 
 L.Map.SmoothWheelZoom = L.Handler.extend({

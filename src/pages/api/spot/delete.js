@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const result = await redis.hdel("spots", id);
-    res.status(200).json({ success: true, id });
+    res.status(200).json({ success: true, id, result });
   } catch (err) {
     console.error(err);
   }

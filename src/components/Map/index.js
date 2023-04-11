@@ -1,6 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { MapContainer, TileLayer, Popup } from "react-leaflet";
+import SearchField from "./SearchField";
 import { Container } from "@pixi/react";
 import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
@@ -32,7 +33,7 @@ const Map = ({ spots }) => {
         minZoom={2}
         scrollWheelZoom={false} // disable default zoom function
         smoothWheelZoom={true} // enable smooth zoom lib
-        smoothSensitivity={10}
+        smoothSensitivity={20}
         style={{ position: "fixed", top: "50px", left: 0, right: 0, bottom: 0 }}
         preferCanvas={true}
       >
@@ -45,6 +46,7 @@ const Map = ({ spots }) => {
             <MarkersOverlay spots={spots} />
           </Container>
         </PixiContainer>
+        <SearchField />
         {popup && (
           <Popup
             {...defaultPopupProps}
