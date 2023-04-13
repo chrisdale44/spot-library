@@ -46,7 +46,7 @@ const Map = ({ spots }) => {
             <MarkersOverlay spots={spots} />
           </Container>
         </PixiContainer>
-        <SearchField />
+        {/* <SearchField /> */}
         {popup && (
           <Popup
             {...defaultPopupProps}

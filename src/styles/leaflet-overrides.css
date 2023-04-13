@@ -57,3 +57,12 @@ button.image-gallery-right-nav svg.image-gallery-svg {
 .image-gallery-content .image-gallery-slide img.image-gallery-image {
   max-height: 400px;
 }
+
+.leaflet-control-container .geosearch form button.reset {
+  position: absolute;
+  right: 6px;
+  top: -2px;
+  background: transparent;
+  border: 0;
+  font-size: 20px;
+}
