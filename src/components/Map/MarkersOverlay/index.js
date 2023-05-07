@@ -53,6 +53,14 @@ const MarkersOverlay = ({ spots }) => {
       {mapState?.id === "addSpot" ? (
         <DraggableMarker iconColor="#00cc00" scaleFactor={scaleFactor} />
       ) : null}
+      {mapState?.id === "searchResultSelected" ? (
+        <DraggableMarker
+          iconColor="#00cc00"
+          scaleFactor={scaleFactor}
+          // x={mapState.result.location.x}
+          // y={mapState.result.location.y}
+        />
+      ) : null}
     </>
   );
 };

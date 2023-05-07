@@ -1,14 +1,20 @@
 import { useEffect } from "react";
-import L from "leaflet";
 import { useMap } from "react-leaflet";
+import { useRecoilState } from "recoil";
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch";
+import { mapState as mapRecoilState } from "../../../state/map";
 
 const SearchField = () => {
   const map = useMap();
+  const [, setMapState] = useRecoilState(mapRecoilState);
 
   useEffect(() => {
-    map.on("geosearch/showlocation", (props) => {
-      console.log("fired", props);
+    map.on("geosearch/showlocation", (result) => {
+      console.log("set draggable marker: ", result);
+      setMapState({
+        id: "searchResultSelected",
+        result,
+      });
     });
 
     const provider = new OpenStreetMapProvider({
@@ -20,31 +26,16 @@ const SearchField = () => {
       },
     });
 
-    const markerIcon = L.icon({
-      iconUrl: "/marker-icon.svg",
-      iconRetinaUrl: "/marker-icon.svg",
-      iconSize: [36, 36],
-      // iconAnchor: [0, 0],
-      popupAnchor: [0, -15],
-    });
-
     const searchControl = new GeoSearchControl({
       provider,
       style: "button",
-      showMarker: true,
-      showPopup: true,
+      showMarker: false,
+      showPopup: false,
       autoClose: false,
       retainZoomLevel: true,
       animateZoom: true,
       keepResult: false,
       searchLabel: "Search",
-      marker: {
-        icon: markerIcon,
-      },
-      popupFormat: ({ query, result }) => {
-        console.log(result);
-        return `<div class="selected-search-result">${result.label}</div>`;
-      },
     });
     map.addControl(searchControl);
     return () => {
