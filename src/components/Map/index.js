@@ -1,10 +1,10 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { MapContainer, TileLayer, Popup } from "react-leaflet";
-import SearchField from "./SearchField";
 import { Container } from "@pixi/react";
 import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
+import SearchField from "./SearchField";
 import MarkersOverlay from "./MarkersOverlay";
 
 // import SearchField from "./SearchField";
@@ -46,7 +46,7 @@ const Map = ({ spots }) => {
             <MarkersOverlay spots={spots} />
           </Container>
         </PixiContainer>
-        {/* <SearchField /> */}
+        <SearchField />
         {popup && (
           <Popup
             {...defaultPopupProps}
