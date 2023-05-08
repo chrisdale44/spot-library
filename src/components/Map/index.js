@@ -6,8 +6,6 @@ import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
 import SearchField from "./SearchField";
 import MarkersOverlay from "./MarkersOverlay";
-
-// import SearchField from "./SearchField";
 import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {

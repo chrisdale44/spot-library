@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { IoFunnelSharp, IoClose } from "react-icons/io5";
-import { GrMapLocation } from "react-icons/gr";
+import { GrMapLocation, GrStreetView } from "react-icons/gr";
 import { BsGrid3X3Gap } from "react-icons/bs";
 import { BiImageAdd } from "react-icons/bi";
 import { RiMapPinAddFill } from "react-icons/ri";
@@ -19,7 +19,7 @@ let cx = classNames.bind(styles);
 const NavBar = ({ sidebar, filteredSpots }) => {
   const [navState, setNavState] = useRecoilState(navRecoilState);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [, setMapState] = useRecoilState(mapRecoilState);
+  const [mapState, setMapState] = useRecoilState(mapRecoilState);
   const toggleSideNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -33,12 +33,21 @@ const NavBar = ({ sidebar, filteredSpots }) => {
     setMapState({ id: "addSpot" });
   };
 
+  const toggleStreetViewCursor = () => {
+    const nextState =
+      mapState?.id === "streetViewCursor" ? null : { id: "streetViewCursor" };
+    setMapState(nextState);
+  };
+
   return (
     <nav className={styles.navBar}>
       <Link href="/" passHref>
         <h1>SpotMapper</h1>
       </Link>
       <div className={styles.iconWrapper}>
+        <button className={cx(styles.icon, styles.streetView)}>
+          <GrStreetView onClick={toggleStreetViewCursor} />
+        </button>
         <button
           className={cx(styles.icon, styles.large)}
           type="button"

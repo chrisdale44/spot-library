@@ -37,6 +37,7 @@ const DraggableMarker = (props) => {
   const cleanup = () => {
     map.off("click");
     map.off("mousemove");
+    map.on("keydown");
     setMapState(null);
     map.centerMapToPopup = false;
   };

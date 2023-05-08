@@ -35,6 +35,10 @@
     line-height: 24px;
     vertical-align: bottom;
 
+    &.streetView {
+      margin-bottom: -1px;
+    }
+
     &.large {
       font-size: 29px;
       line-height: 29px;
