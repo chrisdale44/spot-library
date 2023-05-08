@@ -1,6 +1,4 @@
-import React from "react";
 import classNames from "classnames";
-import jsxToString from "jsx-to-string";
 import styles from "./PopupContent/PopupContent.module.scss";
 
 let cx = classNames.bind(styles);
