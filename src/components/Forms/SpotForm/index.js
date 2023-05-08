@@ -13,6 +13,8 @@ import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
 import ViewSpot from "../../Map/PopupContent/ViewSpot";
 import Tabs from "../../Tabs";
+import TagWithX from "../../Tag/TagWithX.js";
+import ComboBox from "../../ComboBox";
 import LoadingSpinner from "../../SVGs/LoadingSpinner";
 import uploadImagesToCloudinary from "./uploadImagesToCloudinary";
 import { SPOT_FIELDS, IMAGES, MEDIA } from "../../../constants";
@@ -37,6 +39,11 @@ const SpotForm = ({
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
   const [deletedSpotFiles, setDeletedSpotFiles] = useState([]);
   const [deletedMediaFiles, setDeletedMediaFiles] = useState([]);
+  const [tags, setTags] = useState([
+    { id: "1", name: "abacusabcas" },
+    { id: "2", name: "b" },
+    { id: "3", name: "chris" },
+  ]);
   const spotForm = useRef();
   const imageGallery = useRef();
 
@@ -232,6 +239,10 @@ const SpotForm = ({
       });
   };
 
+  const handleRemoveTag = () => {};
+
+  const handleTagSelection = () => {};
+
   return (
     <div className={styles.formWrapper}>
       <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
@@ -300,6 +311,26 @@ const SpotForm = ({
             );
           })}
         </Tabs>
+        {/* TagsWithX */}
+        {tags && (
+          <div className={styles.tagsWrapper}>
+            {tags.map((tag, i) => (
+              <TagWithX
+                key={i}
+                tag={tag}
+                onDelete={() => handleRemoveTag(tag.id)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* ComboBox */}
+        <ComboBox
+          allOptions={tags}
+          onSelection={handleTagSelection}
+          placeholder="Add tag"
+        />
+
         <div className={styles.buttonWrapper}>
           {id && (
             <button

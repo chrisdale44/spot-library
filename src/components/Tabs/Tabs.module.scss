@@ -3,6 +3,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
+  margin-top: 6px;
 }
 
 .radiotab {
@@ -11,13 +12,15 @@
 }
 
 .label {
-  border: 1px solid #ccc;
+  border: 1px solid #1e74bc;
   cursor: pointer;
   padding: 12px;
+  color: #333;
 }
 
 .label.checked {
-  background: #ccc;
+  background: #1e74bc;
+  color: white;
 }
 
 .panel {

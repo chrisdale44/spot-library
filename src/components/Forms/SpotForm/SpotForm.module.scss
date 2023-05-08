@@ -43,7 +43,7 @@
   button.deleteSpot {
     flex-grow: 0;
     padding: 8px 10px;
-    background-color: #3e8bca;
+    background-color: #ce4d41;
     color: white;
     font-weight: 500;
   }
@@ -55,4 +55,12 @@
 
 button.deleteSpot[type="button"] {
   margin-right: 4px;
+}
+
+.tagsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 10px 0;
 }

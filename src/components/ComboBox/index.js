@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 import PropTypes from "prop-types";
 import styles from "./ComboBox.module.scss";
 
-const ComboBox = ({ allOptions, onSelection, onClear }) => {
+const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
   const filterOptions = (options, value) =>
     value
       ? options.filter(({ name }) => name.toLowerCase().includes(value))
@@ -33,6 +33,7 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
       }
     }
   };
+
   const handleClick = (event) => {
     event.persist();
     onSelection({
@@ -43,7 +44,8 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
     setIsFocused(false);
   };
 
-  const handleClear = () => {
+  const handleClear = (e) => {
+    e.stopPropagation();
     setValue("");
     if (onClear) onClear();
   };
@@ -71,9 +73,11 @@ const ComboBox = ({ allOptions, onSelection, onClear }) => {
         onChange={handleInputChange}
         onKeyDown={handleOnKeyDown}
         onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder={placeholder}
       />
       {value && (
-        <button className={styles.clear} onClick={handleClear}>
+        <button type="button" className={styles.clear} onClick={handleClear}>
           <IoClose />
         </button>
       )}

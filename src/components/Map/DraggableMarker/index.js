@@ -37,7 +37,7 @@ const DraggableMarker = (props) => {
   const cleanup = () => {
     map.off("click");
     map.off("mousemove");
-    map.on("keydown");
+    map.off("keydown");
     setMapState(null);
     map.centerMapToPopup = false;
   };
@@ -48,6 +48,7 @@ const DraggableMarker = (props) => {
         offset: [0, calcOffset(scaleFactor)],
         closeCallback: () => {
           cleanup();
+          setPopup(null);
         },
         className: "",
       },
@@ -90,6 +91,7 @@ const DraggableMarker = (props) => {
         offset: [0, calcOffset(scaleFactor)],
         closeCallback: () => {
           cleanup();
+          setPopup(null);
         },
         className: "",
       },

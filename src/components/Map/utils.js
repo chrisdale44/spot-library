@@ -3,6 +3,7 @@ import styles from "./PopupContent/PopupContent.module.scss";
 
 let cx = classNames.bind(styles);
 
+// todo: find better way of importing svg's to pixiJS
 export const getDefaultIcon = (color) => {
   const svgIcon = `
     <svg 

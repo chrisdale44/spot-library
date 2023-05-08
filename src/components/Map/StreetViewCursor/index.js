@@ -35,9 +35,11 @@ const StreetViewCursor = ({ scaleFactor }) => {
   const handleMapClick = (e) => {
     const streetViewUrl = getStreetViewLink([e.latlng.lat, e.latlng.lng]);
     window.open(streetViewUrl, "_blank").focus();
+    cleanup();
   };
 
   const handleKeyDown = (event) => {
+    console.log("handleKeydown");
     // todo: Why does this only work after clicking the map?
     const e = event.originalEvent;
     if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {

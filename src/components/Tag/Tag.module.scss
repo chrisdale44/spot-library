@@ -1,17 +1,15 @@
 .tag {
   position: relative;
-  background-color: #3e8bca;
+  background-color: #83b4dd;
   display: inline-block;
   color: white;
-  padding: 10px 12px;
-  margin-right: 6px;
-  margin-bottom: 6px;
+  padding: 6px 8px;
   text-align: center;
-  border: none;
-  cursor: pointer;
+  flex-grow: 1;
+  border-radius: 5px;
+  font-size: 12px;
 
   &.withX {
-    padding-right: 24px;
     cursor: auto;
   }
 
@@ -23,11 +21,11 @@
 button.close {
   border: none;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -4px;
+  right: -4px;
   color: white;
   background: transparent;
-  padding: 2px;
+  padding: 6px;
   svg {
     height: 14px;
     width: 14px;
