@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { format } from "date-fns";
@@ -8,6 +8,7 @@ import {
   mapState as mapRecoilState,
   popupState,
   toastState,
+  tagsState,
 } from "../../../state";
 import useSpotActions from "../../../state/spots/actions";
 import DropZone from "../../FormComponents/DropZone";
@@ -33,19 +34,28 @@ const SpotForm = ({
   const [popup, setPopup] = useRecoilState(popupState);
   const [, setMapState] = useRecoilState(mapRecoilState);
   const [, setToast] = useRecoilState(toastState);
+  const [tags, setTags] = useRecoilState(tagsState);
   const { addSpot, updateSpot, deleteSpot } = useSpotActions();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedSpotFiles, setAcceptedSpotFiles] = useState([]);
   const [acceptedMediaFiles, setAcceptedMediaFiles] = useState([]);
   const [deletedSpotFiles, setDeletedSpotFiles] = useState([]);
   const [deletedMediaFiles, setDeletedMediaFiles] = useState([]);
-  const [tags, setTags] = useState([
-    { id: "1", name: "abacusabcas" },
-    { id: "2", name: "b" },
-    { id: "3", name: "chris" },
-  ]);
+  const [spotTags, setSpotTags] = useState([]);
   const spotForm = useRef();
   const imageGallery = useRef();
+
+  useEffect(() => {
+    console.log(tags);
+  }, []);
+
+  useEffect(() => {
+    console.log(spotTags);
+  }, [spotTags]);
+
+  useEffect(() => {
+    if (spot.tags) setSpotTags(spot.tags);
+  }, [spot.tags]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +67,7 @@ const SpotForm = ({
       name: e.target.name.value,
       description: e.target.description.value,
       coordinates: popup.position,
+      tags: spotTags,
     };
 
     if (deletedSpotFiles.length || deletedMediaFiles.length) {
@@ -215,7 +226,7 @@ const SpotForm = ({
 
   const handleDeleteSpot = () => {
     console.log(id);
-    // open dialog
+    // todo: open dialog
 
     // delete images and media from cloudinary
     const imagesToDelete = spot.images.map(({ url }) => getCloudinaryId(url));
@@ -239,9 +250,35 @@ const SpotForm = ({
       });
   };
 
-  const handleRemoveTag = () => {};
+  const handleRemoveTag = (tagId) => {
+    setSpotTags((prevSpotTags) =>
+      prevSpotTags.filter((tag) => tag.id === tagId)
+    );
+  };
 
-  const handleTagSelection = () => {};
+  const handleTagSelection = (tag) => {
+    setSpotTags((prevSpotTags) => [...prevSpotTags, tag]);
+  };
+
+  const handleAddTag = (value) => {
+    if (!value) return;
+
+    const alreadyAdded = spotTags.find(({ name }) => name === value);
+    if (alreadyAdded) return;
+
+    const existingTag = tags.find(({ name }) => name === value);
+    if (existingTag) {
+      setSpotTags((prevSpotTags) => [...prevSpotTags, existingTag]);
+    } else {
+      const nextId = tags.length
+        ? tags[tags.length - 1].id + spotTags.length + 1
+        : 0;
+      setSpotTags((prevSpotTags) => [
+        ...prevSpotTags,
+        { id: nextId, name: value },
+      ]);
+    }
+  };
 
   return (
     <div className={styles.formWrapper}>
@@ -312,9 +349,9 @@ const SpotForm = ({
           })}
         </Tabs>
         {/* TagsWithX */}
-        {tags && (
+        {spotTags.length ? (
           <div className={styles.tagsWrapper}>
-            {tags.map((tag, i) => (
+            {spotTags.map((tag, i) => (
               <TagWithX
                 key={i}
                 tag={tag}
@@ -322,12 +359,13 @@ const SpotForm = ({
               />
             ))}
           </div>
-        )}
+        ) : null}
 
         {/* ComboBox */}
         <ComboBox
           allOptions={tags}
           onSelection={handleTagSelection}
+          onAddTag={handleAddTag}
           placeholder="Add tag"
         />
 

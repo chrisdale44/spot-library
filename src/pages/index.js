@@ -38,7 +38,8 @@ function StateHandler({ spots }) {
 
   useEffect(() => {
     setSpots(spots);
-    setTagsState();
+    // todo: get tags from redis or by filtering spots?
+    // setTagsState([]);
   }, [setSpots, spots]);
 
   return <Home />;

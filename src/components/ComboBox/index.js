@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa";
 import PropTypes from "prop-types";
 import styles from "./ComboBox.module.scss";
 
-const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
+const ComboBox = ({
+  allOptions,
+  onSelection,
+  onClear,
+  onAddTag,
+  placeholder,
+}) => {
   const filterOptions = (options, value) =>
     value
       ? options.filter(({ name }) => name.toLowerCase().includes(value))
       : options;
 
   const [value, setValue] = useState("");
-  const [options, setOptions] = useState(filterOptions(allOptions, value));
+  const [options, setOptions] = useState(
+    allOptions?.length ? filterOptions(allOptions, value) : []
+  );
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
@@ -27,7 +36,7 @@ const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
     event.persist();
     if (event.keyCode === 13) {
       event.preventDefault();
-      onSelection({ name: event.target.value });
+      onAddTag(event.target.value);
       if (!onClear) {
         setValue("");
       }
@@ -37,8 +46,8 @@ const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
   const handleClick = (event) => {
     event.persist();
     onSelection({
-      name: event.target.dataset.value,
       id: event.target.dataset.id,
+      name: event.target.dataset.value,
     });
     setValue("");
     setIsFocused(false);
@@ -63,25 +72,28 @@ const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
   };
 
   return (
-    <div className={styles.combobox}>
-      <input
-        type="text"
-        name="tag"
-        value={value}
-        autoComplete={"off"}
-        className={styles.comboInput}
-        onChange={handleInputChange}
-        onKeyDown={handleOnKeyDown}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
-      />
-      {value && (
-        <button type="button" className={styles.clear} onClick={handleClear}>
-          <IoClose />
-        </button>
-      )}
-      {isFocused && options.length ? (
+    <div className={styles.comboBox}>
+      <div className={styles.inputWrapper}>
+        <input
+          type="text"
+          name="tag"
+          value={value}
+          autoComplete={"off"}
+          className={styles.comboInput}
+          onChange={handleInputChange}
+          onKeyDown={handleOnKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder={placeholder}
+        />
+        {value && (
+          <button type="button" className={styles.clear} onClick={handleClear}>
+            <IoClose />
+          </button>
+        )}
+      </div>
+
+      {isFocused && options?.length ? (
         <ul className={styles.dropdown}>
           {options.map((option) => (
             <li
@@ -96,13 +108,26 @@ const ComboBox = ({ allOptions, onSelection, onClear, placeholder }) => {
           ))}
         </ul>
       ) : null}
+      <button
+        type="button"
+        className={styles.add}
+        onClick={() => {
+          onAddTag(value);
+          setValue("");
+        }}
+      >
+        <FaPlus />
+      </button>
     </div>
   );
 };
 
 ComboBox.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.object),
+  allOptions: PropTypes.arrayOf(PropTypes.object),
   onSelection: PropTypes.func.isRequired,
+  onClear: PropTypes.func,
+  onAddTag: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
 };
 
 export default ComboBox;

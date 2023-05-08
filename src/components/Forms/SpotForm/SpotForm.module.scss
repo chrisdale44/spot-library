@@ -46,15 +46,14 @@
     background-color: #ce4d41;
     color: white;
     font-weight: 500;
+    border-radius: 2px;
+    margin-right: 4px;
   }
 
   button.saveSpot {
     flex-grow: 1;
+    border-radius: 2px;
   }
-}
-
-button.deleteSpot[type="button"] {
-  margin-right: 4px;
 }
 
 .tagsWrapper {
