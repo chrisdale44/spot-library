@@ -23,7 +23,9 @@ const Map = ({ spots }) => {
   };
 
   const enableCrosshair =
-    mapState?.id === "addSpot" || mapState?.id === "editSpot";
+    mapState?.id === "addSpot" ||
+    mapState?.id === "editSpot" ||
+    mapState?.id === "searchResultSelected";
 
   return (
     <div className={enableCrosshair ? "crosshair-cursor-enabled" : ""}>
@@ -44,9 +46,10 @@ const Map = ({ spots }) => {
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0 }}>
             <MarkersOverlay spots={spots} />
+            <SearchField />
           </Container>
         </PixiContainer>
-        <SearchField />
+
         {popup && (
           <Popup
             {...defaultPopupProps}

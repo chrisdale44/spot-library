@@ -1,19 +1,25 @@
-import { useEffect } from "react";
-import { useMap } from "react-leaflet";
+import { useEffect, useContext } from "react";
 import { useRecoilState } from "recoil";
+import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch";
 import { mapState as mapRecoilState } from "../../../state/map";
 
 const SearchField = () => {
-  const map = useMap();
+  const { map, latLngToLayerPoint } = useContext(PixiContext);
   const [, setMapState] = useRecoilState(mapRecoilState);
 
   useEffect(() => {
     map.on("geosearch/showlocation", (result) => {
       console.log("set draggable marker: ", result);
+      const { x, y, label } = result.location;
       setMapState({
         id: "searchResultSelected",
-        result,
+        coordinates: [y, x],
+        layerPoint: latLngToLayerPoint({
+          lat: y,
+          lng: x,
+        }),
+        label,
       });
     });
 
@@ -32,6 +38,8 @@ const SearchField = () => {
       showMarker: false,
       showPopup: false,
       autoClose: false,
+      updateMap: true,
+      maxMarker: 5,
       retainZoomLevel: true,
       animateZoom: true,
       keepResult: false,

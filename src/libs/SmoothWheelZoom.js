@@ -45,7 +45,6 @@ L.Map.SmoothWheelZoom = L.Handler.extend({
   },
 
   _onWheelStart: function (e) {
-    console.log("wheelstart");
     var map = this._map;
     this._isWheeling = true;
     this._wheelMousePosition = map.mouseEventToContainerPoint(e);
@@ -71,7 +70,6 @@ L.Map.SmoothWheelZoom = L.Handler.extend({
   },
 
   _onWheeling: function (e) {
-    console.log("wheeling");
     var map = this._map;
 
     this._goalZoom =

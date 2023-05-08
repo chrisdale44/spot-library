@@ -16,7 +16,6 @@ div.leaflet-popup-content {
   width: auto !important;
   min-width: 160px;
   max-width: 320px;
-  max-height: 160px;
   margin: 0;
 }
 

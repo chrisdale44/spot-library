@@ -5,12 +5,13 @@ import EditSpot from "../PopupContent/EditSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { mapState as mapRecoilState, popupState } from "../../../state";
 import { calcOffset } from "../utils";
+import styles from "../PopupContent/PopupContent.module.scss";
 
 const DraggableMarker = (props) => {
   const { spot, x, y, scaleFactor } = props;
   const { coordinates } = spot;
   const { map, latLngToLayerPoint } = useContext(PixiContext);
-  const [, setMapState] = useRecoilState(mapRecoilState);
+  const [mapState, setMapState] = useRecoilState(mapRecoilState);
   const [, setPopup] = useRecoilState(popupState);
 
   const [spotOpacity, setSpotOpacity] = useState(1);
@@ -66,6 +67,7 @@ const DraggableMarker = (props) => {
     map.dragging.disable();
     map.closePopup(null, true);
     map.on("mousemove", (e) => {
+      console.log("mousemove");
       setSpotLayerPoint(latLngToLayerPoint(e.latlng));
     });
     setSpotOpacity(0.7);
@@ -117,6 +119,7 @@ const DraggableMarker = (props) => {
   useEffect(() => {
     // used for determining popup panning function
     map.centerMapToPopup = true;
+
     map.on("click", handleMapClick);
     map.on("keydown", handleKeyDown);
     if (x && y && spot) {
@@ -124,14 +127,16 @@ const DraggableMarker = (props) => {
         x,
         y,
       });
-      initPopup();
-      setPopup(stateRef.popup);
+      if (mapState.id !== "searchResultSelected") {
+        initPopup();
+        setPopup(stateRef.popup);
+      }
     }
 
     return () => {
       cleanup();
     };
-  }, [x, y, spot]);
+  }, []);
 
   const eventHandlers = {
     pointerdown: handleDragStart,

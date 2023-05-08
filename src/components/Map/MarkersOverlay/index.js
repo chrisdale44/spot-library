@@ -57,8 +57,9 @@ const MarkersOverlay = ({ spots }) => {
         <DraggableMarker
           iconColor="#00cc00"
           scaleFactor={scaleFactor}
-          // x={mapState.result.location.x}
-          // y={mapState.result.location.y}
+          x={mapState.layerPoint.x}
+          y={mapState.layerPoint.y}
+          spot={{ coordinates: mapState.coordinates }}
         />
       ) : null}
     </>
