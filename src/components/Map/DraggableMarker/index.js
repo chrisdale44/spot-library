@@ -5,7 +5,6 @@ import EditSpot from "../PopupContent/EditSpot";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { mapState as mapRecoilState, popupState } from "../../../state";
 import { calcOffset } from "../utils";
-import styles from "../PopupContent/PopupContent.module.scss";
 
 const DraggableMarker = (props) => {
   const { spot, x, y, scaleFactor } = props;
@@ -67,7 +66,6 @@ const DraggableMarker = (props) => {
     map.dragging.disable();
     map.closePopup(null, true);
     map.on("mousemove", (e) => {
-      console.log("mousemove");
       setSpotLayerPoint(latLngToLayerPoint(e.latlng));
     });
     setSpotOpacity(0.7);

@@ -64,6 +64,10 @@ button.image-gallery-right-nav svg.image-gallery-svg {
   max-height: 400px;
 }
 
+.leaflet-control-geosearch form {
+  padding-right: 24px;
+}
+
 .leaflet-control-container .geosearch form button.reset {
   position: absolute;
   right: 6px;
