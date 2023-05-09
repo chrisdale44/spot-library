@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { format } from "date-fns";
 import ImageGallery from "react-image-gallery";
 import { MdDeleteForever } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
 import {
   mapState as mapRecoilState,
   popupState,
@@ -24,6 +25,7 @@ import { getCloudinaryId } from "./utils";
 import { getPopupClassNames, calcOffset } from "../../Map/utils";
 import styles from "./SpotForm.module.scss";
 
+// todo: how can this mega-component be broken down?
 const SpotForm = ({
   id,
   spot,
@@ -250,9 +252,13 @@ const SpotForm = ({
       });
   };
 
-  const handleRemoveTag = (tagId) => {
+  const handleRemoveTag = (e, tagId) => {
+    e.stopPropagation();
     setSpotTags((prevSpotTags) =>
-      prevSpotTags.filter((tag) => tag.id === tagId)
+      [...prevSpotTags].filter((tag) => {
+        console.log(tag.id, tag.id == tagId);
+        return tag.id != tagId;
+      })
     );
   };
 
@@ -270,9 +276,9 @@ const SpotForm = ({
     if (existingTag) {
       setSpotTags((prevSpotTags) => [...prevSpotTags, existingTag]);
     } else {
-      const nextId = tags.length
-        ? tags[tags.length - 1].id + spotTags.length + 1
-        : 0;
+      const nextId =
+        (tags.length ? tags[tags.length - 1].id + 1 : 0) + spotTags.length;
+
       setSpotTags((prevSpotTags) => [
         ...prevSpotTags,
         { id: nextId, name: value },
@@ -348,24 +354,19 @@ const SpotForm = ({
             );
           })}
         </Tabs>
-        {/* TagsWithX */}
+
         {spotTags.length ? (
           <div className={styles.tagsWrapper}>
             {spotTags.map((tag, i) => (
-              <TagWithX
-                key={i}
-                tag={tag}
-                onDelete={() => handleRemoveTag(tag.id)}
-              />
+              <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />
             ))}
           </div>
         ) : null}
-
-        {/* ComboBox */}
         <ComboBox
           allOptions={tags}
           onSelection={handleTagSelection}
-          onAddTag={handleAddTag}
+          submitIcon={<FaPlus />}
+          onSubmit={handleAddTag}
           placeholder="Add tag"
         />
 

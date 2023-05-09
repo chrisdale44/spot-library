@@ -36,13 +36,15 @@ const SideBarNav = ({ sidebarOpen, filteredSpots }) => {
           <MdBrokenImage />
         </FilterToggle>
         <button type="button" className={styles.clear} onClick={clearFilters}>
-          Clear All
+          Clear Filters
         </button>
       </div>
       <ComboBox
         allOptions={spotNames}
         onSelection={handleSelection}
         onClear={handleSearchClear}
+        onSubmit={() => {}}
+        placeholder="Search spots"
       />
       {tags && tags.map((tag, i) => <Tag tag={tag} key={i} />)}
     </nav>

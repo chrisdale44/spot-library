@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
-import { FaPlus } from "react-icons/fa";
 import PropTypes from "prop-types";
 import styles from "./ComboBox.module.scss";
 
@@ -8,7 +7,8 @@ const ComboBox = ({
   allOptions,
   onSelection,
   onClear,
-  onAddTag,
+  onSubmit,
+  submitIcon,
   placeholder,
 }) => {
   const filterOptions = (options, value) =>
@@ -36,7 +36,7 @@ const ComboBox = ({
     event.persist();
     if (event.keyCode === 13) {
       event.preventDefault();
-      onAddTag(event.target.value);
+      onSubmit(event.target.value);
       if (!onClear) {
         setValue("");
       }
@@ -108,16 +108,18 @@ const ComboBox = ({
           ))}
         </ul>
       ) : null}
-      <button
-        type="button"
-        className={styles.add}
-        onClick={() => {
-          onAddTag(value);
-          setValue("");
-        }}
-      >
-        <FaPlus />
-      </button>
+      {submitIcon && (
+        <button
+          type="button"
+          className={styles.add}
+          onClick={() => {
+            onSubmit(value);
+            setValue("");
+          }}
+        >
+          {submitIcon}
+        </button>
+      )}
     </div>
   );
 };
@@ -126,7 +128,8 @@ ComboBox.propTypes = {
   allOptions: PropTypes.arrayOf(PropTypes.object),
   onSelection: PropTypes.func.isRequired,
   onClear: PropTypes.func,
-  onAddTag: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  submitIcon: PropTypes.node,
   placeholder: PropTypes.string,
 };
 

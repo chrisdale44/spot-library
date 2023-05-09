@@ -11,7 +11,7 @@ const TagWithX = ({ tag, onDelete }) => (
     <button
       className={styles.close}
       type="button"
-      onClick={() => onDelete(tag.id)}
+      onClick={(e) => onDelete(e, tag.id)}
     >
       <IoClose />
     </button>
