@@ -42,6 +42,35 @@ npm run start
 
 redis-cli flushdb
 
+## Create backup snapshot (dump.rdb) from Redis DB
+
+- Locally
+
+  - redis-cli
+  - save
+
+- Remotely
+  - redis-cli -u <REDIS_URL> --rdb dump.rdb
+
+## Restore Redis DB from snapshot
+
+- Ensure appendonly config is off
+  - redis-cli
+  - config get appendonly
+- Stop redis (as it overwrites dump.rdb on exit)
+  - brew services stop redis
+- Find location of Redis DB snapshots (./redis_backup)
+  - redis-cli
+  - config get dir
+- Rename current dump.rdb
+- Copy new dump.rdb into directory
+- Restart Redis
+  - brew services start redis
+
+## Export Redis DB to JSON file
+
+- Todo
+
 ## Benchmarking:
 
 Simple SSG index page with list of ~2000 spots
