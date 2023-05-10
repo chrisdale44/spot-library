@@ -15,7 +15,6 @@ const redis = connectToRedis();
 export default async function handler(req, res) {
   const spot = req.body;
 
-  res.status(200);
   try {
     const currentTime = format(Date.now(), "yyyy-MM-dd HH:mm:ss.SS");
 

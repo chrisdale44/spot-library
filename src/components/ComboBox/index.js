@@ -45,10 +45,7 @@ const ComboBox = ({
 
   const handleClick = (event) => {
     event.persist();
-    onSelection({
-      id: event.target.dataset.id,
-      name: event.target.dataset.value,
-    });
+    onSelection(event.target.dataset.id);
     setValue("");
     setIsFocused(false);
   };

@@ -43,7 +43,7 @@ const SearchField = () => {
       retainZoomLevel: true,
       animateZoom: true,
       keepResult: false,
-      searchLabel: "Search",
+      searchLabel: "Search address",
     });
     map.addControl(searchControl);
     return () => {

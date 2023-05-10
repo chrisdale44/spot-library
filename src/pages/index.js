@@ -32,41 +32,65 @@ function Home() {
   );
 }
 
-function StateHandler({ spots }) {
+function StateHandler({ spots, tags }) {
   const [, setSpots] = useRecoilState(spotsState);
   const [, setTagsState] = useRecoilState(tagsState);
 
   useEffect(() => {
     setSpots(spots);
-    // todo: get tags from redis or by filtering spots?
-    // setTagsState([]);
+    setTagsState(tags);
   }, [setSpots, spots]);
 
   return <Home />;
 }
 
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   try {
-    const response = await fetch(process.env.API_DOMAIN + "/api/spots/read", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    });
-    const spots = await response.json();
+    const spotsResponse = await fetch(
+      process.env.API_DOMAIN + "/api/spots/read",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      }
+    );
+    const spots = await spotsResponse.json();
 
-    if (!response.ok || response.status !== 200) {
-      console.error("API request failed");
+    if (!spotsResponse.ok || spotsResponse.status !== 200) {
+      console.error("API request failed: /api/spots/read");
       return {
         props: {},
       };
     }
-    console.log("API request successful");
+
+    const tagsResponse = await fetch(
+      process.env.API_DOMAIN + "/api/tags/read",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      }
+    );
+    const tags = await tagsResponse.json();
+
+    if (!tagsResponse.ok || tagsResponse.status !== 200) {
+      console.error("API request failed: /api/tags/read");
+      return {
+        props: {},
+      };
+    }
+
+    console.log("API requests successful");
     return {
       props: {
         spots,
+        tags,
       },
+      revalidate: 60,
     };
   } catch (e) {
     console.error(e);
@@ -74,6 +98,6 @@ export async function getStaticProps() {
       props: {},
     };
   }
-}
+};
 
 export default StateHandler;

@@ -25,7 +25,7 @@ import { getCloudinaryId } from "./utils";
 import { getPopupClassNames, calcOffset } from "../../Map/utils";
 import styles from "./SpotForm.module.scss";
 
-// todo: how can this mega-component be broken down?
+// todo: can this mega-component be broken down?
 const SpotForm = ({
   id,
   spot,
@@ -44,19 +44,16 @@ const SpotForm = ({
   const [deletedSpotFiles, setDeletedSpotFiles] = useState([]);
   const [deletedMediaFiles, setDeletedMediaFiles] = useState([]);
   const [spotTags, setSpotTags] = useState([]);
+  const [newTags, setNewTags] = useState([]);
   const spotForm = useRef();
   const imageGallery = useRef();
 
   useEffect(() => {
-    console.log(tags);
-  }, []);
-
-  useEffect(() => {
-    console.log(spotTags);
-  }, [spotTags]);
-
-  useEffect(() => {
-    if (spot.tags) setSpotTags(spot.tags);
+    if (spot.tags) {
+      setSpotTags(
+        spot.tags.map((tagId) => tags.find((tag) => tag.id === tagId))
+      );
+    }
   }, [spot.tags]);
 
   const handleSubmit = async (e) => {
@@ -69,8 +66,13 @@ const SpotForm = ({
       name: e.target.name.value,
       description: e.target.description.value,
       coordinates: popup.position,
-      tags: spotTags,
+      tags: spotTags.map((tag) => tag.id),
     };
+
+    if (newTags.length) {
+      promises = promises.concat(axios.post("/api/tags/create", newTags));
+      setTags([...tags, ...newTags]);
+    }
 
     if (deletedSpotFiles.length || deletedMediaFiles.length) {
       if (deletedSpotFiles.length) {
@@ -255,34 +257,35 @@ const SpotForm = ({
   const handleRemoveTag = (e, tagId) => {
     e.stopPropagation();
     setSpotTags((prevSpotTags) =>
-      [...prevSpotTags].filter((tag) => {
-        console.log(tag.id, tag.id == tagId);
-        return tag.id != tagId;
-      })
+      [...prevSpotTags].filter(({ id }) => id !== tagId)
     );
+    if (newTags.find(({ id }) => id === tagId)) {
+      setNewTags((prevNewTags) =>
+        [...prevNewTags].filter(({ id }) => id !== tagId)
+      );
+    }
+    // todo: clear unused tags from redis
   };
 
-  const handleTagSelection = (tag) => {
-    setSpotTags((prevSpotTags) => [...prevSpotTags, tag]);
+  const handleTagSelection = (tagId) => {
+    setSpotTags((prevSpotTags) => [...prevSpotTags, tagId]);
   };
 
   const handleAddTag = (value) => {
     if (!value) return;
-
-    const alreadyAdded = spotTags.find(({ name }) => name === value);
-    if (alreadyAdded) return;
+    if (newTags.find(({ name }) => name === value)) return;
 
     const existingTag = tags.find(({ name }) => name === value);
+
     if (existingTag) {
-      setSpotTags((prevSpotTags) => [...prevSpotTags, existingTag]);
+      if (spotTags.find(({ id }) => id === existingTag.id)) return;
+      setSpotTags((prevSpotTags) => [...prevSpotTags, existingTag.id]);
     } else {
       const nextId =
-        (tags.length ? tags[tags.length - 1].id + 1 : 0) + spotTags.length;
-
-      setSpotTags((prevSpotTags) => [
-        ...prevSpotTags,
-        { id: nextId, name: value },
-      ]);
+        (tags.length ? tags[tags.length - 1].id + 1 : 0) + newTags.length;
+      const newTag = { id: nextId, name: value };
+      setSpotTags((prevSpotTags) => [...prevSpotTags, newTag]);
+      setNewTags((prevNewTags) => [...prevNewTags, newTag]);
     }
   };
 
@@ -357,9 +360,9 @@ const SpotForm = ({
 
         {spotTags.length ? (
           <div className={styles.tagsWrapper}>
-            {spotTags.map((tag, i) => (
-              <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />
-            ))}
+            {spotTags.map((tag, i) => {
+              return <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />;
+            })}
           </div>
         ) : null}
         <ComboBox
