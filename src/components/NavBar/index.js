@@ -16,7 +16,7 @@ import styles from "./NavBar.module.scss";
 
 let cx = classNames.bind(styles);
 
-const NavBar = ({ sidebar, filteredSpots }) => {
+const NavBar = ({ sidebar }) => {
   const [navState, setNavState] = useRecoilState(navRecoilState);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mapState, setMapState] = useRecoilState(mapRecoilState);
@@ -71,9 +71,7 @@ const NavBar = ({ sidebar, filteredSpots }) => {
           </button>
         )}
       </div>
-      {sidebar && (
-        <SideBarNav sidebarOpen={sidebarOpen} filteredSpots={filteredSpots} />
-      )}
+      {sidebar && <SideBarNav sidebarOpen={sidebarOpen} />}
     </nav>
   );
 };

@@ -1,15 +1,15 @@
 import { useRecoilState } from "recoil";
-import { tagsState } from "./";
+import { selectedTagsState } from "./";
 
 const useTagActions = () => {
-  const [tags, setTags] = useRecoilState(tagsState);
+  const [selectedTags, setSelectedTags] = useRecoilState(selectedTagsState);
 
   const selectTag = (payload) => {
-    setTags([...tags, payload]);
+    setSelectedTags([...selectedTags, payload]);
   };
 
   const deselectTag = (payload) => {
-    setTags(tags.filter((id) => id !== payload));
+    setSelectedTags(selectedTags.filter((id) => id !== payload));
   };
 
   return { selectTag, deselectTag };

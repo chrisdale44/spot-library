@@ -1,3 +1,11 @@
+.tagsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 8px 0;
+}
+
 .tag {
   position: relative;
   background-color: #83b4dd;

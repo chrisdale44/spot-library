@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import dynamic from "next/dynamic";
-import { spotsState, tagsState, selectedFiltersState } from "../state";
+import {
+  spotsState,
+  tagsState,
+  selectedFiltersState,
+  filteredSpotsState,
+} from "../state";
 import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
@@ -13,16 +18,14 @@ const Map = dynamic(() => import("../components/Map/index"), { ssr: false });
 function Home() {
   const [spots] = useRecoilState(spotsState);
   const [selectedFilters] = useRecoilState(selectedFiltersState);
-  const [filteredSpots, setFilteredSpots] = useState(
-    filterSpots(spots, selectedFilters)
-  );
+  const [filteredSpots, setFilteredSpots] = useRecoilState(filteredSpotsState);
 
   useEffect(() => {
     setFilteredSpots(filterSpots(spots, selectedFilters));
   }, [spots, selectedFilters]);
 
   return (
-    <PageTemplate filteredSpots={filteredSpots}>
+    <PageTemplate>
       <Map id="map" spots={filteredSpots} />
 
       <div id="grid" className={styles.gridContainer}>

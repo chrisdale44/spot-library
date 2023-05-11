@@ -24,6 +24,7 @@ import uploadParams from "./uploadParams";
 import { getCloudinaryId } from "./utils";
 import { getPopupClassNames, calcOffset } from "../../Map/utils";
 import styles from "./SpotForm.module.scss";
+import tagStyles from "../../Tag/Tag.module.scss";
 
 // todo: can this mega-component be broken down?
 const SpotForm = ({
@@ -303,7 +304,7 @@ const SpotForm = ({
           {[
             <>
               {spotTags.length ? (
-                <div className={styles.tagsWrapper}>
+                <div className={tagStyles.tagsWrapper}>
                   {spotTags.map((tag, i) => {
                     return (
                       <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />

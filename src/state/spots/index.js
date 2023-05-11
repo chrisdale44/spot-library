@@ -5,4 +5,9 @@ const spotsState = atom({
   default: [],
 });
 
-export { spotsState };
+const filteredSpotsState = atom({
+  key: "filteredSpotsState",
+  default: [],
+});
+
+export { spotsState, filteredSpotsState };

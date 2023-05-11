@@ -9,11 +9,11 @@ import styles from "./PageTemplate.module.scss";
 
 let cx = classNames.bind(styles);
 
-const PageTemplate = ({ children, filteredSpots }) => {
+const PageTemplate = ({ children }) => {
   const [navState] = useRecoilState(navRecoilState);
   return (
     <>
-      <NavBar sidebar={true} filteredSpots={filteredSpots} />
+      <NavBar sidebar={true} />
       <main>
         {children.map((child, i) => {
           const {
