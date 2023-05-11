@@ -1,4 +1,4 @@
-var _ = require("lodash");
+import throttle from "lodash.throttle";
 
 L.Map.mergeOptions({
   // @section Mousewheel options
@@ -22,7 +22,7 @@ L.Map.SmoothWheelZoom = L.Handler.extend({
     L.DomEvent.on(
       this._map._container,
       "wheel",
-      _.throttle(this._onWheelScroll, this._map.options.scrollThrottle),
+      throttle(this._onWheelScroll, this._map.options.scrollThrottle),
       this
     );
   },
@@ -31,7 +31,7 @@ L.Map.SmoothWheelZoom = L.Handler.extend({
     L.DomEvent.off(
       this._map._container,
       "wheel",
-      _.throttle(this._onWheelScroll, this._map.options.scrollThrottle),
+      throttle(this._onWheelScroll, this._map.options.scrollThrottle),
       this
     );
   },
