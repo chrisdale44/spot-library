@@ -302,7 +302,7 @@ const SpotForm = ({
         />
         <Tabs headings={["Tags", "Images", "Media"]}>
           {[
-            <>
+            <React.Fragment key={0}>
               {spotTags.length ? (
                 <div className={tagStyles.tagsWrapper}>
                   {spotTags.map((tag, i) => {
@@ -319,7 +319,7 @@ const SpotForm = ({
                 onSubmit={handleAddTag}
                 placeholder="Add tag"
               />
-            </>,
+            </React.Fragment>,
           ].concat(
             [IMAGES, MEDIA].map((type, i) => {
               const acceptedFiles =
@@ -330,7 +330,7 @@ const SpotForm = ({
                 type === MEDIA ? deletedMediaFiles : deletedSpotFiles;
 
               return (
-                <React.Fragment key={i}>
+                <React.Fragment key={i + 1}>
                   {spot && spot[type]?.length ? (
                     <div className={styles.galleryWrapper}>
                       <ImageGallery

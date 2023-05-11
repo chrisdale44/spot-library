@@ -9,11 +9,11 @@ import { modalState } from "../../../state";
 import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./Tile.module.scss";
 
-const Tile = ({ item }) => {
-  const { id, name, images, coordinates } = item;
+const Tile = ({ spot }) => {
+  const { id, name, images, coordinates } = spot;
   const [, setModal] = useRecoilState(modalState);
   const handleClick = (id) => {
-    setModal(<ViewSpot id={id} />);
+    setModal(<ViewSpot spot={spot} />);
   };
 
   return (
@@ -44,8 +44,8 @@ const Tile = ({ item }) => {
   );
 };
 
-Tile.protoTypes = {
-  spot: PropTypes.object,
+Tile.propTypes = {
+  spot: PropTypes.object.isRequired,
 };
 
 export default Tile;

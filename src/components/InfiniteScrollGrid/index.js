@@ -37,8 +37,8 @@ const InfiniteScrollGrid = ({ items, chunkSize }) => {
     }
   };
 
-  const grid = displayedSpots.map((item, i) => (
-    <Tile key={i} index={i} item={item} />
+  const grid = displayedSpots.map((spot, i) => (
+    <Tile key={i} index={i} spot={spot} />
   ));
   grid.push(<Sentinel key={"s"} onChange={handleInfiniteScroll} />);
   return <div className={styles.gridContainer}>{grid}</div>;
