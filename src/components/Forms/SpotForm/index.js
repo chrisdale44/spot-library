@@ -268,7 +268,6 @@ const SpotForm = ({
   };
 
   const handleTagSelection = (tag) => {
-    console.log(tag);
     setSpotTags((prevSpotTags) => [...prevSpotTags, tag]);
   };
 
@@ -300,79 +299,85 @@ const SpotForm = ({
           placeholder="Description"
           defaultValue={spot?.description}
         />
-        <Tabs headings={["Spot", "Media"]}>
-          {[IMAGES, MEDIA].map((type, i) => {
-            const acceptedFiles =
-              type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
-            const setAcceptedFiles =
-              type === MEDIA ? setAcceptedMediaFiles : setAcceptedSpotFiles;
-            const deletedFiles =
-              type === MEDIA ? deletedMediaFiles : deletedSpotFiles;
+        <Tabs headings={["Tags", "Images", "Media"]}>
+          {[
+            <>
+              {spotTags.length ? (
+                <div className={styles.tagsWrapper}>
+                  {spotTags.map((tag, i) => {
+                    return (
+                      <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />
+                    );
+                  })}
+                </div>
+              ) : null}
+              <ComboBox
+                allOptions={tags}
+                onSelection={handleTagSelection}
+                submitIcon={<FaPlus />}
+                onSubmit={handleAddTag}
+                placeholder="Add tag"
+              />
+            </>,
+          ].concat(
+            [IMAGES, MEDIA].map((type, i) => {
+              const acceptedFiles =
+                type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
+              const setAcceptedFiles =
+                type === MEDIA ? setAcceptedMediaFiles : setAcceptedSpotFiles;
+              const deletedFiles =
+                type === MEDIA ? deletedMediaFiles : deletedSpotFiles;
 
-            return (
-              <React.Fragment key={i}>
-                {spot && spot[type]?.length ? (
-                  <div className={styles.galleryWrapper}>
-                    <ImageGallery
-                      ref={imageGallery}
-                      items={spot[type].reduce((acc, image) => {
-                        // filter files which have been deleted
-                        if (deletedFiles.includes(image.cloudinaryId)) {
-                          return acc;
-                        }
+              return (
+                <React.Fragment key={i}>
+                  {spot && spot[type]?.length ? (
+                    <div className={styles.galleryWrapper}>
+                      <ImageGallery
+                        ref={imageGallery}
+                        items={spot[type].reduce((acc, image) => {
+                          // filter files which have been deleted
+                          if (deletedFiles.includes(image.cloudinaryId)) {
+                            return acc;
+                          }
 
-                        return [
-                          ...acc,
-                          {
-                            original: image.url,
-                            originalHeight: 200,
-                            loading: "lazy",
-                            cloudinaryId: image.cloudinaryId,
-                          },
-                        ];
-                      }, [])}
-                      showPlayButton={false}
-                      showFullscreenButton={false}
-                      renderCustomControls={() => (
-                        <button
-                          type="button"
-                          className={styles.removeFileButton}
-                          onClick={() => {
-                            handleDeleteFile(spot, type);
-                          }}
-                        >
-                          <MdDeleteForever />
-                        </button>
-                      )}
-                    />
-                  </div>
-                ) : null}
-                <DropZone
-                  fileType={type}
-                  acceptedFiles={acceptedFiles}
-                  setAcceptedFiles={setAcceptedFiles}
-                  spotLatLng={latlng}
-                  handleExifLocationMismatch={handleExifLocationMismatch}
-                />
-              </React.Fragment>
-            );
-          })}
+                          return [
+                            ...acc,
+                            {
+                              original: image.url,
+                              originalHeight: 200,
+                              loading: "lazy",
+                              cloudinaryId: image.cloudinaryId,
+                            },
+                          ];
+                        }, [])}
+                        showPlayButton={false}
+                        showFullscreenButton={false}
+                        renderCustomControls={() => (
+                          <button
+                            type="button"
+                            className={styles.removeFileButton}
+                            onClick={() => {
+                              handleDeleteFile(spot, type);
+                            }}
+                          >
+                            <MdDeleteForever />
+                          </button>
+                        )}
+                      />
+                    </div>
+                  ) : null}
+                  <DropZone
+                    fileType={type}
+                    acceptedFiles={acceptedFiles}
+                    setAcceptedFiles={setAcceptedFiles}
+                    spotLatLng={latlng}
+                    handleExifLocationMismatch={handleExifLocationMismatch}
+                  />
+                </React.Fragment>
+              );
+            })
+          )}
         </Tabs>
-
-        {spotTags.length ? (
-          <div className={styles.tagsWrapper}>
-            {spotTags.map((tag, i) => {
-              return <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />;
-            })}
-          </div>
-        ) : null}
-        <ComboBox
-          allOptions={tags}
-          onSelection={handleTagSelection}
-          submitIcon={<FaPlus />}
-          onSubmit={handleAddTag}
-          placeholder="Add tag"
-        />
 
         <div className={styles.buttonWrapper}>
           {id && (
