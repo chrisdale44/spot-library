@@ -7,6 +7,7 @@
   justify-content: flex-start;
   width: 100%;
   margin-top: 6px;
+  border-bottom: 1px solid #3e8bca;
 }
 
 .radiotab {
@@ -15,20 +16,24 @@
 }
 
 .label {
-  border: 1px solid #1e74bc;
+  border: 1px solid transparent;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   cursor: pointer;
   padding: 12px;
-  color: #333;
+  color: #3e8bca;
+  margin-bottom: -1px;
 }
 
 .label.checked {
-  background: #1e74bc;
-  color: white;
+  color: #333;
+  border-color: #3e8bca #3e8bca #fff;
 }
 
 .tabContent {
   position: relative;
   display: flex;
+  margin: 8px 0;
 }
 
 .panel {
