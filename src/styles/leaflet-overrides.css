@@ -9,7 +9,6 @@
 div.leaflet-popup-content-wrapper {
   padding: 0;
   position: relative;
-  /* overflow: hidden; */
 }
 
 div.leaflet-popup-content {
