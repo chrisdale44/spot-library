@@ -32,22 +32,32 @@ const ComboBox = ({
     setOptions(filterOptions(allOptions, event.target.value));
   };
 
-  const handleOnKeyDown = (event) => {
-    event.persist();
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      onSubmit(event.target.value);
+  const handleOnKeyDown = (e) => {
+    e.persist();
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      onSubmit(e.target.value);
       if (!onClear) {
         setValue("");
       }
     }
   };
 
-  const handleClick = (event) => {
-    event.persist();
-    onSelection(event.target.dataset.id);
+  const handleClick = (e) => {
+    e.persist();
+    e.stopPropagation();
+
+    const { id, value } = e.target.dataset;
+    onSelection({ id, name: value });
     setValue("");
     setIsFocused(false);
+  };
+
+  const handleClickOutside = (e) => {
+    e.persist();
+    if (!e.relatedTarget.className.includes(styles.option)) {
+      setIsFocused(false);
+    }
   };
 
   const handleClear = (e) => {
@@ -80,7 +90,7 @@ const ComboBox = ({
           onChange={handleInputChange}
           onKeyDown={handleOnKeyDown}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleClickOutside}
           placeholder={placeholder}
         />
         {value && (
@@ -99,6 +109,7 @@ const ComboBox = ({
               data-value={option.name}
               data-id={option.id}
               onClick={handleClick}
+              tabIndex="0"
             >
               {boldenString(option.name, value)}
             </li>

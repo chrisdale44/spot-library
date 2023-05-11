@@ -267,8 +267,9 @@ const SpotForm = ({
     // todo: clear unused tags from redis
   };
 
-  const handleTagSelection = (tagId) => {
-    setSpotTags((prevSpotTags) => [...prevSpotTags, tagId]);
+  const handleTagSelection = (tag) => {
+    console.log(tag);
+    setSpotTags((prevSpotTags) => [...prevSpotTags, tag]);
   };
 
   const handleAddTag = (value) => {
