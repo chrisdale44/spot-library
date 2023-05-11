@@ -1,15 +1,25 @@
 import { useRecoilState } from "recoil";
-import { selectedTagsState } from "./";
+import { selectedFiltersState } from "../filters";
+import useFilterActions from "../filters/actions";
 
 const useTagActions = () => {
-  const [selectedTags, setSelectedTags] = useRecoilState(selectedTagsState);
+  const { selectFilter } = useFilterActions();
+  const [selectedFilters] = useRecoilState(selectedFiltersState);
+  const selectedTags = selectedFilters.find(({ id }) => id === "selectedTags");
+  const selectedTagsPayload = selectedTags?.payload || [];
 
   const selectTag = (payload) => {
-    setSelectedTags([...selectedTags, payload]);
+    selectFilter({
+      id: "selectedTags",
+      payload: [...selectedTagsPayload, payload],
+    });
   };
 
   const deselectTag = (payload) => {
-    setSelectedTags(selectedTags.filter((id) => id !== payload));
+    selectFilter({
+      id: "selectedTags",
+      payload: selectedTagsPayload.filter((id) => id !== payload),
+    });
   };
 
   return { selectTag, deselectTag };

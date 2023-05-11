@@ -16,6 +16,7 @@ import styles from "../styles/Home.module.scss";
 const Map = dynamic(() => import("../components/Map/index"), { ssr: false });
 
 function Home() {
+  // todo: minimise usage of useRecoil state in components by writing more actions
   const [spots] = useRecoilState(spotsState);
   const [selectedFilters] = useRecoilState(selectedFiltersState);
   const [filteredSpots, setFilteredSpots] = useRecoilState(filteredSpotsState);

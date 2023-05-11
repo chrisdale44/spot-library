@@ -5,9 +5,4 @@ const tagsState = atom({
   default: [],
 });
 
-const selectedTagsState = atom({
-  key: "selectedTagsState",
-  default: [],
-});
-
-export { tagsState, selectedTagsState };
+export { tagsState };

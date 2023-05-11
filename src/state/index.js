@@ -1,6 +1,6 @@
 import { spotsState, filteredSpotsState } from "./spots";
 import { selectedFiltersState } from "./filters";
-import { tagsState, selectedTagsState } from "./tags";
+import { tagsState } from "./tags";
 import { toastState } from "./toast";
 import { modalState } from "./modal";
 import { navState } from "./nav";
@@ -12,7 +12,6 @@ export {
   filteredSpotsState,
   selectedFiltersState,
   tagsState,
-  selectedTagsState,
   toastState,
   modalState,
   navState,

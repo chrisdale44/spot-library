@@ -10,10 +10,22 @@ const useFilterActions = () => {
   };
 
   const selectFilter = ({ id, payload }) => {
-    setSelectedFilters([...selectedFilters, { id, payload }]);
+    const existingFilter = selectedFilters.find(
+      ({ id: filterId }) => filterId === id
+    );
+
+    if (existingFilter) {
+      setSelectedFilters(
+        selectedFilters.map((filter) =>
+          filter.id === id ? { id, payload } : filter
+        )
+      );
+    } else {
+      setSelectedFilters([...selectedFilters, { id, payload }]);
+    }
   };
 
-  const deselectFilter = ({ id }) => {
+  const deselectFilter = ({ id, payload }) => {
     setSelectedFilters(selectedFilters.filter((filter) => filter.id !== id));
   };
 

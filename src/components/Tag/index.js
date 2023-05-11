@@ -1,24 +1,18 @@
 import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
+import useTagActions from "../../state/tags/actions";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import styles from "./Tag.module.scss";
 let cx = classNames.bind(styles);
 
 const Tag = ({ tag }) => {
-  // const dispatch = useDispatch();
+  const { selectTag, deselectTag } = useTagActions();
   const [selected, setSelected] = useState(false);
   const handleClick = (id) => {
     if (selected) {
-      // dispatch({
-      //   type: "DESELECT_TAG",
-      //   payload: id,
-      // });
+      deselectTag(id);
     } else {
-      // dispatch({
-      //   type: "SELECT_TAG",
-      //   payload: id,
-      // });
+      selectTag(id);
     }
     setSelected(!selected);
   };
