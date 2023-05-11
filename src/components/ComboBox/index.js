@@ -55,9 +55,10 @@ const ComboBox = ({
 
   const handleClickOutside = (e) => {
     e.persist();
-    if (!e.relatedTarget.className.includes(styles.option)) {
-      setIsFocused(false);
+    if (e?.relatedTarget?.className.includes(styles.option)) {
+      return;
     }
+    setIsFocused(false);
   };
 
   const handleClear = (e) => {

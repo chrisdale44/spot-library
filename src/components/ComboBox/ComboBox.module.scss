@@ -42,10 +42,12 @@
   z-index: 1;
   max-height: 80vh;
   overflow-y: scroll;
+  font-size: 12px;
+  max-height: 150px;
 
   .option {
     line-height: 1em;
-    padding: 4px 8px;
+    padding: 8px;
     text-decoration: none;
   }
   .option:hover {
