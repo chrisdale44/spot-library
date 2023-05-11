@@ -1,4 +1,7 @@
 .tabs {
+}
+
+.tabHeadings {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -23,11 +26,17 @@
   color: white;
 }
 
+.tabContent {
+  position: relative;
+  display: flex;
+}
+
 .panel {
-  display: none;
+  visibility: hidden;
   width: 100%;
+  margin-right: -100%;
 }
 
 .panel.checked {
-  display: block;
+  visibility: visible;
 }
