@@ -12,7 +12,10 @@ import { createRoot } from "@pixi/react";
 import { useRecoilBridgeAcrossReactRoots_UNSTABLE } from "recoil";
 
 // create pixi container
-const container = new PIXI.Container({ backgroundAlpha: 0 });
+const container = new PIXI.Container({
+  backgroundAlpha: 0,
+  useContextAlpha: true,
+});
 // const boundary = new PIXI.EventBoundary(container); // Todo: stop pixi layer click events propagating down to map layer
 // create  root
 const root = createRoot(container);
@@ -36,7 +39,11 @@ export function PixiContainer({ children }) {
         renderer.render(container);
       },
       container,
-      { backgroundAlpha: 0, shouldRedrawOnMove: () => true }
+      {
+        backgroundAlpha: 0,
+        useContextAlpha: true,
+        shouldRedrawOnMove: () => true,
+      }
     )
   );
 

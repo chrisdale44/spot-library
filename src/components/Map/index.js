@@ -42,7 +42,7 @@ const Map = ({ spots }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <PixiContainer>
-          <Container options={{ backgroundAlpha: 0 }}>
+          <Container options={{ backgroundAlpha: 0, useContextAlpha: true }}>
             {/* <MarkersOverlay spots={spots} /> */}
             {/* <SearchField /> */}
           </Container>
