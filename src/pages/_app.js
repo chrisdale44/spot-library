@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import ErrorBoundary from "../components/ErrorBoundary";
 import { useEffect, useState } from "react";
 import { RecoilRoot } from "recoil";
 import Head from "next/head";
@@ -23,15 +24,17 @@ function MyApp({ Component, pageProps }) {
   }, [root]);
 
   return (
-    <RecoilRoot>
-      {process.env.NODE_ENV === "development" && (
-        <RecoilizeDebugger root={root} />
-      )}
-      <Head>
-        <title>Spot Mapper</title>
-      </Head>
-      <Component {...pageProps} />
-    </RecoilRoot>
+    <ErrorBoundary key={"1"}>
+      <RecoilRoot>
+        {process.env.NODE_ENV === "development" && (
+          <RecoilizeDebugger root={root} />
+        )}
+        <Head>
+          <title>Spot Mapper</title>
+        </Head>
+        <Component {...pageProps} />
+      </RecoilRoot>
+    </ErrorBoundary>
   );
 }
 

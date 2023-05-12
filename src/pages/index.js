@@ -10,6 +10,7 @@ import {
 import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
+import { connectToRedis } from "../utils";
 import styles from "../styles/Home.module.scss";
 
 // do not load Leaflet map on server as it uses window object
@@ -50,49 +51,22 @@ function StateHandler({ spots, tags }) {
 
 export const getStaticProps = async () => {
   try {
-    const spotsResponse = await fetch(
-      process.env.API_DOMAIN + "/api/spots/read",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      }
+    const redis = connectToRedis();
+    const spotsHash = await redis.hgetall("spots");
+    const tagsHash = await redis.hgetall("tags");
+
+    const spotsArray = Object.keys(spotsHash).map((key) =>
+      JSON.parse(spotsHash[key])
     );
-    const spots = await spotsResponse.json();
+    const tagsArray = Object.keys(tagsHash).map((key) => ({
+      id: parseInt(key),
+      name: tagsHash[key],
+    }));
 
-    if (!spotsResponse.ok || spotsResponse.status !== 200) {
-      console.error("API request failed: /api/spots/read");
-      return {
-        props: {},
-      };
-    }
-
-    const tagsResponse = await fetch(
-      process.env.API_DOMAIN + "/api/tags/read",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      }
-    );
-    const tags = await tagsResponse.json();
-
-    if (!tagsResponse.ok || tagsResponse.status !== 200) {
-      console.error("API request failed: /api/tags/read");
-      return {
-        props: {},
-      };
-    }
-
-    console.log("API requests successful");
     return {
       props: {
-        spots,
-        tags,
+        spots: spotsArray,
+        tags: tagsArray,
       },
       revalidate: 60,
     };
