@@ -1,4 +1,4 @@
-// import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { RecoilRoot } from "recoil";
 import Head from "next/head";
@@ -6,12 +6,15 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   const [root, setRoot] = useState(null);
-  // const RecoilizeDebugger = dynamic(
-  //   () => {
-  //     return import("recoilize");
-  //   },
-  //   { ssr: false }
-  // );
+  let RecoilizeDebugger;
+  if (process.env.NODE_ENV === "development") {
+    RecoilizeDebugger = dynamic(
+      () => {
+        return import("recoilize");
+      },
+      { ssr: false }
+    );
+  }
 
   useEffect(() => {
     if (typeof window.document !== "undefined") {
@@ -21,7 +24,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <RecoilRoot>
-      {/* <RecoilizeDebugger root={root} /> */}
+      {process.env.NODE_ENV === "development" && (
+        <RecoilizeDebugger root={root} />
+      )}
       <Head>
         <title>Spot Mapper</title>
       </Head>
