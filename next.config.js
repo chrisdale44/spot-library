@@ -7,4 +7,5 @@ module.exports = {
   experimental: {
     esmExternals: "loose",
   },
+  productionBrowserSourceMaps: true,
 };
