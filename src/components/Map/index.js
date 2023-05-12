@@ -41,12 +41,12 @@ const Map = ({ spots }) => {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <PixiContainer>
+        {/* <PixiContainer>
           <Container options={{ backgroundAlpha: 0 }}>
             <MarkersOverlay spots={spots} />
             <SearchField />
           </Container>
-        </PixiContainer>
+        </PixiContainer> */}
 
         {popup && (
           <Popup
