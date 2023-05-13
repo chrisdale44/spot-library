@@ -43,8 +43,8 @@ const Map = ({ spots }) => {
         />
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0, useContextAlpha: true }}>
-            {/* <MarkersOverlay spots={spots} /> */}
-            {/* <SearchField /> */}
+            <MarkersOverlay spots={spots} />
+            <SearchField />
           </Container>
         </PixiContainer>
 

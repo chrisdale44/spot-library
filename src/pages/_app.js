@@ -8,14 +8,14 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }) {
   const [root, setRoot] = useState(null);
   let RecoilizeDebugger;
-  if (process.env.NODE_ENV === "development") {
-    RecoilizeDebugger = dynamic(
-      () => {
-        return import("recoilize");
-      },
-      { ssr: false }
-    );
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   RecoilizeDebugger = dynamic(
+  //     () => {
+  //       return import("recoilize");
+  //     },
+  //     { ssr: false }
+  //   );
+  // }
 
   useEffect(() => {
     if (typeof window.document !== "undefined") {
@@ -26,9 +26,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <ErrorBoundary key={"1"}>
       <RecoilRoot>
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_ENV === "development" && (
           <RecoilizeDebugger root={root} />
-        )}
+        )} */}
         <Head>
           <title>Spot Mapper</title>
         </Head>
