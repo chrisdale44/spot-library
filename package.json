@@ -5,7 +5,8 @@
     "dev": "cross-env NODE_ENV=development next dev ",
     "build": "cross-env NODE_ENV=production next build",
     "start": "cross-env NODE_ENV=production next start",
-    "lint": "cross-env NODE_ENV=development next lint"
+    "lint": "cross-env NODE_ENV=development next lint",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@charlietango/use-native-lazy-loading": "^1.10.0",
