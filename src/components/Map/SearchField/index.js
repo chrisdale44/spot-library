@@ -10,7 +10,6 @@ const SearchField = () => {
 
   useEffect(() => {
     map.on("geosearch/showlocation", (result) => {
-      console.log("set draggable marker: ", result);
       const { x, y, label } = result.location;
       setMapState({
         id: "searchResultSelected",

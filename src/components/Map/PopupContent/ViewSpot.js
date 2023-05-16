@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../state";
+import { modalState, popupState } from "../../../state";
 import ViewSpotModal from "../../Modal/ViewSpot";
 import { getCloudinaryThumb } from "../../../utils/cloudinary";
 import styles from "./PopupContent.module.scss";
@@ -8,9 +8,11 @@ import styles from "./PopupContent.module.scss";
 const ViewSpot = ({ spot, scaleFactor }) => {
   const { id, name, images } = spot;
   const [, setModal] = useRecoilState(modalState);
+  const [, setPopup] = useRecoilState(popupState);
 
   const handlePopupClick = () => {
     setModal(<ViewSpotModal spot={spot} scaleFactor={scaleFactor} />);
+    setPopup(null);
   };
 
   return (

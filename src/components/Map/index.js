@@ -40,6 +40,8 @@ const Map = ({ spots }) => {
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          noWrap={true}
+          keepBuffer={30}
         />
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0, useContextAlpha: true }}>

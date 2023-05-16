@@ -11,11 +11,9 @@ const UserLocation = ({ scaleFactor }) => {
   const [userLocationLayerPoint, setUserLocationLayerPoint] = useState();
 
   useEffect(() => {
-    console.log(userLocation);
     if (userLocation) {
       map.flyTo(userLocation, 16);
       const layerPoint = latLngToLayerPoint(userLocation);
-      console.log(layerPoint);
       setUserLocationLayerPoint(layerPoint);
     } else {
       setUserLocationLayerPoint(null);

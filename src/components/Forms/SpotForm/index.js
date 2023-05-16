@@ -292,7 +292,7 @@ const SpotForm = ({
 
   return (
     <div className={styles.formWrapper}>
-      <h3 className={styles.heading}>{id ? "Edit" : "Create new"} spot</h3>
+      <h3 className={styles.heading}>{id >= 0 ? "Edit" : "Create new"} spot</h3>
       <form ref={spotForm} className={styles.spotForm} onSubmit={handleSubmit}>
         <input name="name" placeholder="Spot name" defaultValue={spot?.name} />
         <textarea
@@ -381,7 +381,7 @@ const SpotForm = ({
         </Tabs>
 
         <div className={styles.buttonWrapper}>
-          {id && (
+          {id ? (
             <button
               disabled={isLoading}
               type="button"
@@ -390,7 +390,7 @@ const SpotForm = ({
             >
               <MdDeleteForever size={22} />
             </button>
-          )}
+          ) : null}
           <button
             disabled={isLoading}
             type="submit"

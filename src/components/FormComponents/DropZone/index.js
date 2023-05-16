@@ -114,6 +114,7 @@ const DropZone = ({
                 />
                 {path} ({parseBytes(size)})
                 <button
+                  type="button"
                   className={styles.removeFileButton}
                   onClick={(e) => handleRemoveFile(e, path)}
                 >

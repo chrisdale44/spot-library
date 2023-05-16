@@ -39,7 +39,6 @@ const StreetViewCursor = ({ scaleFactor }) => {
   };
 
   const handleKeyDown = (event) => {
-    console.log("handleKeydown");
     // todo: Why does this only work after clicking the map?
     const e = event.originalEvent;
     if (e.key === "Escape" || e.key === "Esc" || e.keyCode === 27) {
