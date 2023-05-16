@@ -2,10 +2,10 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { MapContainer, TileLayer, Popup } from "react-leaflet";
 import { Container } from "@pixi/react";
+import MapChildren from "./MapChildren";
 import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
-import SearchField from "./SearchField";
-import MarkersOverlay from "./MarkersOverlay";
+
 import "leaflet/dist/leaflet.css";
 
 const Map = ({ spots }) => {
@@ -43,8 +43,7 @@ const Map = ({ spots }) => {
         />
         <PixiContainer>
           <Container options={{ backgroundAlpha: 0, useContextAlpha: true }}>
-            <MarkersOverlay spots={spots} />
-            <SearchField />
+            <MapChildren spots={spots} />
           </Container>
         </PixiContainer>
 

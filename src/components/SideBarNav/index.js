@@ -65,7 +65,7 @@ const SideBarNav = ({ sidebarOpen }) => {
         placeholder="Search spots"
       />
       <div className={tagStyles.tagsWrapper}>
-        {tags && tags.map((tag, i) => <Tag tag={tag} key={i} />)}
+        {tags.length ? tags.map((tag, i) => <Tag tag={tag} key={i} />) : null}
       </div>
     </nav>
   );

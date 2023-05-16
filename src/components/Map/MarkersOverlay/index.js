@@ -3,16 +3,12 @@ import { useRecoilState } from "recoil";
 import Marker from "../Marker";
 import { mapState as mapRecoilState } from "../../../state";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
-import { calcScaleFactor } from "../../../utils/calcScaleFactor";
 import DraggableMarker from "../DraggableMarker";
-import StreetViewCursor from "../StreetViewCursor";
 
-const MarkersOverlay = ({ spots }) => {
-  const { latLngToLayerPoint, scale } = useContext(PixiContext);
+const MarkersOverlay = ({ spots, scaleFactor }) => {
+  const { latLngToLayerPoint } = useContext(PixiContext);
   const [mapState] = useRecoilState(mapRecoilState);
   const [markers, setMarkers] = useState([]);
-
-  const scaleFactor = calcScaleFactor(scale);
 
   useEffect(() => {
     setMarkers(
@@ -62,9 +58,6 @@ const MarkersOverlay = ({ spots }) => {
           y={mapState.layerPoint.y}
           spot={{ coordinates: mapState.coordinates }}
         />
-      ) : null}
-      {mapState?.id === "streetViewCursor" ? (
-        <StreetViewCursor scaleFactor={scaleFactor} />
       ) : null}
     </>
   );
