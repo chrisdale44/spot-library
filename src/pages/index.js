@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import dynamic from "next/dynamic";
 import {

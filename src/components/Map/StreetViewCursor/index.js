@@ -14,6 +14,7 @@ const StreetViewCursor = ({ scaleFactor }) => {
   useEffect(() => {
     map.on("mousemove", handleMouseMove);
     map.on("click", handleMapClick);
+    map.on("tap", handleMapClick);
     map.on("keydown", handleKeyDown);
 
     return () => {
@@ -23,6 +24,7 @@ const StreetViewCursor = ({ scaleFactor }) => {
 
   const cleanup = () => {
     map.off("click");
+    map.off("tap");
     map.off("mousemove");
     map.off("keydown");
     setMapState(null);

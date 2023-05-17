@@ -4,11 +4,11 @@
   top: 50px;
   right: 0;
   bottom: 0;
-  width: 230px;
+  width: 270px;
   backdrop-filter: blur(2px);
   background-color: rgba(222, 235, 246, 0.7);
   transition: transform 0.2s ease-in;
-  transform: translateX(250px);
+  transform: translateX(290px);
   padding: 10px;
 
   &.open {

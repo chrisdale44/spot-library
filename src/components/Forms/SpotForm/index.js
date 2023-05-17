@@ -52,7 +52,7 @@ const SpotForm = ({
   useEffect(() => {
     if (spot.tags) {
       setSpotTags(
-        spot.tags.map((tagId) => tags.find((tag) => tag.id === tagId))
+        spot.tags.map((tagId) => tags.find((tag) => tag.id == tagId))
       );
     }
   }, [spot.tags]);
