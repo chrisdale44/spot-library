@@ -300,28 +300,9 @@ const SpotForm = ({
           placeholder="Description"
           defaultValue={spot?.description}
         />
-        <Tabs headings={["Tags", "Images", "Media"]}>
-          {[
-            <React.Fragment key={0}>
-              {spotTags.length ? (
-                <div className={tagStyles.tagsWrapper}>
-                  {spotTags.map((tag, i) => {
-                    return (
-                      <TagWithX key={i} tag={tag} onDelete={handleRemoveTag} />
-                    );
-                  })}
-                </div>
-              ) : null}
-              <ComboBox
-                allOptions={tags}
-                onSelection={handleTagSelection}
-                submitIcon={<FaPlus />}
-                onSubmit={handleAddTag}
-                placeholder="Add tag"
-              />
-            </React.Fragment>,
-          ].concat(
-            [IMAGES, MEDIA].map((type, i) => {
+        <Tabs headings={["Images", "Media", "Tags"]}>
+          {[IMAGES, MEDIA]
+            .map((type, i) => {
               const acceptedFiles =
                 type === MEDIA ? acceptedMediaFiles : acceptedSpotFiles;
               const setAcceptedFiles =
@@ -377,7 +358,30 @@ const SpotForm = ({
                 </React.Fragment>
               );
             })
-          )}
+            .concat([
+              <React.Fragment key={0}>
+                {spotTags.length ? (
+                  <div className={tagStyles.tagsWrapper}>
+                    {spotTags.map((tag, i) => {
+                      return (
+                        <TagWithX
+                          key={i}
+                          tag={tag}
+                          onDelete={handleRemoveTag}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : null}
+                <ComboBox
+                  allOptions={tags}
+                  onSelection={handleTagSelection}
+                  submitIcon={<FaPlus />}
+                  onSubmit={handleAddTag}
+                  placeholder="Add tag"
+                />
+              </React.Fragment>,
+            ])}
         </Tabs>
 
         <div className={styles.buttonWrapper}>

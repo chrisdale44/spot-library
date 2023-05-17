@@ -44,13 +44,10 @@ export const filterSpots = (spots, selectedFilters) => {
       case "selectedTags":
         // todo: can this be made more efficient?
         for (let i = 0; i < payload.length; i++) {
-          filteredSpots = filteredSpots.filter(({ tags }) => {
-            return tags?.find((id) => {
-              return id == payload[i];
-            });
-          });
+          filteredSpots = filteredSpots.filter(({ tags }) =>
+            tags?.find((id) => id == payload[i])
+          );
         }
-        console.log(filteredSpots);
         break;
     }
   });
