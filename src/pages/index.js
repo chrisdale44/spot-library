@@ -10,7 +10,7 @@ import {
 import { filterSpots } from "../state/filters/utils";
 import PageTemplate from "../components/PageTemplate";
 import InfiniteScrollGrid from "../components/InfiniteScrollGrid";
-import { connectToRedis } from "../utils";
+import { getRandomCoordInRange } from "../utils";
 import styles from "../styles/Home.module.scss";
 
 // do not load Leaflet map on server as it uses window object
@@ -23,6 +23,7 @@ function Home() {
   const [filteredSpots, setFilteredSpots] = useRecoilState(filteredSpotsState);
 
   useEffect(() => {
+    console.log(spots);
     setFilteredSpots(filterSpots(spots, selectedFilters));
   }, [spots, selectedFilters]);
 
@@ -51,17 +52,24 @@ function StateHandler({ spots, tags }) {
 
 export const getStaticProps = async () => {
   try {
-    const redis = connectToRedis();
-    const spotsHash = await redis.hgetall("spots");
-    const tagsHash = await redis.hgetall("tags");
+    const spotsArray = [];
+    const tagsArray = [
+      { id: 1, name: "tag 1" },
+      { id: 2, name: "tag 2" },
+    ];
 
-    const spotsArray = Object.keys(spotsHash).map((key) =>
-      JSON.parse(spotsHash[key])
-    );
-    const tagsArray = Object.keys(tagsHash).map((key) => ({
-      id: parseInt(key),
-      name: tagsHash[key],
-    }));
+    for (let i = 0; i < 5000; i++) {
+      const randomLat = getRandomCoordInRange(-1.5, 1.2, 5);
+      const randomLang = getRandomCoordInRange(50.7, 52.3, 5);
+
+      spotsArray.push({
+        id: i,
+        name: `Spot #${i}`,
+        coordinates: [randomLang, randomLat],
+        images: [],
+        tags: [i % 2 ? 1 : 2],
+      });
+    }
 
     return {
       props: {
