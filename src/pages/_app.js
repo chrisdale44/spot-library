@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }) {
           <RecoilizeDebugger root={root} />
         )} */}
         <Head>
-          <title>Spot Mapper</title>
+          <title>Spot Library</title>
         </Head>
         <Component {...pageProps} />
       </RecoilRoot>

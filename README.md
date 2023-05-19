@@ -1,4 +1,4 @@
-# Spot Mapper
+# Spot Library
 
 ## Useful commands
 

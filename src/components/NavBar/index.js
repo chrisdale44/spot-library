@@ -54,7 +54,7 @@ const NavBar = ({ sidebar }) => {
   return (
     <nav className={styles.navBar}>
       <Link href="/" passHref>
-        <h1>SpotMapper</h1>
+        <h1>SpotLibrary</h1>
       </Link>
       <div className={styles.iconWrapper}>
         <button
