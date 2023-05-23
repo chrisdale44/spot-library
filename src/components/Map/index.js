@@ -5,10 +5,11 @@ import { Container } from "@pixi/react";
 import MapChildren from "./MapChildren";
 import { mapState as mapRecoilState, popupState } from "../../state";
 import { PixiContainer } from "../../utils/middleware/ReactLeafletReactPixi";
+import MapControls from "./MapChildren/MapControls";
 
 import "leaflet/dist/leaflet.css";
 
-const Map = ({ spots }) => {
+const Map = ({ id, spots }) => {
   const [mapState] = useRecoilState(mapRecoilState);
   const [popup, setPopup] = useRecoilState(popupState);
 
@@ -26,7 +27,7 @@ const Map = ({ spots }) => {
     mapState?.id === "searchResultSelected";
 
   return (
-    <div className={enableCrosshair ? "crosshair-cursor-enabled" : ""}>
+    <div id={id} className={enableCrosshair ? "crosshair-cursor-enabled" : ""}>
       <MapContainer
         center={[51.505, -0.09]}
         zoom={13}
@@ -48,6 +49,8 @@ const Map = ({ spots }) => {
             <MapChildren spots={spots} />
           </Container>
         </PixiContainer>
+
+        <MapControls />
 
         {popup && (
           <Popup

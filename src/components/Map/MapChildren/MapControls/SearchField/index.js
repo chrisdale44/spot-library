@@ -1,8 +1,8 @@
 import { useEffect, useContext } from "react";
 import { useRecoilState } from "recoil";
-import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
+import { PixiContext } from "../../../../../utils/middleware/ReactLeafletReactPixi";
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch";
-import { mapState as mapRecoilState } from "../../../state/map";
+import { mapState as mapRecoilState } from "../../../../../state/map";
 
 const SearchField = () => {
   const { map, latLngToLayerPoint } = useContext(PixiContext);

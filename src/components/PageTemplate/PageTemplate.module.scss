@@ -1,6 +1,13 @@
-section.view {
+section.map {
   visibility: hidden;
   &.show {
     visibility: visible;
+  }
+}
+
+section.grid {
+  display: none;
+  &.show {
+    display: block;
   }
 }

@@ -1,5 +1,5 @@
 @import "modern-css-reset/dist/reset.css";
-@import "../components/Map/SearchField/styles.css";
+@import "../components/Map/MapChildren/MapControls/SearchField/styles.css";
 @import "./leaflet-overrides.css";
 @import "~react-image-gallery/styles/css/image-gallery.css";
 /* @import "./breakpoints.module.scss"; */

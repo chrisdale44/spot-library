@@ -75,3 +75,18 @@ button.image-gallery-right-nav svg.image-gallery-svg {
   border: 0;
   font-size: 20px;
 }
+
+.leaflet-bar button,
+.leaflet-bar a {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  line-height: 16px;
+  color: #555;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.leaflet-bar button:hover {
+  background-color: #f4f4f4;
+}
