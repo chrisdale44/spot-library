@@ -23,7 +23,9 @@ const PageTemplate = ({ children }) => {
             <section
               key={i}
               // Show/ hide map and grid views using CSS to prevent unnecessary renders and calls to Cloudinary
-              className={cx(styles.view, { [styles.show]: navState === id })}
+              className={cx(styles[id], {
+                [styles.show]: navState === id,
+              })}
             >
               {child}
             </section>

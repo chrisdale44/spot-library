@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { useRecoilState } from "recoil";
-import UserLocation from "../UserLocation";
-import SearchField from "../SearchField";
+import UserLocationIcon from "../UserLocationIcon";
 import MarkersOverlay from "../MarkersOverlay";
 import StreetViewCursor from "../StreetViewCursor";
+import SearchField from "./MapControls/SearchField";
 import { PixiContext } from "../../../utils/middleware/ReactLeafletReactPixi";
 import { calcScaleFactor } from "../../../utils/calcScaleFactor";
 import { mapState as mapRecoilState } from "../../../state";
@@ -20,7 +20,7 @@ const MapChildren = ({ spots }) => {
       {mapState?.id === "streetViewCursor" ? (
         <StreetViewCursor scaleFactor={scaleFactor} />
       ) : null}
-      <UserLocation scaleFactor={scaleFactor} />
+      <UserLocationIcon scaleFactor={scaleFactor} />
       <SearchField />
     </>
   );
