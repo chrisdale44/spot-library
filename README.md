@@ -1,6 +1,6 @@
 # Spot Library
 
-A Web App for mapping skateboarding spots worldwide, designed and built by myself following a serverless approach with a focus on performance and scalability.
+A Web App for mapping skateboarding spots worldwide, designed and built by myself following a serverless approach with a focus on performance and scalability. Still currently under development.
 
 ## Tech stack
 
