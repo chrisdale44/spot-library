@@ -1,6 +1,8 @@
 # Spot Library
 
-A Web App for mapping skateboarding spots worldwide, designed and built by myself following a serverless approach with a focus on performance and scalability. Still currently under development.
+Spot Library is a personal project I have undertaken to fill a gap in the skateboarding community of mapping skateboarding spots around the globe in an easily searchable and filterable interface, with the ability to view existing, or share new, photos and videos of tricks done at each spot.
+
+Spot Library has been built using a modern tech stack with scalability and performance in mind. As the solo developer of the project I have been responsible for each phase of the software development lifecycle from design and UX, to development, testing and deployment.
 
 ## Tech stack
 
