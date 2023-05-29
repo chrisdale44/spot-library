@@ -1,85 +1,28 @@
 # Spot Library
 
-## Useful commands
+A Web App for mapping skateboarding spots worldwide, designed and built by myself following a serverless approach with a focus on performance and scalability.
 
-npm run dev
-http://localhost:3000
+## Tech stack
 
-Clear Next cache:
-rm -rf .next
+- React (with React Hooks) for reusable reactive components
+- Javascipt with ESLint and Prettier for clean scripting
+- CSS Modules with SASS for scoped component styling
+- React-icons for SVG based icons
+- Recoil for atomic state management
+- NextJS for pre-rendering pages (Static Site Generation) and API routes
+- Redis as a primary NoSQL database, hosted by Aiven
+- Axios for promise-based API requests
+- LeafletJS with OpenStreetMaps for OpenSource map layer
+- PixiJS for WebGL powered markers layer
+- Leaflet-pixi-overlay with custom middleware for syncing map and markers layer
+- Cloudinary CDN for optimised image storage and delivery
+- React-intersection-observer and Lodash chunking for lazyloading infinite-scoll image grid
+- Github for Control Versioning
+- Vercel for deployment and CI/CD pipeline
 
-redis-cli ping
-brew services stop redis
-brew services start redis
-redis-cli
+## Known issues
 
-### Redis config:
-
-/opt/homebrew/etc/redis.conf
-/opt/homebrew/var/db/redis/dump.rdb
-
-### to build static files, run both concurrently:
-
-npm run dev
-npm run build // localhost needs to be running concurrently for API requests to work
-// then use a http-server to host static files:
-cd ./out
-npx http-server
-
-OR run
-npm run start
-
-## Uploading data to database from json
-
-- Ensure database credentials in .env file are correct
-- Generate a spots.json file, if it doesn't already exist, using either of the xmlToJson.js or csvToJson.js scripts
-- Move loadFromJson.js into ./pages dir
-- npm run dev
-- Navigate to localhost:3000/loadFromJson
-- Click the 'Load' button
-
-## Clearing Redis DB
-
-redis-cli flushdb
-
-## Create backup snapshot (dump.rdb) from Redis DB
-
-- Locally
-
-  - redis-cli
-  - save
-
-- Remotely
-  - redis-cli -u <REDIS_URL> --rdb dump.rdb
-
-## Restore Redis DB from snapshot
-
-- Ensure appendonly config is off
-  - redis-cli
-  - config get appendonly
-- Stop redis (as it overwrites dump.rdb on exit)
-  - brew services stop redis
-- Find location of Redis DB snapshots (./redis_backup)
-  - redis-cli
-  - config get dir
-- Rename current dump.rdb
-- Copy new dump.rdb into directory
-- Restart Redis
-  - brew services start redis
-
-## Export Redis DB to JSON file
-
-- Todo
-
-## Benchmarking:
-
-Simple SSG index page with list of ~2000 spots
-./out directory: 3.1MB
-Browser data transfered: 2.8MB
-main.js 1.1MB
-Lighthouse performance: 82
-0.5s FCP
-1.3s SI
-2.8s LCP
-2.8 TTI
-30ms TBT
+- Leaflet's pinch zoom functionality has poor performance on touchscreen devices
+- Images are repeated in image-carousels
+- Performance of tag filters can be optimised by pre-caching results
+- No automated test coverage yet as this has been a rapidly developed prototype
