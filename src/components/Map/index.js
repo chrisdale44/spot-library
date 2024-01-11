@@ -29,7 +29,7 @@ const Map = ({ id, spots }) => {
   return (
     <div id={id} className={enableCrosshair ? "crosshair-cursor-enabled" : ""}>
       <MapContainer
-        center={[51.505, -0.09]}
+        center={[-37.8024221, 144.9580077]}
         zoom={13}
         minZoom={2}
         scrollWheelZoom={false} // disable default zoom function
