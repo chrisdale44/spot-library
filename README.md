@@ -30,7 +30,7 @@ Spot Library has been built using a modern tech stack with scalability and perfo
 - Leaflet's pinch zoom functionality has poor performance on touchscreen devices
 - Images are repeated in image-carousels
 - Performance of tag filters can be optimised by pre-caching results
-- No automated test coverage yet as this has been a rapidly developed prototype
+- No test coverage or type definitions yet as this has been a rapidly developed prototype
 
 ## Future developments
 
