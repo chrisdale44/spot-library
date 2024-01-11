@@ -7,7 +7,7 @@ import UserLocation from "./UserLocation";
 const MapControls = () => {
   return (
     <>
-      <AddNewSpot />
+      {/* <AddNewSpot /> */}
       <UserLocation />
       <StreetView />
     </>

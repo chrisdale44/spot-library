@@ -36,9 +36,9 @@ const Tile = ({ spot }) => {
         >
           <SiGooglemaps className={styles.googlemaps} />
         </a>
-        <a href={`/spot/${id}/edit`}>
+        {/* <a href={`/spot/${id}/edit`}>
           <GrEdit className={styles.edit} />
-        </a>
+        </a> */}
       </div>
     </div>
   );

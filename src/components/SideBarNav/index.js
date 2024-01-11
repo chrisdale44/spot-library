@@ -64,9 +64,9 @@ const SideBarNav = ({ sidebarOpen }) => {
         onSubmit={() => {}}
         placeholder="Search spots"
       />
-      <div className={tagStyles.tagsWrapper}>
+      {/* <div className={tagStyles.tagsWrapper}>
         {tags.length ? tags.map((tag, i) => <Tag tag={tag} key={i} />) : null}
-      </div>
+      </div> */}
     </nav>
   );
 };

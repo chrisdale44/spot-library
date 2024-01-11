@@ -55,9 +55,9 @@ const ViewSpot = ({ spot }) => {
         {/* <a href={`/spot/${id}`} className={styles.edit}>
         <FiExternalLink />
       </a> */}
-        <button onClick={handleOpenEditSpot}>
+        {/* <button onClick={handleOpenEditSpot}>
           <GrEdit />
-        </button>
+        </button> */}
       </div>
     </div>
   ) : null;
